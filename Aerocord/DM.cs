@@ -12,18 +12,18 @@ using WindowsFormsAero.TaskDialog;
 
 namespace Aerocord
 {
-    public partial class Chat : WindowsFormsAero.AeroForm
+    public partial class DM : WindowsFormsAero.AeroForm
     {
         const string htmlStart = "<html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
-        public Chat()
+        public DM()
         {
             InitializeComponent();
         }
         private void AddMessage(string name, string message)
         {
-            htmlMiddle += "<br><strong>" + name + ": </strong>" + DiscordMDToHtml(message);
+            htmlMiddle += "<br><br><strong>" + name + ": </strong>" + DiscordMDToHtml(message);
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
         }
         private string DiscordMDToHtml(string md)
@@ -35,7 +35,7 @@ namespace Aerocord
                 switch (md[i].ToString())
                 {
                     case "*":
-                        if (md.Length > i + 1 && md[i+1].ToString() == "*")
+                        if (md.Length > i + 1 && md[i + 1].ToString() == "*")
                         {
                             if (!waitingToClose.Contains("**")) { html.Append(new char[] { '<', 's', 't', 'r', 'o', 'n', 'g', '>' }); waitingToClose.Add("**"); } else { html.Append(new char[] { '<', '/', 's', 't', 'r', 'o', 'n', 'g', '>' }); waitingToClose.Remove("**"); }
                             i += 1;
@@ -55,7 +55,7 @@ namespace Aerocord
                         break;
 
                     case "~":
-                        if (md.Length > i + 1 &&  md[i + 1].ToString() == "~") { if (!waitingToClose.Contains("~~")) { html.Append(new char[] { '<', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Add("~~"); } else { html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Remove("~~"); } i += 1; break; }
+                        if (md.Length > i + 1 && md[i + 1].ToString() == "~") { if (!waitingToClose.Contains("~~")) { html.Append(new char[] { '<', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Add("~~"); } else { html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Remove("~~"); } i += 1; break; }
                         break;
 
                     case "#":

@@ -16,7 +16,7 @@ namespace Aerocord
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Chat());
+            Application.Run(new Server());
         }
     }
 }

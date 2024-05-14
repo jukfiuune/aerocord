@@ -1,6 +1,6 @@
 ﻿namespace Aerocord
 {
-    partial class Chat
+    partial class DM
     {
         /// <summary>
         /// Required designer variable.
@@ -97,7 +97,7 @@
             this.chatBox.Url = new System.Uri("", System.UriKind.Relative);
             this.chatBox.WebBrowserShortcutsEnabled = false;
             // 
-            // Chat
+            // DMs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
