@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsFormsAero;
 using WindowsFormsAero.TaskDialog;
@@ -14,12 +10,61 @@ namespace Aerocord
 {
     public partial class DM : WindowsFormsAero.AeroForm
     {
+        private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
         const string htmlStart = "<html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
-        public DM()
+        private string AccessToken;
+        private long ChatID;
+        private long FriendID;
+        private string userPFP;
+        public DM(long chatid, long friendid, string token, string userpfp)
         {
             InitializeComponent();
+            AccessToken = token;
+            ChatID = chatid;
+            FriendID = friendid;
+            userPFP = userpfp;
+            SetFriendInfo();
+            LoadMessages();
+        }
+
+        private void SetFriendInfo()
+        {
+            try
+            {
+                dynamic userProfile = GetApiResponse($"users/{FriendID}/profile");
+                //Console.WriteLine(userProfile);
+                string displayname;
+                if (userProfile.user.global_name != null) { displayname = userProfile.user.global_name; } else { displayname = userProfile.user.username; }
+                string bio = userProfile.user.bio;
+                usernameLabel.Text = displayname;
+                descriptionLabel.Text = bio;
+                profilepicturefriend.ImageLocation = $"https://cdn.discordapp.com/avatars/{userProfile.user.id}/{userProfile.user.avatar}.png";
+                profilepicture.ImageLocation = userPFP;
+            }
+            catch (WebException ex)
+            {
+                ShowErrorMessage("Failed to retrieve user profile", ex);
+            }
+        }
+
+        private void LoadMessages()
+        {
+            try
+            {
+                dynamic messages = GetApiResponse($"channels/{ChatID}/messages");
+                for (int i = messages.Count-1; i >= 0; i--) { 
+                    string author = messages[i].author.username;
+                    string content = messages[i].content;
+                    AddMessage(author, content);
+                }
+                return;
+            }
+            catch (WebException ex)
+            {
+                ShowErrorMessage("Failed to retrieve messages", ex);
+            }
         }
         private void AddMessage(string name, string message)
         {
@@ -122,13 +167,29 @@ namespace Aerocord
             }
             return html.ToString();
         }
+
+        private dynamic GetApiResponse(string endpoint)
+        {
+            using (var webClient = new WebClient())
+            {
+                webClient.Headers[HttpRequestHeader.Authorization] = AccessToken;
+                string jsonResponse = webClient.DownloadString(DiscordApiBaseUrl + endpoint);
+                return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
+            }
+        }
+
+        private void ShowErrorMessage(string message, Exception ex)
+        {
+            MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
             GlassMargins = new Padding(117, 325, 12, 12);
-            AddMessage("Shamestick", "This is a certified __*shampoo*__ classic! Stay tuned for ***AMAZING SHANE MOMENTS***\n\n#NIGGAYOUBEINGLIGMAHAHA");
-            AddMessage("JukFiuuFuck", "This is a certified __*shampoo*__ classic! Stay tuned for ***AMAZING SHANE MOMENTS***\n\n#NIGGAYOUBEINGLIGMAHAHA");
+            chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
+            //chatBox.Document.Window.ScrollTo(0, chatBox.Document.Window.Size.Height);
         }
     }
 }

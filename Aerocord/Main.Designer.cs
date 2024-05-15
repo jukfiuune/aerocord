@@ -28,90 +28,67 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("Nig");
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("Nig");
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("Nig");
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("Nig");
-            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("18+");
-            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("18+");
-            this.username = new WindowsFormsAero.ThemeLabel();
-            this.description = new WindowsFormsAero.ThemeLabel();
-            this.profilepicture = new System.Windows.Forms.PictureBox();
-            this.servers = new WindowsFormsAero.ListView();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.usernameLabel = new WindowsFormsAero.ThemeLabel();
+            this.descriptionLabel = new WindowsFormsAero.ThemeLabel();
+            this.friendsList = new WindowsFormsAero.ListView();
+            this.fsTabs = new System.Windows.Forms.TabControl();
             this.friendsTab = new System.Windows.Forms.TabPage();
             this.serversTab = new System.Windows.Forms.TabPage();
-            this.listView1 = new WindowsFormsAero.ListView();
-            ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
-            this.tabControl1.SuspendLayout();
+            this.serversList = new WindowsFormsAero.ListView();
+            this.profilepicture = new System.Windows.Forms.PictureBox();
+            this.fsTabs.SuspendLayout();
             this.friendsTab.SuspendLayout();
             this.serversTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
             this.SuspendLayout();
             // 
-            // username
+            // usernameLabel
             // 
-            this.username.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.username.Location = new System.Drawing.Point(118, 12);
-            this.username.Name = "username";
-            this.username.Size = new System.Drawing.Size(213, 23);
-            this.username.TabIndex = 1;
-            this.username.Text = "username";
+            this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.usernameLabel.Location = new System.Drawing.Point(118, 12);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.Size = new System.Drawing.Size(213, 23);
+            this.usernameLabel.TabIndex = 1;
+            this.usernameLabel.Text = "username";
             // 
-            // description
+            // descriptionLabel
             // 
-            this.description.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.description.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.description.Location = new System.Drawing.Point(118, 41);
-            this.description.Name = "description";
-            this.description.Size = new System.Drawing.Size(213, 72);
-            this.description.TabIndex = 3;
-            this.description.Text = "description";
+            this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
+            this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.descriptionLabel.Location = new System.Drawing.Point(118, 41);
+            this.descriptionLabel.Name = "descriptionLabel";
+            this.descriptionLabel.Size = new System.Drawing.Size(213, 72);
+            this.descriptionLabel.TabIndex = 3;
+            this.descriptionLabel.Text = "description";
             // 
-            // profilepicture
+            // friendsList
             // 
-            this.profilepicture.BackColor = System.Drawing.Color.Black;
-            this.profilepicture.Image = global::Aerocord.Properties.Resources.discord_mark_black;
-            this.profilepicture.ImageLocation = "";
-            this.profilepicture.Location = new System.Drawing.Point(12, 12);
-            this.profilepicture.Name = "profilepicture";
-            this.profilepicture.Size = new System.Drawing.Size(100, 100);
-            this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.profilepicture.TabIndex = 0;
-            this.profilepicture.TabStop = false;
+            this.friendsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.friendsList.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.friendsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.friendsList.HideSelection = false;
+            this.friendsList.LabelWrap = false;
+            this.friendsList.Location = new System.Drawing.Point(6, 6);
+            this.friendsList.Name = "friendsList";
+            this.friendsList.Size = new System.Drawing.Size(300, 347);
+            this.friendsList.TabIndex = 0;
+            this.friendsList.UseCompatibleStateImageBehavior = false;
+            this.friendsList.View = System.Windows.Forms.View.Tile;
+            this.friendsList.DoubleClick += new System.EventHandler(friendsList_DoubleClick);
             // 
-            // servers
+            // fsTabs
             // 
-            this.servers.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.servers.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.servers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.servers.HideSelection = false;
-            listViewItem8.StateImageIndex = 0;
-            this.servers.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem7,
-            listViewItem8,
-            listViewItem9,
-            listViewItem10});
-            this.servers.LabelWrap = false;
-            this.servers.Location = new System.Drawing.Point(6, 6);
-            this.servers.Name = "servers";
-            this.servers.Size = new System.Drawing.Size(300, 347);
-            this.servers.TabIndex = 0;
-            this.servers.UseCompatibleStateImageBehavior = false;
-            this.servers.View = System.Windows.Forms.View.Tile;
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.friendsTab);
-            this.tabControl1.Controls.Add(this.serversTab);
-            this.tabControl1.Location = new System.Drawing.Point(13, 119);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(320, 387);
-            this.tabControl1.TabIndex = 4;
+            this.fsTabs.Controls.Add(this.friendsTab);
+            this.fsTabs.Controls.Add(this.serversTab);
+            this.fsTabs.Location = new System.Drawing.Point(13, 119);
+            this.fsTabs.Name = "fsTabs";
+            this.fsTabs.SelectedIndex = 0;
+            this.fsTabs.Size = new System.Drawing.Size(320, 387);
+            this.fsTabs.TabIndex = 4;
             // 
             // friendsTab
             // 
-            this.friendsTab.Controls.Add(this.servers);
+            this.friendsTab.Controls.Add(this.friendsList);
             this.friendsTab.Location = new System.Drawing.Point(4, 24);
             this.friendsTab.Name = "friendsTab";
             this.friendsTab.Padding = new System.Windows.Forms.Padding(3);
@@ -122,7 +99,7 @@
             // 
             // serversTab
             // 
-            this.serversTab.Controls.Add(this.listView1);
+            this.serversTab.Controls.Add(this.serversList);
             this.serversTab.Location = new System.Drawing.Point(4, 24);
             this.serversTab.Name = "serversTab";
             this.serversTab.Padding = new System.Windows.Forms.Padding(3);
@@ -131,41 +108,50 @@
             this.serversTab.Text = "Servers";
             this.serversTab.UseVisualStyleBackColor = true;
             // 
-            // listView1
+            // serversList
             // 
-            this.listView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listView1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listView1.HideSelection = false;
-            this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem11,
-            listViewItem12});
-            this.listView1.LabelWrap = false;
-            this.listView1.Location = new System.Drawing.Point(6, 6);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(300, 347);
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Tile;
+            this.serversList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.serversList.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.serversList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.serversList.HideSelection = false;
+            this.serversList.LabelWrap = false;
+            this.serversList.Location = new System.Drawing.Point(6, 6);
+            this.serversList.Name = "serversList";
+            this.serversList.Size = new System.Drawing.Size(300, 347);
+            this.serversList.TabIndex = 1;
+            this.serversList.UseCompatibleStateImageBehavior = false;
+            this.serversList.View = System.Windows.Forms.View.Tile;
             // 
-            // Form1
+            // profilepicture
+            // 
+            this.profilepicture.BackColor = System.Drawing.Color.Black;
+            this.profilepicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.profilepicture.ImageLocation = "";
+            this.profilepicture.Location = new System.Drawing.Point(12, 12);
+            this.profilepicture.Name = "profilepicture";
+            this.profilepicture.Size = new System.Drawing.Size(100, 100);
+            this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.profilepicture.TabIndex = 0;
+            this.profilepicture.TabStop = false;
+            // 
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(345, 518);
-            this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.description);
-            this.Controls.Add(this.username);
+            this.Controls.Add(this.fsTabs);
+            this.Controls.Add(this.descriptionLabel);
+            this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.profilepicture);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "Main";
             this.ShowIcon = false;
             this.Text = "Aerocord";
-            ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).EndInit();
-            this.tabControl1.ResumeLayout(false);
+            this.fsTabs.ResumeLayout(false);
             this.friendsTab.ResumeLayout(false);
             this.serversTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -173,13 +159,13 @@
         #endregion
 
         private System.Windows.Forms.PictureBox profilepicture;
-        private WindowsFormsAero.ThemeLabel username;
-        private WindowsFormsAero.ThemeLabel description;
-        public WindowsFormsAero.ListView servers;
-        private System.Windows.Forms.TabControl tabControl1;
+        private WindowsFormsAero.ThemeLabel usernameLabel;
+        private WindowsFormsAero.ThemeLabel descriptionLabel;
+        private System.Windows.Forms.TabControl fsTabs;
         private System.Windows.Forms.TabPage friendsTab;
         private System.Windows.Forms.TabPage serversTab;
-        public WindowsFormsAero.ListView listView1;
+        private WindowsFormsAero.ListView friendsList;
+        private WindowsFormsAero.ListView serversList;
     }
 }
 

@@ -28,34 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.description = new WindowsFormsAero.ThemeLabel();
-            this.username = new WindowsFormsAero.ThemeLabel();
+            this.descriptionLabel = new WindowsFormsAero.ThemeLabel();
+            this.usernameLabel = new WindowsFormsAero.ThemeLabel();
             this.textBox1 = new WindowsFormsAero.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.chatBox = new System.Windows.Forms.WebBrowser();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.profilepicture = new System.Windows.Forms.PictureBox();
+            this.profilepicturefriend = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profilepicturefriend)).BeginInit();
             this.SuspendLayout();
             // 
-            // description
+            // descriptionLabel
             // 
-            this.description.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.description.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.description.Location = new System.Drawing.Point(118, 41);
-            this.description.Name = "description";
-            this.description.Size = new System.Drawing.Size(654, 22);
-            this.description.TabIndex = 5;
-            this.description.Text = "description";
+            this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
+            this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.descriptionLabel.Location = new System.Drawing.Point(118, 41);
+            this.descriptionLabel.Name = "descriptionLabel";
+            this.descriptionLabel.Size = new System.Drawing.Size(654, 22);
+            this.descriptionLabel.TabIndex = 5;
+            this.descriptionLabel.Text = "description";
             // 
-            // username
+            // usernameLabel
             // 
-            this.username.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.username.Location = new System.Drawing.Point(118, 12);
-            this.username.Name = "username";
-            this.username.Size = new System.Drawing.Size(213, 23);
-            this.username.TabIndex = 4;
-            this.username.Text = "username";
+            this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.usernameLabel.Location = new System.Drawing.Point(118, 12);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.Size = new System.Drawing.Size(213, 23);
+            this.usernameLabel.TabIndex = 4;
+            this.usernameLabel.Text = "username";
             // 
             // textBox1
             // 
@@ -63,28 +63,6 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(654, 23);
             this.textBox1.TabIndex = 6;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Image = global::Aerocord.Properties.Resources.discord_mark_black;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 100);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Black;
-            this.pictureBox2.Image = global::Aerocord.Properties.Resources.discord_mark_black;
-            this.pictureBox2.Location = new System.Drawing.Point(12, 249);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(100, 100);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 8;
-            this.pictureBox2.TabStop = false;
             // 
             // chatBox
             // 
@@ -97,24 +75,46 @@
             this.chatBox.Url = new System.Uri("", System.UriKind.Relative);
             this.chatBox.WebBrowserShortcutsEnabled = false;
             // 
-            // DMs
+            // profilepicture
+            // 
+            this.profilepicture.BackColor = System.Drawing.Color.Black;
+            this.profilepicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.profilepicture.Location = new System.Drawing.Point(12, 249);
+            this.profilepicture.Name = "profilepicture";
+            this.profilepicture.Size = new System.Drawing.Size(100, 100);
+            this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.profilepicture.TabIndex = 8;
+            this.profilepicture.TabStop = false;
+            // 
+            // profilepicturefriend
+            // 
+            this.profilepicturefriend.BackColor = System.Drawing.Color.Black;
+            this.profilepicturefriend.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.profilepicturefriend.Location = new System.Drawing.Point(12, 12);
+            this.profilepicturefriend.Name = "profilepicturefriend";
+            this.profilepicturefriend.Size = new System.Drawing.Size(100, 100);
+            this.profilepicturefriend.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.profilepicturefriend.TabIndex = 0;
+            this.profilepicturefriend.TabStop = false;
+            // 
+            // DM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 361);
             this.Controls.Add(this.chatBox);
-            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.profilepicture);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.description);
-            this.Controls.Add(this.username);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.descriptionLabel);
+            this.Controls.Add(this.usernameLabel);
+            this.Controls.Add(this.profilepicturefriend);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Chat";
+            this.Name = "DM";
             this.ShowIcon = false;
             this.Text = "Aerocord - Chat";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profilepicturefriend)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -122,11 +122,11 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private WindowsFormsAero.ThemeLabel description;
-        private WindowsFormsAero.ThemeLabel username;
+        private System.Windows.Forms.PictureBox profilepicturefriend;
+        private WindowsFormsAero.ThemeLabel descriptionLabel;
+        private WindowsFormsAero.ThemeLabel usernameLabel;
         private WindowsFormsAero.TextBox textBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox profilepicture;
         private System.Windows.Forms.WebBrowser chatBox;
     }
 }

@@ -63,9 +63,39 @@ namespace Aerocord.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap defaultpfp {
+            get {
+                object obj = ResourceManager.GetObject("defaultpfp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap discord_mark_black {
             get {
                 object obj = ResourceManager.GetObject("discord-mark-black", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Frame_49 {
+            get {
+                object obj = ResourceManager.GetObject("Frame_49", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Frame_491 {
+            get {
+                object obj = ResourceManager.GetObject("Frame_491", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

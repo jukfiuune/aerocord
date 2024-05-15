@@ -17,7 +17,7 @@ namespace Aerocord
         const string htmlStart = "<html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
-        public Server()
+        public Server(int chatid, String token)
         {
             InitializeComponent();
         }

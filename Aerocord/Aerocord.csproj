@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,6 +52,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Signin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Signin.Designer.cs">
+      <DependentUpon>Signin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Server.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +84,12 @@
     <Compile Include="Token.Designer.cs">
       <DependentUpon>Token.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DM.resx">
+      <DependentUpon>DM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Signin.resx">
+      <DependentUpon>Signin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -110,6 +125,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\discord-mark-black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\defaultpfp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Frame_49.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
