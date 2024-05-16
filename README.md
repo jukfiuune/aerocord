@@ -1,4 +1,8 @@
-# Aerocord
+<div align="center"><img style="border-radius: 20px" src="./Screenshots/logo.png"></div>
+
+<h1 align="center">
+  Aerocord
+</h1>
 
 Aerocord is a Discord client written in C#.<sup>(tasty glass included)</sup>
 
