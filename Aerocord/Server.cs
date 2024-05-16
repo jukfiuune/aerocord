@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.Net;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using WindowsFormsAero;
 using WindowsFormsAero.TaskDialog;
@@ -14,12 +11,52 @@ namespace Aerocord
 {
     public partial class Server : WindowsFormsAero.AeroForm
     {
+        private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
         const string htmlStart = "<html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
-        public Server(int chatid, String token)
+        private string AccessToken;
+        private long ServerID;
+        public Server(long serverid, String token)
         {
             InitializeComponent();
+            AccessToken = token;
+            ServerID = serverid;
+            Thread.Sleep(1000);
+            PopulateFields();
+        }
+        private void PopulateFields()
+        {
+            try
+            {
+                dynamic guilds = GetApiResponse("users/@me/guilds");
+                foreach (var guild in guilds)
+                {
+                    if ((long)guild.id == ServerID)
+                    {
+                        servernameLabel.Text = guild.name.ToString();
+                        serverPicture.ImageLocation = $"https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png";
+                    }
+                }
+                Thread.Sleep(500);
+                dynamic channels = GetApiResponse($"guilds/{ServerID}/channels");
+                List<ListViewItem> channelNames = new List<ListViewItem>();
+                foreach (var channel in channels)
+                {
+                    if (channel.type == 0)
+                    {
+                        string channelName = channel.name.ToString();
+                        ListViewItem channelItem = new ListViewItem("#" + channelName);
+                        channelItem.Tag = (long)channel.id;
+                        channelNames.Add(channelItem);
+                    }
+                }
+                channelList.Items.AddRange(channelNames.ToArray());
+            }
+            catch (WebException ex)
+            {
+                ShowErrorMessage("Failed to retrieve server list", ex);
+            }
         }
         private void AddMessage(string name, string message)
         {
@@ -122,13 +159,25 @@ namespace Aerocord
             }
             return html.ToString();
         }
+        private dynamic GetApiResponse(string endpoint)
+        {
+            using (var webClient = new WebClient())
+            {
+                webClient.Headers[HttpRequestHeader.Authorization] = AccessToken;
+                string jsonResponse = webClient.DownloadString(DiscordApiBaseUrl + endpoint);
+                return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
+            }
+        }
+
+        private void ShowErrorMessage(string message, Exception ex)
+        {
+            MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
             GlassMargins = new Padding(12, 118, 12, 12);
-            AddMessage("Shamestick", "This is a certified __*shampoo*__ classic! Stay tuned for ***AMAZING SHANE MOMENTS***\n\n# NIGGAYOUBEINGLIGMAHAHA");
-            AddMessage("JukFiuuFuck", "This is a certified __*shampoo*__ classic! Stay tuned for ***AMAZING SHANE MOMENTS***\n\n#NIGGAYOUBEINGLIGMAHAHA");
         }
     }
 }

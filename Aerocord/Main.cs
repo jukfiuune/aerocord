@@ -128,6 +128,23 @@ namespace Aerocord
                 return -1;
             }
         }
+        private long GetServerID(string name)
+        {
+            try
+            {
+                dynamic guilds = GetApiResponse("users/@me/guilds");
+                foreach (var guild in guilds)
+                {
+                    if (guild.name.ToString() == name) return (long)guild.id;
+                }
+                return -1;
+            }
+            catch (WebException ex)
+            {
+                ShowErrorMessage("Failed to retrieve server list", ex);
+                return -1;
+            }
+        }
         private void PopulateServersTab()
         {
             try
@@ -188,6 +205,20 @@ namespace Aerocord
                     DM dm = new DM(chatID, friendID, AccessToken, userPFP);
                     dm.Show();
                 } else MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void serversList_DoubleClick(object sender, EventArgs ex)
+        {
+            if (serversList.SelectedItems[0].Text != null)
+            {
+                string selectedServer = serversList.SelectedItems[0].Text;
+                long serverID = GetServerID(selectedServer);
+                if (serverID >= 0)
+                {
+                    Server server = new Server(serverID, AccessToken);
+                    server.Show();
+                }
+                else MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

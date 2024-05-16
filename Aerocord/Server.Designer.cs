@@ -28,33 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.channel = new WindowsFormsAero.ThemeLabel();
-            this.servername = new WindowsFormsAero.ThemeLabel();
+            this.channelLabel = new WindowsFormsAero.ThemeLabel();
+            this.servernameLabel = new WindowsFormsAero.ThemeLabel();
             this.textBox1 = new WindowsFormsAero.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.serverPicture = new System.Windows.Forms.PictureBox();
             this.chatBox = new System.Windows.Forms.WebBrowser();
-            this.listView1 = new WindowsFormsAero.ListView();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.channelList = new WindowsFormsAero.ListView();
+            ((System.ComponentModel.ISupportInitialize)(this.serverPicture)).BeginInit();
             this.SuspendLayout();
             // 
-            // channel
+            // channelLabel
             // 
-            this.channel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.channel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.channel.Location = new System.Drawing.Point(118, 41);
-            this.channel.Name = "channel";
-            this.channel.Size = new System.Drawing.Size(654, 22);
-            this.channel.TabIndex = 5;
-            this.channel.Text = "#channel";
+            this.channelLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
+            this.channelLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.channelLabel.Location = new System.Drawing.Point(118, 41);
+            this.channelLabel.Name = "channelLabel";
+            this.channelLabel.Size = new System.Drawing.Size(654, 22);
+            this.channelLabel.TabIndex = 5;
+            this.channelLabel.Text = "#channel";
             // 
-            // servername
+            // servernameLabel
             // 
-            this.servername.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.servername.Location = new System.Drawing.Point(118, 12);
-            this.servername.Name = "servername";
-            this.servername.Size = new System.Drawing.Size(213, 23);
-            this.servername.TabIndex = 4;
-            this.servername.Text = "servername";
+            this.servernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.servernameLabel.Location = new System.Drawing.Point(118, 12);
+            this.servernameLabel.Name = "servernameLabel";
+            this.servernameLabel.Size = new System.Drawing.Size(213, 23);
+            this.servernameLabel.TabIndex = 4;
+            this.servernameLabel.Text = "servername";
             // 
             // textBox1
             // 
@@ -63,16 +63,16 @@
             this.textBox1.Size = new System.Drawing.Size(654, 23);
             this.textBox1.TabIndex = 6;
             // 
-            // pictureBox1
+            // serverPicture
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Image = global::Aerocord.Properties.Resources.defaultpfp;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 100);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.serverPicture.BackColor = System.Drawing.Color.Black;
+            this.serverPicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.serverPicture.Location = new System.Drawing.Point(12, 12);
+            this.serverPicture.Name = "serverPicture";
+            this.serverPicture.Size = new System.Drawing.Size(100, 100);
+            this.serverPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.serverPicture.TabIndex = 0;
+            this.serverPicture.TabStop = false;
             // 
             // chatBox
             // 
@@ -85,32 +85,34 @@
             this.chatBox.Url = new System.Uri("", System.UriKind.Relative);
             this.chatBox.WebBrowserShortcutsEnabled = false;
             // 
-            // listView1
+            // channelList
             // 
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(13, 119);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(100, 230);
-            this.listView1.TabIndex = 10;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.channelList.HideSelection = false;
+            this.channelList.Location = new System.Drawing.Point(13, 119);
+            this.channelList.Name = "channelList";
+            this.channelList.Size = new System.Drawing.Size(100, 230);
+            this.channelList.TabIndex = 10;
+            this.channelList.UseCompatibleStateImageBehavior = false;
+            this.channelList.View = System.Windows.Forms.View.Details;
             // 
             // Server
             // 
+            this.AccessibleRole = System.Windows.Forms.AccessibleRole.Dialog;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 361);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.channelList);
             this.Controls.Add(this.chatBox);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.channel);
-            this.Controls.Add(this.servername);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.channelLabel);
+            this.Controls.Add(this.servernameLabel);
+            this.Controls.Add(this.serverPicture);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Server";
             this.ShowIcon = false;
             this.Text = "Aerocord - Chat";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.serverPicture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,11 +120,11 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private WindowsFormsAero.ThemeLabel channel;
-        private WindowsFormsAero.ThemeLabel servername;
+        private System.Windows.Forms.PictureBox serverPicture;
+        private WindowsFormsAero.ThemeLabel channelLabel;
+        private WindowsFormsAero.ThemeLabel servernameLabel;
         private WindowsFormsAero.TextBox textBox1;
         private System.Windows.Forms.WebBrowser chatBox;
-        private WindowsFormsAero.ListView listView1;
+        private WindowsFormsAero.ListView channelList;
     }
 }

@@ -121,6 +121,7 @@
             this.serversList.TabIndex = 1;
             this.serversList.UseCompatibleStateImageBehavior = false;
             this.serversList.View = System.Windows.Forms.View.Tile;
+            this.serversList.DoubleClick += new System.EventHandler(serversList_DoubleClick);
             // 
             // profilepicture
             // 
