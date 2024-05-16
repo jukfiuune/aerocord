@@ -189,6 +189,7 @@ namespace Aerocord
         {
             if (e.KeyCode == Keys.Enter)
             {
+                e.SuppressKeyPress = true;
                 SendMessage();
             }
         }

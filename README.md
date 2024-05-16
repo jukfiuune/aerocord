@@ -1,4 +1,4 @@
-<div align="center"><img style="border-radius: 20px" src="./Screenshots/logo.png"></div>
+<div align="center"><img src="./Screenshots/logoRounded.png"></div>
 
 <h1 align="center">
   Aerocord
