@@ -66,7 +66,9 @@
             // serverPicture
             // 
             this.serverPicture.BackColor = System.Drawing.Color.Black;
+            this.serverPicture.ErrorImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.serverPicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.serverPicture.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.serverPicture.Location = new System.Drawing.Point(12, 12);
             this.serverPicture.Name = "serverPicture";
             this.serverPicture.Size = new System.Drawing.Size(100, 100);
@@ -93,7 +95,8 @@
             this.channelList.Size = new System.Drawing.Size(100, 230);
             this.channelList.TabIndex = 10;
             this.channelList.UseCompatibleStateImageBehavior = false;
-            this.channelList.View = System.Windows.Forms.View.Details;
+            this.channelList.View = System.Windows.Forms.View.Tile;
+            this.channelList.DoubleClick += new System.EventHandler(this.channelList_DoubleClick);
             // 
             // Server
             // 

@@ -1,0 +1,184 @@
+﻿using System;
+using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using System.Net;
+using WebSocketSharp;
+using System.Security.Authentication;
+
+namespace Aerocord
+{
+    public class WebSocketClientDM
+    {
+        private DM parentDMForm;
+        private WebSocket webSocket;
+        private string accessToken;
+        private const SslProtocols Tls12 = (SslProtocols)0x00000C00;
+
+        public WebSocketClientDM(string accessToken, DM parentDMForm)
+        {
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            Console.WriteLine($"Using Access Token: {accessToken}");
+
+            this.accessToken = accessToken;
+            this.parentDMForm = parentDMForm;
+            InitializeWebSocket();
+        }
+
+        private void InitializeWebSocket()
+        {
+            webSocket = new WebSocket($"wss://gateway.discord.gg/?v=9&encoding=json");
+            webSocket.SslConfiguration.EnabledSslProtocols = Tls12;
+            webSocket.OnMessage += (sender, e) => HandleWebSocketMessage(e.Data);
+            webSocket.OnError += (sender, e) => HandleWebSocketError(e.Message);
+            webSocket.OnClose += (sender, e) => HandleWebSocketClose();
+            webSocket.Connect();
+            SendIdentifyPayload();
+        }
+
+        private void SendIdentifyPayload()
+        {
+            if (webSocket.ReadyState == WebSocketState.Open)
+            {
+                var identifyPayload = new
+                {
+                    op = 2,
+                    d = new
+                    {
+                        token = accessToken,
+                        properties = new
+                        {
+                            os = "windows",
+                            browser = "chrome",
+                            device = "pc"
+                        }
+                    }
+                };
+
+                try
+                {
+                    webSocket.Send(Newtonsoft.Json.JsonConvert.SerializeObject(identifyPayload));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error sending identify payload: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("WebSocket connection is not open. Unable to send identify payload.");
+            }
+        }
+
+        private void HandleWebSocketMessage(string data)
+        {
+            Console.WriteLine($"WebSocket Received: {data}");
+
+            var json = JObject.Parse(data);
+            int opCode = (int)json["op"];
+
+            switch (opCode)
+            {
+                case 0:
+                    string eventType = (string)json["t"];
+                    switch (eventType)
+                    {
+                        /*case "TYPING_START":
+                            HandleTypingStartEvent(json["d"]);
+                            break;
+                        case "TYPING_STOP":
+                            HandleTypingStopEvent(json["d"]);
+                            break;*/
+                        case "MESSAGE_CREATE":
+                            HandleMessageCreateEvent(json["d"]);
+                            break;
+                    }
+                    break;
+                default:
+                    // handle other op codes when needed ig
+                    break;
+            }
+        }
+
+        /*private void HandleTypingStartEvent(JToken jToken)
+        {
+            string channelId = (string)jToken["channel_id"];
+            if (channelId == parentDMForm.CurrentChannelId)
+            {
+                string userId = (string)jToken["user_id"];
+                string username = GetUsernameById(userId);
+                string message = $"{username} is typing...";
+
+                parentDMForm.Invoke((MethodInvoker)(() =>
+                {
+                    parentDMForm.typingStatus.Text = message;
+                }));
+            }
+        }
+
+        private void HandleTypingStopEvent(JToken jToken)
+        {
+            string channelId = (string)jToken["channel_id"];
+            if (channelId == parentDMForm.CurrentChannelId)
+            {
+                string message = "";
+
+                parentDMForm.Invoke((MethodInvoker)(() =>
+                {
+                    parentDMForm.typingStatus.Text = message;
+                }));
+            }
+        }*/
+
+        private string GetUsernameById(string userId)
+        {
+            try
+            {
+                dynamic user = parentDMForm.GetApiResponse($"users/{userId}");
+                return user.username;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to get username for user ID {userId}: {ex.Message}");
+                return "Unknown";
+            }
+        }
+
+        private void HandleMessageCreateEvent(JToken jToken)
+        {
+            dynamic eventData = jToken;
+            string channelId = eventData["channel_id"];
+            string author = eventData["author"]["username"];
+            string content = eventData["content"];
+
+            if (channelId == parentDMForm.ChatID.ToString())
+            {
+                parentDMForm.AddMessage(author, content);
+            }
+        }
+
+        private void HandleWebSocketError(string errorMessage)
+        {
+            parentDMForm.Invoke((MethodInvoker)(() =>
+            {
+                Console.WriteLine($"WebSocket Error: {errorMessage}");
+                // really shitty code on getting the websocket back but works fine, will be patched soon
+                InitializeWebSocket();
+            }));
+        }
+
+        private void HandleWebSocketClose()
+        {
+            parentDMForm.Invoke((MethodInvoker)(() =>
+            {
+                Console.WriteLine("WebSocket connection closed.");
+                // really shitty code on getting the websocket back but works fine, will be patched soon
+                InitializeWebSocket();
+            }));
+        }
+
+        public void CloseWebSocket()
+        {
+            webSocket?.Close();
+        }
+    }
+}

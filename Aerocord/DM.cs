@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using WindowsFormsAero;
 using WindowsFormsAero.TaskDialog;
@@ -11,11 +12,12 @@ namespace Aerocord
     public partial class DM : WindowsFormsAero.AeroForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
-        const string htmlStart = "<html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;}</style></head><body>";
+        private WebSocketClientDM websocketClient;
+        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} .spoiler {background-color: black; color: black;} .spoiler:hover {background-color: black; color: white;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
-        private long ChatID;
+        public long ChatID;
         private long FriendID;
         private string userPFP;
         public DM(long chatid, long friendid, string token, string userpfp)
@@ -27,6 +29,7 @@ namespace Aerocord
             userPFP = userpfp;
             SetFriendInfo();
             LoadMessages();
+            websocketClient = new WebSocketClientDM(AccessToken, this);
         }
 
         private void SetFriendInfo()
@@ -66,10 +69,11 @@ namespace Aerocord
                 ShowErrorMessage("Failed to retrieve messages", ex);
             }
         }
-        private void AddMessage(string name, string message)
+        public void AddMessage(string name, string message)
         {
             htmlMiddle += "<br><br><strong>" + name + ": </strong>" + DiscordMDToHtml(message);
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
+            ScrollToBottom();
         }
         private string DiscordMDToHtml(string md)
         {
@@ -119,6 +123,15 @@ namespace Aerocord
                         if (!waitingToClose.Contains("#")) { html.Append(new char[] { '<', 'h', '1', '>' }); waitingToClose.Add("#"); }
                         break;
 
+                    case "|":
+                        if (md.Length > i + 1 && md[i + 1].ToString() == "|")
+                        {
+                            if (!waitingToClose.Contains("||")) { html.Append(new char[] { '<', 's', 'p', 'a', 'n', ' ', 'c', 'l', 'a', 's', 's', '=', '"', 's', 'p', 'o', 'i', 'l', 'e', 'r', '"', '>' }); waitingToClose.Add("||"); } else { html.Append(new char[] { '<', '/', 's', 'p', 'a', 'n', '>' }); waitingToClose.Remove("||"); }
+                            i += 1;
+                            break;
+                        }
+                        break;
+
                     case "\n":
                         if (waitingToClose.Contains("###")) { html.Append(new char[] { '<', '/', 'h', '3', '>' }); waitingToClose.Remove("###"); }
                         if (waitingToClose.Contains("##")) { html.Append(new char[] { '<', '/', 'h', '2', '>' }); waitingToClose.Remove("##"); }
@@ -141,7 +154,7 @@ namespace Aerocord
                         break;
 
                     case "**":
-                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'o', 'n', 'g', '>' });
+                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'o', 'n', 'g', '>' }); waitingToClose.Remove("**");
                         break;
 
                     case "__":
@@ -149,7 +162,11 @@ namespace Aerocord
                         break;
 
                     case "~~":
-                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' });
+                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Remove("~~");
+                        break;
+
+                    case "||":
+                        html.Append(new char[] { '<', '/', 's', 'p', 'a', 'n', '>' }); waitingToClose.Remove("||");
                         break;
 
                     case "###":
@@ -168,7 +185,40 @@ namespace Aerocord
             return html.ToString();
         }
 
-        private dynamic GetApiResponse(string endpoint)
+        private void messageBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SendMessage();
+            }
+        }
+
+        private void SendMessage()
+        {
+            string message = messageBox.Text.Trim();
+            if (!string.IsNullOrEmpty(message))
+            {
+                try
+                {
+                    string postData = $"{{\"content\": \"{message}\"}}";
+
+                    using (var client = new WebClient())
+                    {
+                        client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                        client.Headers[HttpRequestHeader.Authorization] = AccessToken;
+                        string response = client.UploadString($"{DiscordApiBaseUrl}channels/{ChatID}/messages", "POST", postData);
+                    }
+
+                    messageBox.Clear();
+                }
+                catch (WebException ex)
+                {
+                    ShowErrorMessage("Failed to send message", ex);
+                }
+            }
+        }
+
+        public dynamic GetApiResponse(string endpoint)
         {
             using (var webClient = new WebClient())
             {
@@ -178,18 +228,32 @@ namespace Aerocord
             }
         }
 
-        private void ShowErrorMessage(string message, Exception ex)
+        public void ShowErrorMessage(string message, Exception ex)
         {
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
+        private void ScrollToBottom()
+        {
+            Application.DoEvents();
+            try
+            {
+                if (chatBox.Document != null)
+                {
+                    chatBox.Document.Body.ScrollIntoView(false);
+                }
+            }
+            catch (Exception e)
+            {
+                chatBox.Navigate("javascript:window.scroll(0,document.body.scrollHeight);");
+            }
+        }
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
             GlassMargins = new Padding(117, 325, 12, 12);
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
-            //chatBox.Document.Window.ScrollTo(0, chatBox.Document.Window.Size.Height);
+            ScrollToBottom();
         }
     }
 }

@@ -74,7 +74,7 @@
             this.friendsList.TabIndex = 0;
             this.friendsList.UseCompatibleStateImageBehavior = false;
             this.friendsList.View = System.Windows.Forms.View.Tile;
-            this.friendsList.DoubleClick += new System.EventHandler(friendsList_DoubleClick);
+            this.friendsList.DoubleClick += new System.EventHandler(this.friendsList_DoubleClick);
             // 
             // fsTabs
             // 
@@ -121,13 +121,15 @@
             this.serversList.TabIndex = 1;
             this.serversList.UseCompatibleStateImageBehavior = false;
             this.serversList.View = System.Windows.Forms.View.Tile;
-            this.serversList.DoubleClick += new System.EventHandler(serversList_DoubleClick);
+            this.serversList.DoubleClick += new System.EventHandler(this.serversList_DoubleClick);
             // 
             // profilepicture
             // 
             this.profilepicture.BackColor = System.Drawing.Color.Black;
+            this.profilepicture.ErrorImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.ImageLocation = "";
+            this.profilepicture.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.Location = new System.Drawing.Point(12, 12);
             this.profilepicture.Name = "profilepicture";
             this.profilepicture.Size = new System.Drawing.Size(100, 100);

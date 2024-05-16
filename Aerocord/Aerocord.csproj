@@ -47,6 +47,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
+      <HintPath>packages\WebSocketSharp.1.0.3-rc11\lib\websocket-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsFormsAero, Version=3.1.1.0, Culture=neutral, PublicKeyToken=1e7518d9b51ece33, processorArchitecture=MSIL">
       <HintPath>packages\Windows-Forms-Aero.3.1.1\lib\net40\WindowsFormsAero.dll</HintPath>
     </Reference>
@@ -84,6 +87,7 @@
     <Compile Include="Token.Designer.cs">
       <DependentUpon>Token.cs</DependentUpon>
     </Compile>
+    <Compile Include="WebSocketClientDM.cs" />
     <EmbeddedResource Include="DM.resx">
       <DependentUpon>DM.cs</DependentUpon>
     </EmbeddedResource>

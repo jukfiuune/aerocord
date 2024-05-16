@@ -12,7 +12,7 @@ namespace Aerocord
     public partial class Server : WindowsFormsAero.AeroForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
-        const string htmlStart = "<html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;}</style></head><body>";
+        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} .spoiler {background-color: black; color: black;} .spoiler:hover {background-color: black; color: white;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
@@ -40,17 +40,36 @@ namespace Aerocord
                 }
                 Thread.Sleep(500);
                 dynamic channels = GetApiResponse($"guilds/{ServerID}/channels");
+                List<ListViewGroup> categoryNames = new List<ListViewGroup>();
                 List<ListViewItem> channelNames = new List<ListViewItem>();
+                foreach (var category in channels)
+                {
+                    if (category.type == 4)
+                    {
+                        string categoryName = category.name.ToString().ToUpper();
+                        ListViewGroup categoryItem = new ListViewGroup(categoryName);
+                        categoryItem.Tag = (long)category.id;
+                        categoryNames.Add(categoryItem);
+                    }
+                }
                 foreach (var channel in channels)
                 {
                     if (channel.type == 0)
                     {
                         string channelName = channel.name.ToString();
-                        ListViewItem channelItem = new ListViewItem("#" + channelName);
+                        ListViewItem channelItem = new ListViewItem("#" + channelName.ToLower());
+                        for(int i = 0; i < categoryNames.Count; i++)
+                        {
+                            if (channel.parent_id != null && (long)categoryNames[i].Tag == (long)channel.parent_id)
+                            {
+                                channelItem.Group = categoryNames[i];
+                            }
+                        }
                         channelItem.Tag = (long)channel.id;
                         channelNames.Add(channelItem);
                     }
                 }
+                channelList.Groups.AddRange(categoryNames.ToArray());
                 channelList.Items.AddRange(channelNames.ToArray());
             }
             catch (WebException ex)
@@ -111,6 +130,15 @@ namespace Aerocord
                         if (!waitingToClose.Contains("#")) { html.Append(new char[] { '<', 'h', '1', '>' }); waitingToClose.Add("#"); }
                         break;
 
+                    case "|":
+                        if (md.Length > i + 1 && md[i + 1].ToString() == "|")
+                        {
+                            if (!waitingToClose.Contains("||")) { html.Append(new char[] { '<', 's', 'p', 'a', 'n', ' ', 'c', 'l', 'a', 's', 's', '=', '"', 's', 'p', 'o', 'i', 'l', 'e', 'r', '"', '>' }); waitingToClose.Add("||"); } else { html.Append(new char[] { '<', '/', 's', 'p', 'a', 'n', '>' }); waitingToClose.Remove("||"); }
+                            i += 1;
+                            break;
+                        }
+                        break;
+
                     case "\n":
                         if (waitingToClose.Contains("###")) { html.Append(new char[] { '<', '/', 'h', '3', '>' }); waitingToClose.Remove("###"); }
                         if (waitingToClose.Contains("##")) { html.Append(new char[] { '<', '/', 'h', '2', '>' }); waitingToClose.Remove("##"); }
@@ -133,7 +161,7 @@ namespace Aerocord
                         break;
 
                     case "**":
-                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'o', 'n', 'g', '>' });
+                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'o', 'n', 'g', '>' }); waitingToClose.Remove("**");
                         break;
 
                     case "__":
@@ -141,7 +169,11 @@ namespace Aerocord
                         break;
 
                     case "~~":
-                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' });
+                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Remove("~~");
+                        break;
+
+                    case "||":
+                        html.Append(new char[] { '<', '/', 's', 'p', 'a', 'n', '>' }); waitingToClose.Remove("||");
                         break;
 
                     case "###":
@@ -169,10 +201,46 @@ namespace Aerocord
             }
         }
 
+        private void LoadMessages(long ChatID)
+        {
+            try
+            {
+                dynamic messages = GetApiResponse($"channels/{ChatID}/messages");
+                htmlMiddle = "";
+                for (int i = messages.Count - 1; i >= 0; i--)
+                {
+                    string author = messages[i].author.username;
+                    string content = messages[i].content;
+                    AddMessage(author, content);
+                }
+                return;
+            }
+            catch (WebException ex)
+            {
+                ShowErrorMessage("Failed to retrieve messages", ex);
+            }
+        }
+
         private void ShowErrorMessage(string message, Exception ex)
         {
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        private void channelList_DoubleClick(object sender, EventArgs ex)
+        {
+            if (channelList.SelectedItems[0].Text != null)
+            {
+                string selectedChannel = channelList.SelectedItems[0].Text;
+                long channelID = (long)channelList.SelectedItems[0].Tag;
+                if (channelID>=0)
+                {
+                    channelLabel.Text = selectedChannel;
+                    LoadMessages(channelID);
+                }
+                else MessageBox.Show("Unable to open this channel", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);

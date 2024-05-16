@@ -30,7 +30,7 @@
         {
             this.descriptionLabel = new WindowsFormsAero.ThemeLabel();
             this.usernameLabel = new WindowsFormsAero.ThemeLabel();
-            this.textBox1 = new WindowsFormsAero.TextBox();
+            this.messageBox = new WindowsFormsAero.TextBox();
             this.chatBox = new System.Windows.Forms.WebBrowser();
             this.profilepicture = new System.Windows.Forms.PictureBox();
             this.profilepicturefriend = new System.Windows.Forms.PictureBox();
@@ -57,12 +57,13 @@
             this.usernameLabel.TabIndex = 4;
             this.usernameLabel.Text = "username";
             // 
-            // textBox1
+            // messageBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(118, 326);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(654, 23);
-            this.textBox1.TabIndex = 6;
+            this.messageBox.Location = new System.Drawing.Point(118, 326);
+            this.messageBox.Name = "messageBox";
+            this.messageBox.Size = new System.Drawing.Size(654, 23);
+            this.messageBox.TabIndex = 6;
+            this.messageBox.KeyDown += this.messageBox_KeyDown;
             // 
             // chatBox
             // 
@@ -78,7 +79,9 @@
             // profilepicture
             // 
             this.profilepicture.BackColor = System.Drawing.Color.Black;
+            this.profilepicture.ErrorImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.profilepicture.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.Location = new System.Drawing.Point(12, 249);
             this.profilepicture.Name = "profilepicture";
             this.profilepicture.Size = new System.Drawing.Size(100, 100);
@@ -89,7 +92,9 @@
             // profilepicturefriend
             // 
             this.profilepicturefriend.BackColor = System.Drawing.Color.Black;
+            this.profilepicturefriend.ErrorImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicturefriend.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.profilepicturefriend.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicturefriend.Location = new System.Drawing.Point(12, 12);
             this.profilepicturefriend.Name = "profilepicturefriend";
             this.profilepicturefriend.Size = new System.Drawing.Size(100, 100);
@@ -104,7 +109,7 @@
             this.ClientSize = new System.Drawing.Size(784, 361);
             this.Controls.Add(this.chatBox);
             this.Controls.Add(this.profilepicture);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.messageBox);
             this.Controls.Add(this.descriptionLabel);
             this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.profilepicturefriend);
@@ -125,7 +130,7 @@
         private System.Windows.Forms.PictureBox profilepicturefriend;
         private WindowsFormsAero.ThemeLabel descriptionLabel;
         private WindowsFormsAero.ThemeLabel usernameLabel;
-        private WindowsFormsAero.TextBox textBox1;
+        private WindowsFormsAero.TextBox messageBox;
         private System.Windows.Forms.PictureBox profilepicture;
         private System.Windows.Forms.WebBrowser chatBox;
     }
