@@ -44,5 +44,5 @@ On Firefox it should be an icon with a phone and a tablet, on Chrome a phone wit
 ![friendslist](./Screenshots/friendslist.png)
 ![chat](./Screenshots/chat.png)
 # Special thanks to:
-- @n1d3v for networking
+- [@n1d3v](https://github.com/n1d3v/) for networking
 - [WindowsFormsAero](https://github.com/LorenzCK/WindowsFormsAero/) for making it easy to make Aero Windows (not dealing with [DwmExtendFrameIntoClientArea and etc.](https://asp-blogs.azurewebsites.net/kennykerr/Windows-Vista-for-Developers-_1320_-Part-3-_1320_-The-Desktop-Window-Manager))
