@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using System.Net;
@@ -17,7 +18,7 @@ namespace Aerocord
         public WebSocketClientDM(string accessToken, DM parentDMForm)
         {
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-            Console.WriteLine($"Using Access Token: {accessToken}");
+            //Console.WriteLine($"Using Access Token: {accessToken}");
 
             this.accessToken = accessToken;
             this.parentDMForm = parentDMForm;
@@ -143,16 +144,32 @@ namespace Aerocord
             }
         }
 
-        private void HandleMessageCreateEvent(JToken jToken)
+        public class Attachment
         {
-            dynamic eventData = jToken;
+            public string URL { get; set; }
+            public string Type { get; set; }
+        }
+
+            private void HandleMessageCreateEvent(JToken data)
+        {
+            dynamic eventData = data;
+            dynamic attachmentData = eventData["attachments"];
             string channelId = eventData["channel_id"];
-            string author = eventData["author"]["username"];
+            string author = eventData["author"]["global_name"];
+            if(eventData["author"]["global_name"] == null) author = eventData["author"]["username"];
             string content = eventData["content"];
+            List<Attachment> attachmentsFormed = new List<Attachment>();
+            if (attachmentData != null)
+            {
+                foreach (var attachment in attachmentData)
+                {
+                    attachmentsFormed.Add(new Attachment { URL = attachment.url, Type = attachment.content_type });
+                }
+            }
 
             if (channelId == parentDMForm.ChatID.ToString())
             {
-                parentDMForm.AddMessage(author, content);
+                parentDMForm.AddMessage(author, content, attachmentsFormed.ToArray(), true);
             }
         }
 
@@ -160,7 +177,7 @@ namespace Aerocord
         {
             parentDMForm.Invoke((MethodInvoker)(() =>
             {
-                Console.WriteLine($"WebSocket Error: {errorMessage}");
+                //Console.WriteLine($"WebSocket Error: {errorMessage}");
                 // really shitty code on getting the websocket back but works fine, will be patched soon
                 InitializeWebSocket();
             }));
@@ -170,7 +187,7 @@ namespace Aerocord
         {
             parentDMForm.Invoke((MethodInvoker)(() =>
             {
-                Console.WriteLine("WebSocket connection closed.");
+                //Console.WriteLine("WebSocket connection closed.");
                 // really shitty code on getting the websocket back but works fine, will be patched soon
                 InitializeWebSocket();
             }));
@@ -178,7 +195,7 @@ namespace Aerocord
 
         public void CloseWebSocket()
         {
-            webSocket?.Close();
+            webSocket.Close();
         }
     }
 }

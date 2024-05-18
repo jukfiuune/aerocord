@@ -71,6 +71,7 @@
             this.friendsList.Location = new System.Drawing.Point(6, 6);
             this.friendsList.Name = "friendsList";
             this.friendsList.Size = new System.Drawing.Size(300, 347);
+            this.friendsList.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.friendsList.TabIndex = 0;
             this.friendsList.UseCompatibleStateImageBehavior = false;
             this.friendsList.View = System.Windows.Forms.View.Tile;

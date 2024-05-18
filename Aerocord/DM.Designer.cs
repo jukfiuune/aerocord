@@ -113,7 +113,7 @@
             this.Controls.Add(this.descriptionLabel);
             this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.profilepicturefriend);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.Name = "DM";
             this.ShowIcon = false;

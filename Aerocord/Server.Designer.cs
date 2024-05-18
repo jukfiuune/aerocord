@@ -110,7 +110,7 @@
             this.Controls.Add(this.channelLabel);
             this.Controls.Add(this.servernameLabel);
             this.Controls.Add(this.serverPicture);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.Name = "Server";
             this.ShowIcon = false;
