@@ -130,7 +130,7 @@ namespace Aerocord
             }
         }*/
 
-        private string GetUsernameById(string userId)
+        public string GetUsernameById(string userId)
         {
             try
             {
