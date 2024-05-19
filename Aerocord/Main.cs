@@ -185,6 +185,8 @@ namespace Aerocord
             base.OnShown(e);
 
             GlassMargins = new Padding(12, 118, 12, 12);
+
+            signin.Hide();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

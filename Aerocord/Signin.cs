@@ -63,8 +63,6 @@ namespace Aerocord
 
                     Main mainForm = new Main(accessToken, this);
                     mainForm.Show();
-
-                    this.Hide();
                 }
                 catch (WebException ex)
                 {
@@ -93,6 +91,8 @@ namespace Aerocord
         {
             try
             {
+                this.Hide();
+
                 string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
@@ -104,9 +104,11 @@ namespace Aerocord
                         if (line.Contains("token="))
                         {
                             PerformLogin(line.Replace("token=", ""), true);
+                            return;
                         }
                     }
                 }
+                this.Show();
             }
             catch (Exception ex)
             {
