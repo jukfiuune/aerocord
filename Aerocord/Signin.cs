@@ -144,7 +144,7 @@ namespace Aerocord
 
         private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://gist.github.com/MarvNC/e601f3603df22f36ebd3102c501116c6");
+            System.Diagnostics.Process.Start("https://github.com/jukfiuune/aerocord/blob/main/README.md#how-to-login");
         }
     }
 }

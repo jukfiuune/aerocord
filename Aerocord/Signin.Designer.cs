@@ -119,9 +119,9 @@
             this.profilepicture.BackColor = System.Drawing.Color.Black;
             this.profilepicture.Image = global::Aerocord.Properties.Resources.Frame_491;
             this.profilepicture.ImageLocation = "";
-            this.profilepicture.Location = new System.Drawing.Point(12, 12);
+            this.profilepicture.Location = new System.Drawing.Point(121, 12);
             this.profilepicture.Name = "profilepicture";
-            this.profilepicture.Size = new System.Drawing.Size(321, 100);
+            this.profilepicture.Size = new System.Drawing.Size(100, 100);
             this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.profilepicture.TabIndex = 0;
             this.profilepicture.TabStop = false;

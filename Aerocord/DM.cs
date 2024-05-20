@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using System.IO;
 using WindowsFormsAero;
 using WindowsFormsAero.TaskDialog;
 using Newtonsoft.Json;
@@ -91,6 +90,7 @@ namespace Aerocord
             chatBox.DocumentText = (htmlStart + htmlMiddle + htmlEnd).ToString();
             if(scroll) Thread.Sleep(100); ScrollToBottom();
         }
+
         private string DiscordMDToHtml(string md)
         {
             List<string> waitingToClose = new List<string>();
@@ -175,7 +175,7 @@ namespace Aerocord
                         break;
 
                     default:
-                        html.Append(md[i]);
+                         html.Append(md[i]);
                         break;
                 }
             }
@@ -309,7 +309,6 @@ namespace Aerocord
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            File.WriteAllText("C:\\Users\\JukFiuu\\Downloads\\pat.html", htmlStart + htmlMiddle + htmlEnd);
             websocketClient.CloseWebSocket();
         }
     }

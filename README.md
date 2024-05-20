@@ -26,15 +26,15 @@ On Firefox it should be an icon with a phone and a tablet, on Chrome a phone wit
 
 # What's working
 - Logging in with a token
-- Friends
 - DMs
-- Basic server functionality
-# Todo
+- Absolutely basic server functionality
 - Websockets
 - Server channel categories
 - Sending messages
-- File uploading
 - Image viewing
+- Markdown Support
+# Todo
+- File uploading
 - Reactions
 - Status
 - Login with email and password
