@@ -64,6 +64,12 @@
     <Compile Include="Signin.Designer.cs">
       <DependentUpon>Signin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Token.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Token.Designer.cs">
+      <DependentUpon>Token.cs</DependentUpon>
+    </Compile>
     <Compile Include="Server.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,18 +90,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Token.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Token.Designer.cs">
-      <DependentUpon>Token.cs</DependentUpon>
-    </Compile>
+    <Compile Include="WebSocketClientServer.cs" />
     <Compile Include="WebSocketClientDM.cs" />
     <EmbeddedResource Include="DM.resx">
       <DependentUpon>DM.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Signin.resx">
       <DependentUpon>Signin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Token.resx">
+      <DependentUpon>Token.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -112,9 +116,6 @@
     </Compile>
     <EmbeddedResource Include="Server.resx">
       <DependentUpon>Server.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Token.resx">
-      <DependentUpon>Token.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="aerocord.ico" />
+    <None Include="Resources\logoRounded.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

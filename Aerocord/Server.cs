@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -12,11 +13,13 @@ namespace Aerocord
     public partial class Server : WindowsFormsAero.AeroForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
-        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} .spoiler {background-color: black; color: black;} .spoiler:hover {background-color: black; color: white;}</style></head><body>";
+        private WebSocketClientServer websocketClient;
+        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} img {max-width: 60%; max-height: 60%;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
-        private long ServerID;
+        public long ServerID;
+        public long ChatID;
         public Server(long serverid, String token)
         {
             InitializeComponent();
@@ -77,11 +80,17 @@ namespace Aerocord
                 ShowErrorMessage("Failed to retrieve server list", ex);
             }
         }
-        private void AddMessage(string name, string message)
+        public void AddMessage(string name, string message, WebSocketClientServer.Attachment[] attachments, bool scroll = true)
         {
-            htmlMiddle += "<br><br><strong>" + name + ": </strong>" + DiscordMDToHtml(message);
-            chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
+            htmlMiddle += "<br><strong>" + name + ": </strong><p>" + DiscordMDToHtml(message) + "</p>";
+            if (attachments.Length > 0) foreach (var attachment in attachments)
+                {
+                    if (attachment.Type.Contains("image")) htmlMiddle += "<br><img src=\"" + attachment.URL + "\"></img>";
+                }
+            chatBox.DocumentText = (htmlStart + htmlMiddle + htmlEnd).ToString();
+            if (scroll) Thread.Sleep(100); ScrollToBottom();
         }
+
         private string DiscordMDToHtml(string md)
         {
             List<string> waitingToClose = new List<string>();
@@ -93,25 +102,25 @@ namespace Aerocord
                     case "*":
                         if (md.Length > i + 1 && md[i + 1].ToString() == "*")
                         {
-                            if (!waitingToClose.Contains("**")) { html.Append(new char[] { '<', 's', 't', 'r', 'o', 'n', 'g', '>' }); waitingToClose.Add("**"); } else { html.Append(new char[] { '<', '/', 's', 't', 'r', 'o', 'n', 'g', '>' }); waitingToClose.Remove("**"); }
+                            if (!waitingToClose.Contains("**")) { html.Append("<strong>".ToCharArray()); waitingToClose.Add("**"); } else { html.Append("</strong>".ToCharArray()); waitingToClose.Remove("**"); }
                             i += 1;
                             break;
                         }
-                        if (!waitingToClose.Contains("*")) { html.Append(new char[] { '<', 'e', 'm', '>' }); waitingToClose.Add("*"); } else { html.Append(new char[] { '<', '/', 'e', 'm', '>' }); waitingToClose.Remove("*"); }
+                        if (!waitingToClose.Contains("*")) { html.Append("<em>".ToCharArray()); waitingToClose.Add("*"); } else { html.Append("</em>".ToCharArray()); waitingToClose.Remove("*"); }
                         break;
 
                     case "_":
                         if (md.Length > i + 1 && md[i + 1].ToString() == "_")
                         {
-                            if (!waitingToClose.Contains("__")) { html.Append(new char[] { '<', 'u', '>' }); waitingToClose.Add("__"); } else { html.Append(new char[] { '<', '/', 'u', '>' }); waitingToClose.Remove("__"); }
+                            if (!waitingToClose.Contains("__")) { html.Append("<u>".ToCharArray()); waitingToClose.Add("__"); } else { html.Append("</u>".ToCharArray()); waitingToClose.Remove("__"); }
                             i += 1;
                             break;
                         }
-                        if (!waitingToClose.Contains("_")) { html.Append(new char[] { '<', 'e', 'm', '>' }); waitingToClose.Add("_"); } else { html.Append(new char[] { '<', '/', 'e', 'm', '>' }); waitingToClose.Remove("_"); }
+                        if (!waitingToClose.Contains("_")) { html.Append("<em>".ToCharArray()); waitingToClose.Add("_"); } else { html.Append("</em>".ToCharArray()); waitingToClose.Remove("_"); }
                         break;
 
                     case "~":
-                        if (md.Length > i + 1 && md[i + 1].ToString() == "~") { if (!waitingToClose.Contains("~~")) { html.Append(new char[] { '<', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Add("~~"); } else { html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Remove("~~"); } i += 1; break; }
+                        if (md.Length > i + 1 && md[i + 1].ToString() == "~") { if (!waitingToClose.Contains("~~")) { html.Append("<strike>".ToCharArray()); waitingToClose.Add("~~"); } else { html.Append("</strike>".ToCharArray()); waitingToClose.Remove("~~"); } i += 1; break; }
                         break;
 
                     case "#":
@@ -119,31 +128,51 @@ namespace Aerocord
                         {
                             if (md.Length > i + 2 && md[i + 2].ToString() == "#")
                             {
-                                if (!waitingToClose.Contains("###")) { html.Append(new char[] { '<', 'h', '3', '>' }); waitingToClose.Add("###"); }
+                                if (!waitingToClose.Contains("###")) { html.Append("<h3>".ToCharArray()); waitingToClose.Add("###"); }
                                 i += 2;
                                 break;
                             }
-                            if (!waitingToClose.Contains("##")) { html.Append(new char[] { '<', 'h', '2', '>' }); waitingToClose.Add("##"); }
+                            if (!waitingToClose.Contains("##")) { html.Append("<h2>".ToCharArray()); waitingToClose.Add("##"); }
                             i += 1;
                             break;
                         }
-                        if (!waitingToClose.Contains("#")) { html.Append(new char[] { '<', 'h', '1', '>' }); waitingToClose.Add("#"); }
+                        if (!waitingToClose.Contains("#")) { html.Append("<h1>".ToCharArray()); waitingToClose.Add("#"); }
                         break;
 
                     case "|":
                         if (md.Length > i + 1 && md[i + 1].ToString() == "|")
                         {
-                            if (!waitingToClose.Contains("||")) { html.Append(new char[] { '<', 's', 'p', 'a', 'n', ' ', 'c', 'l', 'a', 's', 's', '=', '"', 's', 'p', 'o', 'i', 'l', 'e', 'r', '"', '>' }); waitingToClose.Add("||"); } else { html.Append(new char[] { '<', '/', 's', 'p', 'a', 'n', '>' }); waitingToClose.Remove("||"); }
+                            if (!waitingToClose.Contains("||")) { html.Append("<span class=\"spoiler\">".ToCharArray()); waitingToClose.Add("||"); } else { html.Append("</span>".ToCharArray()); waitingToClose.Remove("||"); }
                             i += 1;
                             break;
                         }
                         break;
 
+                    case "<":
+                        if (md.Length > i + 1 && md[i + 1].ToString() == "@")
+                        {
+                            StringBuilder ping = new StringBuilder();
+                            if (!waitingToClose.Contains("||")) ping.Append("<span class=\"ping\">".ToCharArray());
+                            ping.Append('@');
+                            i += 2;
+                            StringBuilder uid = new StringBuilder();
+                            while (Char.IsNumber(md[i])) { /*Console.WriteLine(md[i]);*/ uid.Append(md[i]); i += 1; }
+                            i += 1;
+                            if (md[i].ToString() == ">")
+                            {
+                                ping.Append(GetUsernameById(uid.ToString()).ToCharArray());
+                                if (!waitingToClose.Contains("||")) html.Append("</span>".ToCharArray());
+                                html.Append(ping);
+                            }
+                            break;
+                        }
+                        break;
+
                     case "\n":
-                        if (waitingToClose.Contains("###")) { html.Append(new char[] { '<', '/', 'h', '3', '>' }); waitingToClose.Remove("###"); }
-                        if (waitingToClose.Contains("##")) { html.Append(new char[] { '<', '/', 'h', '2', '>' }); waitingToClose.Remove("##"); }
-                        if (waitingToClose.Contains("#")) { html.Append(new char[] { '<', '/', 'h', '1', '>' }); waitingToClose.Remove("#"); }
-                        html.Append(new char[] { '<', 'b', 'r', '>' });
+                        if (waitingToClose.Contains("###")) { html.Append("</h3>".ToCharArray()); waitingToClose.Remove("###"); }
+                        if (waitingToClose.Contains("##")) { html.Append("</h2>".ToCharArray()); waitingToClose.Remove("##"); }
+                        if (waitingToClose.Contains("#")) { html.Append("</h1>".ToCharArray()); waitingToClose.Remove("#"); }
+                        html.Append("<br>".ToCharArray());
                         break;
 
                     default:
@@ -157,41 +186,57 @@ namespace Aerocord
                 {
                     case "*":
                     case "_":
-                        html.Append(new char[] { '<', '/', 'e', 'm', '>' }); waitingToClose.Remove("*");
+                        html.Append("</em>".ToCharArray()); waitingToClose.Remove("*");
                         break;
 
                     case "**":
-                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'o', 'n', 'g', '>' }); waitingToClose.Remove("**");
+                        html.Append("</strong>".ToCharArray()); waitingToClose.Remove("**");
                         break;
 
                     case "__":
-                        html.Append(new char[] { '<', '/', 'u', '>' }); waitingToClose.Remove("__");
+                        html.Append("</u>".ToCharArray()); waitingToClose.Remove("__");
                         break;
 
                     case "~~":
-                        html.Append(new char[] { '<', '/', 's', 't', 'r', 'i', 'k', 'e', '>' }); waitingToClose.Remove("~~");
+                        html.Append("</strike>".ToCharArray()); waitingToClose.Remove("~~");
                         break;
 
                     case "||":
-                        html.Append(new char[] { '<', '/', 's', 'p', 'a', 'n', '>' }); waitingToClose.Remove("||");
+                        html.Append("</span>".ToCharArray()); waitingToClose.Remove("||");
                         break;
 
                     case "###":
-                        html.Append(new char[] { '<', '/', 'h', '3', '>' }); waitingToClose.Remove("###");
+                        html.Append("</h3>".ToCharArray()); waitingToClose.Remove("###");
                         break;
 
                     case "##":
-                        html.Append(new char[] { '<', '/', 'h', '2', '>' }); waitingToClose.Remove("##");
+                        html.Append("</h2>".ToCharArray()); waitingToClose.Remove("##");
                         break;
 
                     case "#":
-                        html.Append(new char[] { '<', '/', 'h', '1', '>' }); waitingToClose.Remove("#");
+                        html.Append("</h1>".ToCharArray()); waitingToClose.Remove("#");
                         break;
                 }
             }
             return html.ToString();
         }
-        private dynamic GetApiResponse(string endpoint)
+
+        public string GetUsernameById(string userId)
+        {
+            try
+            {
+                dynamic user = GetApiResponse($"users/{userId}");
+                if (user.global_name != null) return user.global_name;
+                return user.username;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to get username for user ID {userId}: {ex.Message}");
+                return "Unknown";
+            }
+        }
+
+        public dynamic GetApiResponse(string endpoint)
         {
             using (var webClient = new WebClient())
             {
@@ -201,23 +246,75 @@ namespace Aerocord
             }
         }
 
-        private void LoadMessages(long ChatID)
+        private void LoadMessages(long channelID)
         {
             try
             {
-                dynamic messages = GetApiResponse($"channels/{ChatID}/messages");
+                dynamic messages = GetApiResponse($"channels/{channelID.ToString()}/messages");
                 htmlMiddle = "";
                 for (int i = messages.Count - 1; i >= 0; i--)
                 {
-                    string author = messages[i].author.username;
+                    string author = messages[i].author.global_name;
+                    if (author == null) author = messages[i].author.username;
                     string content = messages[i].content;
-                    AddMessage(author, content);
+                    List<WebSocketClientServer.Attachment> attachmentsFormed = new List<WebSocketClientServer.Attachment>();
+
+                    foreach (var attachment in messages[i].attachments)
+                    {
+                        attachmentsFormed.Add(new WebSocketClientServer.Attachment { URL = attachment.url, Type = attachment.content_type });
+                        //Console.WriteLine(attachment.url);
+                    }
+                    AddMessage(author, content, attachmentsFormed.ToArray(), false);
                 }
+                Thread.Sleep(200);
+                ScrollToBottom();
                 return;
             }
             catch (WebException ex)
             {
                 ShowErrorMessage("Failed to retrieve messages", ex);
+            }
+        }
+
+        private void messageBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                Console.WriteLine("Ligma");
+                e.SuppressKeyPress = true;
+                SendMessage();
+            }
+        }
+
+        private void SendMessage()
+        {
+            string message = messageBox.Text.Trim();
+            if (!string.IsNullOrEmpty(message))
+            {
+                try
+                {
+                    var postData = new
+                    {
+                        content = message
+                    };
+                    string jsonPostData = JsonConvert.SerializeObject(postData);
+
+                    using (var client = new WebClient())
+                    {
+                        byte[] byteArray = Encoding.UTF8.GetBytes(jsonPostData);
+                        client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                        client.Headers[HttpRequestHeader.Authorization] = AccessToken;
+                        byte[] responseArray = client.UploadData($"{DiscordApiBaseUrl}channels/{ChatID}/messages", "POST", byteArray);
+
+                        string response = Encoding.UTF8.GetString(responseArray);
+                    }
+
+                    messageBox.Clear();
+                }
+                catch (WebException ex)
+                {
+                    ShowErrorMessage("Failed to send message", ex);
+                }
             }
         }
 
@@ -230,15 +327,24 @@ namespace Aerocord
         {
             if (channelList.SelectedItems[0].Text != null)
             {
+                if (websocketClient != null) websocketClient.CloseWebSocket();
                 string selectedChannel = channelList.SelectedItems[0].Text;
                 long channelID = (long)channelList.SelectedItems[0].Tag;
                 if (channelID>=0)
                 {
                     channelLabel.Text = selectedChannel;
+                    ChatID = channelID;
                     LoadMessages(channelID);
+                    websocketClient = new WebSocketClientServer(AccessToken, this);
                 }
                 else MessageBox.Show("Unable to open this channel", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ScrollToBottom()
+        {
+            Application.DoEvents();
+            chatBox.Navigate("javascript:window.scroll(0,document.body.scrollHeight);");
         }
 
         protected override void OnShown(EventArgs e)
@@ -246,6 +352,14 @@ namespace Aerocord
             base.OnShown(e);
 
             GlassMargins = new Padding(12, 118, 12, 12);
+            chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
+            ScrollToBottom();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            if (websocketClient != null) websocketClient.CloseWebSocket();
         }
     }
 }

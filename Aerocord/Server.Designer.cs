@@ -30,7 +30,7 @@
         {
             this.channelLabel = new WindowsFormsAero.ThemeLabel();
             this.servernameLabel = new WindowsFormsAero.ThemeLabel();
-            this.textBox1 = new WindowsFormsAero.TextBox();
+            this.messageBox = new WindowsFormsAero.TextBox();
             this.serverPicture = new System.Windows.Forms.PictureBox();
             this.chatBox = new System.Windows.Forms.WebBrowser();
             this.channelList = new WindowsFormsAero.ListView();
@@ -45,7 +45,6 @@
             this.channelLabel.Name = "channelLabel";
             this.channelLabel.Size = new System.Drawing.Size(654, 22);
             this.channelLabel.TabIndex = 5;
-            this.channelLabel.Text = "#channel";
             // 
             // servernameLabel
             // 
@@ -56,12 +55,13 @@
             this.servernameLabel.TabIndex = 4;
             this.servernameLabel.Text = "servername";
             // 
-            // textBox1
+            // messageBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(118, 326);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(654, 23);
-            this.textBox1.TabIndex = 6;
+            this.messageBox.Location = new System.Drawing.Point(118, 326);
+            this.messageBox.Name = "messageBox";
+            this.messageBox.Size = new System.Drawing.Size(654, 23);
+            this.messageBox.TabIndex = 6;
+            this.messageBox.KeyDown += this.messageBox_KeyDown;
             // 
             // serverPicture
             // 
@@ -106,7 +106,7 @@
             this.ClientSize = new System.Drawing.Size(784, 361);
             this.Controls.Add(this.channelList);
             this.Controls.Add(this.chatBox);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.messageBox);
             this.Controls.Add(this.channelLabel);
             this.Controls.Add(this.servernameLabel);
             this.Controls.Add(this.serverPicture);
@@ -126,7 +126,7 @@
         private System.Windows.Forms.PictureBox serverPicture;
         private WindowsFormsAero.ThemeLabel channelLabel;
         private WindowsFormsAero.ThemeLabel servernameLabel;
-        private WindowsFormsAero.TextBox textBox1;
+        private WindowsFormsAero.TextBox messageBox;
         private System.Windows.Forms.WebBrowser chatBox;
         private WindowsFormsAero.ListView channelList;
     }

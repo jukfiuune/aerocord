@@ -33,9 +33,12 @@
             this.themeLabel2 = new WindowsFormsAero.ThemeLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.themeLabel3 = new WindowsFormsAero.ThemeLabel();
-            this.token = new WindowsFormsAero.TextBox();
+            this.emailBox = new WindowsFormsAero.TextBox();
             this.signinButton = new WindowsFormsAero.Button();
             this.profilepicture = new System.Windows.Forms.PictureBox();
+            this.themeLabel4 = new WindowsFormsAero.ThemeLabel();
+            this.passBox = new WindowsFormsAero.TextBox();
+            this.themeLabel5 = new WindowsFormsAero.ThemeLabel();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,7 +59,7 @@
             this.themeLabel1.Name = "themeLabel1";
             this.themeLabel1.Size = new System.Drawing.Size(321, 23);
             this.themeLabel1.TabIndex = 3;
-            this.themeLabel1.Text = "Sign in to Discord using your token.";
+            this.themeLabel1.Text = "Sign in to Discord using your email and password.";
             // 
             // themeLabel2
             // 
@@ -65,7 +68,7 @@
             this.themeLabel2.Name = "themeLabel2";
             this.themeLabel2.Size = new System.Drawing.Size(257, 23);
             this.themeLabel2.TabIndex = 4;
-            this.themeLabel2.Text = "Don\'t know where to find it? Find out";
+            this.themeLabel2.Text = "Want to use your token instead? Click";
             // 
             // linkLabel1
             // 
@@ -90,25 +93,25 @@
             this.themeLabel3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.themeLabel3.Font = new System.Drawing.Font("Segoe UI", 10F, ((System.Drawing.FontStyle)(((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic) 
                 | System.Drawing.FontStyle.Underline))));
-            this.themeLabel3.Location = new System.Drawing.Point(232, 170);
+            this.themeLabel3.Location = new System.Drawing.Point(236, 170);
             this.themeLabel3.Name = "themeLabel3";
             this.themeLabel3.Size = new System.Drawing.Size(38, 23);
             this.themeLabel3.TabIndex = 5;
             this.themeLabel3.Text = "here";
             // 
-            // token
+            // emailBox
             // 
-            this.token.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.token.Location = new System.Drawing.Point(12, 221);
-            this.token.Name = "token";
-            this.token.Size = new System.Drawing.Size(218, 25);
-            this.token.TabIndex = 7;
+            this.emailBox.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.emailBox.Location = new System.Drawing.Point(83, 221);
+            this.emailBox.Name = "emailBox";
+            this.emailBox.Size = new System.Drawing.Size(250, 25);
+            this.emailBox.TabIndex = 7;
             // 
             // signinButton
             // 
-            this.signinButton.Location = new System.Drawing.Point(236, 221);
+            this.signinButton.Location = new System.Drawing.Point(83, 283);
             this.signinButton.Name = "signinButton";
-            this.signinButton.Size = new System.Drawing.Size(97, 25);
+            this.signinButton.Size = new System.Drawing.Size(250, 27);
             this.signinButton.TabIndex = 8;
             this.signinButton.Text = "Sign in";
             this.signinButton.UseVisualStyleBackColor = true;
@@ -117,7 +120,7 @@
             // profilepicture
             // 
             this.profilepicture.BackColor = System.Drawing.Color.Black;
-            this.profilepicture.Image = global::Aerocord.Properties.Resources.Frame_491;
+            this.profilepicture.Image = global::Aerocord.Properties.Resources.logoRounded;
             this.profilepicture.ImageLocation = "";
             this.profilepicture.Location = new System.Drawing.Point(121, 12);
             this.profilepicture.Name = "profilepicture";
@@ -126,13 +129,42 @@
             this.profilepicture.TabIndex = 0;
             this.profilepicture.TabStop = false;
             // 
+            // themeLabel4
+            // 
+            this.themeLabel4.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.themeLabel4.Location = new System.Drawing.Point(12, 221);
+            this.themeLabel4.Name = "themeLabel4";
+            this.themeLabel4.Size = new System.Drawing.Size(60, 25);
+            this.themeLabel4.TabIndex = 9;
+            this.themeLabel4.Text = "Email:";
+            // 
+            // passBox
+            // 
+            this.passBox.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.passBox.Location = new System.Drawing.Point(83, 252);
+            this.passBox.Name = "passBox";
+            this.passBox.Size = new System.Drawing.Size(250, 25);
+            this.passBox.TabIndex = 10;
+            // 
+            // themeLabel5
+            // 
+            this.themeLabel5.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.themeLabel5.Location = new System.Drawing.Point(12, 252);
+            this.themeLabel5.Name = "themeLabel5";
+            this.themeLabel5.Size = new System.Drawing.Size(65, 25);
+            this.themeLabel5.TabIndex = 11;
+            this.themeLabel5.Text = "Password:";
+            // 
             // Signin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(345, 276);
+            this.ClientSize = new System.Drawing.Size(345, 322);
+            this.Controls.Add(this.themeLabel5);
+            this.Controls.Add(this.passBox);
+            this.Controls.Add(this.themeLabel4);
             this.Controls.Add(this.signinButton);
-            this.Controls.Add(this.token);
+            this.Controls.Add(this.emailBox);
             this.Controls.Add(this.themeLabel3);
             this.Controls.Add(this.themeLabel2);
             this.Controls.Add(this.themeLabel1);
@@ -158,8 +190,11 @@
         private WindowsFormsAero.ThemeLabel themeLabel2;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private WindowsFormsAero.ThemeLabel themeLabel3;
-        private WindowsFormsAero.TextBox token;
+        private WindowsFormsAero.TextBox emailBox;
         private WindowsFormsAero.Button signinButton;
+        private WindowsFormsAero.ThemeLabel themeLabel4;
+        private WindowsFormsAero.TextBox passBox;
+        private WindowsFormsAero.ThemeLabel themeLabel5;
     }
 }
 

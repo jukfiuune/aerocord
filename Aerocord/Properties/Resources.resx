@@ -124,10 +124,13 @@
   <data name="discord-mark-black" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\discord-mark-black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Frame_491" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Frame_49.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Frame_49" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Frame_49.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Frame_491" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Frame_49.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="logoRounded" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\logoRounded.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

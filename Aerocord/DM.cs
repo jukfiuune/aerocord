@@ -67,7 +67,7 @@ namespace Aerocord
                     foreach (var attachment in messages[i].attachments)
                     {
                         attachmentsFormed.Add(new WebSocketClientDM.Attachment { URL = attachment.url, Type = attachment.content_type });
-                        Console.WriteLine(attachment.url);
+                        //Console.WriteLine(attachment.url);
                     }
                     AddMessage(author, content, attachmentsFormed.ToArray(), false);
                 }
@@ -156,7 +156,7 @@ namespace Aerocord
                             ping.Append('@');
                             i += 2;
                             StringBuilder uid = new StringBuilder();
-                            while (Char.IsNumber(md[i])) { Console.WriteLine(md[i]); uid.Append(md[i]); i += 1; }
+                            while (Char.IsNumber(md[i])) { /*Console.WriteLine(md[i]);*/ uid.Append(md[i]); i += 1; }
                             if(md[i].ToString() == ">")
                             {
                                 ping.Append(GetUsernameById(uid.ToString()).ToCharArray());
