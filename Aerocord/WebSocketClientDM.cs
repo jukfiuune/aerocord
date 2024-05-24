@@ -14,6 +14,7 @@ namespace Aerocord
         private WebSocket webSocket;
         private string accessToken;
         private const SslProtocols Tls12 = (SslProtocols)0x00000C00;
+        bool tryingRandomStuffAtThisPoint = false;
 
         public WebSocketClientDM(string accessToken, DM parentDMForm)
         {
@@ -169,7 +170,35 @@ namespace Aerocord
 
             if (channelId == parentDMForm.ChatID.ToString())
             {
-                parentDMForm.AddMessage(author, content, attachmentsFormed.ToArray(), true);
+                switch ((int)eventData["type"].Value)
+                {
+                    case 7:
+                        // Join message
+                        parentDMForm.AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), false);
+                        break;
+
+                    case 19:
+                        // Reply
+                        bool found = false;
+                        foreach (var message in parentDMForm.GetApiResponse($"channels/{parentDMForm.ChatID.ToString()}/messages"))
+                        {
+                            if (message.id == eventData["message_reference"]["message_id"])
+                            {
+                                string replyAuthor = message.author.global_name;
+                                if (replyAuthor == null) replyAuthor = message.author.username;
+                                parentDMForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), false, replyAuthor, message.content.Value);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) parentDMForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), false, " ", "Unable to load message");
+                        break;
+
+                    default:
+                        //Normal text or unimplemented
+                        parentDMForm.AddMessage(author, content, "said", attachmentsFormed.ToArray(), false);
+                        break;
+                }
             }
         }
 
@@ -185,16 +214,21 @@ namespace Aerocord
 
         private void HandleWebSocketClose()
         {
-            parentDMForm.Invoke((MethodInvoker)(() =>
+            if (!tryingRandomStuffAtThisPoint) try
             {
+                parentDMForm.Invoke((MethodInvoker)(() =>
+                {
                 //Console.WriteLine("WebSocket connection closed.");
                 // really shitty code on getting the websocket back but works fine, will be patched soon
                 InitializeWebSocket();
-            }));
+                }));
+            }
+            catch { }
         }
 
         public void CloseWebSocket()
         {
+            tryingRandomStuffAtThisPoint = true;
             webSocket.Close();
         }
     }

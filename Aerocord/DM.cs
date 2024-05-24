@@ -22,6 +22,7 @@ namespace Aerocord
         public long ChatID;
         private long FriendID;
         private string userPFP;
+        private string lastMessageAuthor = "";
         public DM(long chatid, long friendid, string token, string userpfp)
         {
             InitializeComponent();
@@ -69,7 +70,36 @@ namespace Aerocord
                         attachmentsFormed.Add(new WebSocketClientDM.Attachment { URL = attachment.url, Type = attachment.content_type });
                         //Console.WriteLine(attachment.url);
                     }
-                    AddMessage(author, content, attachmentsFormed.ToArray(), false);
+                    switch ((int)messages[i].type.Value)
+                    {
+                        case 7:
+                            // Join message
+                            AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), false);
+                            break;
+
+                        case 19:
+                            Console.WriteLine("replyyayaya");
+                            // Reply
+                            bool found = false;
+                            foreach (var message in messages)
+                            {
+                                if (message.id == messages[i].message_reference.message_id)
+                                {
+                                    string replyAuthor = message.author.global_name;
+                                    if (replyAuthor == null) replyAuthor = message.author.username;
+                                    AddMessage(author, content, "replied", attachmentsFormed.ToArray(), false, replyAuthor, message.content.Value);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) AddMessage(author, content, "replied", attachmentsFormed.ToArray(), false, " ", "Unable to load message");
+                            break;
+
+                        default:
+                            //Normal text or unimplemented
+                            AddMessage(author, content, "said", attachmentsFormed.ToArray(), false);
+                            break;
+                    }
                 }
                 Thread.Sleep(200);
                 ScrollToBottom();
@@ -80,15 +110,28 @@ namespace Aerocord
                 ShowErrorMessage("Failed to retrieve messages", ex);
             }
         }
-        public void AddMessage(string name, string message, WebSocketClientDM.Attachment[] attachments, bool scroll = true)
+        public void AddMessage(string name, string message, string action, WebSocketClientDM.Attachment[] attachments, bool scroll = true, string replyname = "", string replymessage = "")
         {
-            htmlMiddle += "<br><strong>" + name + ": </strong><p>" + DiscordMDToHtml(message) + "</p>";
-            if (attachments.Length>0) foreach (var attachment in attachments)
+            if (name == lastMessageAuthor && action == "said")
+            {
+                htmlMiddle += "<br><p>" + DiscordMDToHtml(message) + "</p>";
+            }
+            else if (action == "replied")
+            {
+                Console.WriteLine("ligmaballzsd");
+                htmlMiddle += "<br><em style=\"color: darkgray\">┌ @" + replyname + ": " + DiscordMDToHtml(replymessage) + "</em><br><strong>" + name + " " + action + ":</strong><br><p>" + DiscordMDToHtml(message) + "</p>";
+            }
+            else
+            {
+                htmlMiddle += "<br><strong>" + name + " " + action + ":</strong><br><p>" + DiscordMDToHtml(message) + "</p>";
+            }
+            lastMessageAuthor = name;
+            if (attachments.Length > 0) foreach (var attachment in attachments)
                 {
                     if (attachment.Type.Contains("image")) htmlMiddle += "<br><img src=\"" + attachment.URL + "\"></img>";
                 }
             chatBox.DocumentText = (htmlStart + htmlMiddle + htmlEnd).ToString();
-            if(scroll) Thread.Sleep(100); ScrollToBottom();
+            if (scroll) Thread.Sleep(100); ScrollToBottom();
         }
 
         private string DiscordMDToHtml(string md)
