@@ -8,7 +8,34 @@ Aerocord is a Discord client written in C#.<sup>(tasty glass included)</sup>
 
 Supports Windows Vista - Windows 11 (Windows Vista needs proxy settings to work)
 
-# How to login
+# What's working
+- Login with email and password
+- Logging in with a token
+- DMs
+- Servers
+- Websockets
+- Sending messages
+- Image viewing
+- Video viewing
+- Markdown Support
+# Todo
+- Custom Emojis
+- File uploading
+- Reactions
+- Status
+- Fix Aero Glass
+- Add Mica or Acrylic
+- Deleting messages
+- Editing messages
+- Replying to messages
+- VC (dont expect this to happen ever)
+
+# Screenshots
+![friendslist](./Screenshots/friendslist.png)
+![chat](./Screenshots/chat.png)
+![server](./Screenshots/server.png)
+
+# How to login using a token
 
 1. Login to Discord on any web browser
 2. Refresh the page (F5)
@@ -22,27 +49,8 @@ On Firefox it should be an icon with a phone and a tablet, on Chrome a phone wit
 
 8. Get the token and paste it into the Aerocord login page
 
-![image](./Screenshots/signin.png)
+![image](./Screenshots/signinToken.png)
 
-# What's working
-- Logging in with a token
-- DMs
-- Absolutely basic server functionality
-- Websockets
-- Server channel categories
-- Sending messages
-- Image viewing
-- Markdown Support
-# Todo
-- File uploading
-- Reactions
-- Status
-- Login with email and password
-- Fix Aero Glass
-- Add Mica or Acrylic
-# Screenshots
-![friendslist](./Screenshots/friendslist.png)
-![chat](./Screenshots/chat.png)
 # Special thanks to:
 - [@n1d3v](https://github.com/n1d3v/) for networking
 - [WindowsFormsAero](https://github.com/LorenzCK/WindowsFormsAero/) for making it easy to make Aero Windows (not dealing with [DwmExtendFrameIntoClientArea and etc.](https://asp-blogs.azurewebsites.net/kennykerr/Windows-Vista-for-Developers-_1320_-Part-3-_1320_-The-Desktop-Window-Manager))

@@ -15,7 +15,7 @@ namespace Aerocord
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
         private WebSocketClientDM websocketClient;
-        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} img {max-width: 60%; max-height: 60%;}</style></head><body>";
+        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: black; padding: 10px;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
@@ -58,23 +58,31 @@ namespace Aerocord
         {
             try
             {
-                dynamic messages = GetApiResponse($"channels/{ChatID}/messages");
-                for (int i = messages.Count-1; i >= 0; i--) { 
+                dynamic messages = GetApiResponse($"channels/{ChatID.ToString()}/messages");
+                Console.WriteLine(messages);
+                htmlMiddle = "";
+                for (int i = messages.Count - 1; i >= 0; i--)
+                {
                     string author = messages[i].author.global_name;
                     if (author == null) author = messages[i].author.username;
                     string content = messages[i].content;
                     List<WebSocketClientDM.Attachment> attachmentsFormed = new List<WebSocketClientDM.Attachment>();
+                    List<WebSocketClientDM.Embed> embedsFormed = new List<WebSocketClientDM.Embed>();
 
-                    foreach (var attachment in messages[i].attachments)
-                    {
-                        attachmentsFormed.Add(new WebSocketClientDM.Attachment { URL = attachment.url, Type = attachment.content_type });
-                        //Console.WriteLine(attachment.url);
-                    }
+                    if (messages[i].attachments != null) foreach (var attachment in messages[i].attachments)
+                        {
+                            attachmentsFormed.Add(new WebSocketClientDM.Attachment { URL = attachment.url, Type = attachment.content_type });
+                            //Console.WriteLine(attachment.url);
+                        }
+                    if (messages[i].embeds != null) foreach (var embed in messages[i].embeds)
+                        {
+                            embedsFormed.Add(new WebSocketClientDM.Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
+                        }
                     switch ((int)messages[i].type.Value)
                     {
                         case 7:
                             // Join message
-                            AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), false);
+                            AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), embedsFormed.ToArray(), false, false);
                             break;
 
                         case 19:
@@ -87,20 +95,21 @@ namespace Aerocord
                                 {
                                     string replyAuthor = message.author.global_name;
                                     if (replyAuthor == null) replyAuthor = message.author.username;
-                                    AddMessage(author, content, "replied", attachmentsFormed.ToArray(), false, replyAuthor, message.content.Value);
+                                    AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), false, false, replyAuthor, message.content.Value);
                                     found = true;
                                     break;
                                 }
                             }
-                            if (!found) AddMessage(author, content, "replied", attachmentsFormed.ToArray(), false, " ", "Unable to load message");
+                            if (!found) AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), false, false, " ", "Unable to load message");
                             break;
 
                         default:
                             //Normal text or unimplemented
-                            AddMessage(author, content, "said", attachmentsFormed.ToArray(), false);
+                            AddMessage(author, content, "said", attachmentsFormed.ToArray(), embedsFormed.ToArray(), false, false);
                             break;
                     }
                 }
+                chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
                 Thread.Sleep(200);
                 ScrollToBottom();
                 return;
@@ -110,7 +119,7 @@ namespace Aerocord
                 ShowErrorMessage("Failed to retrieve messages", ex);
             }
         }
-        public void AddMessage(string name, string message, string action, WebSocketClientDM.Attachment[] attachments, bool scroll = true, string replyname = "", string replymessage = "")
+        public void AddMessage(string name, string message, string action, WebSocketClientDM.Attachment[] attachments, WebSocketClientDM.Embed[] embeds, bool reload = true, bool scroll = true, string replyname = "", string replymessage = "")
         {
             if (name == lastMessageAuthor && action == "said")
             {
@@ -128,9 +137,15 @@ namespace Aerocord
             lastMessageAuthor = name;
             if (attachments.Length > 0) foreach (var attachment in attachments)
                 {
+                    chatBox.ScriptErrorsSuppressed = true;
                     if (attachment.Type.Contains("image")) htmlMiddle += "<br><img src=\"" + attachment.URL + "\"></img>";
+                    if (attachment.Type.Contains("video")) htmlMiddle += "<br><embed src=\"" + attachment.URL + "\" type=\"" + attachment.Type + "\" width=\"60%\" height=\"60%\">";
                 }
-            chatBox.DocumentText = (htmlStart + htmlMiddle + htmlEnd).ToString();
+            if (embeds.Length > 0) foreach (var embed in embeds)
+                {
+                    if (embed.Type == "rich") htmlMiddle += "<br><div class=\"rich\"><a style=\"color: black\" href=\"" + embed.AuthorURL + "\">" + embed.Author + "</a><br><br><a href=\"" + embed.TitleURL + "\">" + embed.Title + "</a><br><br><p>" + embed.Description + "</p></div>";
+                }
+            if (reload) chatBox.DocumentText = (htmlStart + htmlMiddle + htmlEnd).ToString();
             if (scroll) Thread.Sleep(100); ScrollToBottom();
         }
 
@@ -195,15 +210,15 @@ namespace Aerocord
                         if (md.Length > i + 1 && md[i + 1].ToString() == "@")
                         {
                             StringBuilder ping = new StringBuilder();
-                            if(!waitingToClose.Contains("||")) ping.Append("<span class=\"ping\">".ToCharArray());
+                            if (!waitingToClose.Contains("||")) ping.Append("<span class=\"ping\">".ToCharArray());
                             ping.Append('@');
                             i += 2;
                             StringBuilder uid = new StringBuilder();
                             while (Char.IsNumber(md[i])) { /*Console.WriteLine(md[i]);*/ uid.Append(md[i]); i += 1; }
-                            if(md[i].ToString() == ">")
+                            if (md[i].ToString() == ">")
                             {
                                 ping.Append(GetUsernameById(uid.ToString()).ToCharArray());
-                                if (!waitingToClose.Contains("||")) html.Append("</span>".ToCharArray());
+                                if (!waitingToClose.Contains("||")) ping.Append("</span>".ToCharArray());
                                 html.Append(ping);
                             }
                             break;
@@ -218,7 +233,7 @@ namespace Aerocord
                         break;
 
                     default:
-                         html.Append(md[i]);
+                        html.Append(md[i]);
                         break;
                 }
             }
