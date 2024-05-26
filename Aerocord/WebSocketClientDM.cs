@@ -250,6 +250,7 @@ namespace Aerocord
         {
             tryingRandomStuffAtThisPoint = true;
             webSocket.Close();
+            GC.Collect();
         }
     }
 }

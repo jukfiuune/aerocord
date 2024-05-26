@@ -221,6 +221,7 @@ namespace Aerocord
                                 if (!waitingToClose.Contains("||")) ping.Append("</span>".ToCharArray());
                                 html.Append(ping);
                             }
+                            GC.Collect();
                             break;
                         }
                         break;
@@ -275,6 +276,7 @@ namespace Aerocord
                         break;
                 }
             }
+            GC.Collect();
             return html.ToString();
         }
 
@@ -367,7 +369,8 @@ namespace Aerocord
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            websocketClient.CloseWebSocket();
+            if (websocketClient != null) websocketClient.CloseWebSocket();
+            GC.Collect();
         }
     }
 }
