@@ -20,7 +20,7 @@ namespace Aerocord
         const string htmlEnd = "</body></html>";
         private string AccessToken;
         public long ChatID;
-        private long FriendID;
+        public long FriendID;
         private string userPFP;
         private string lastMessageAuthor = "";
         public DM(long chatid, long friendid, string token, string userpfp)
@@ -52,6 +52,11 @@ namespace Aerocord
             {
                 ShowErrorMessage("Failed to retrieve user profile", ex);
             }
+        }
+
+        public void ChangeStatus(string status)
+        {
+            framefriend.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(status);
         }
 
         private void LoadMessages()

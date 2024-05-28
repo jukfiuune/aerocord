@@ -93,6 +93,9 @@ namespace Aerocord
                         case "MESSAGE_CREATE":
                             HandleMessageCreateEvent(json["d"]);
                             break;
+                        case "PRESENCE_UPDATE":
+                            HandlePresenceUpdateEvent(json["d"]);
+                            break;
                     }
                     break;
                 default:
@@ -220,6 +223,13 @@ namespace Aerocord
                         break;
                 }
             }
+        }
+
+        private void HandlePresenceUpdateEvent(JToken data)
+        {
+            dynamic eventData = data;
+            string status = eventData["status"];
+            if(eventData["user"]["id"] == parentDMForm.FriendID.ToString()) parentDMForm.ChangeStatus(status);
         }
 
         private void HandleWebSocketError(string errorMessage)

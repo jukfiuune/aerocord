@@ -132,9 +132,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\discord-mark-black.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\defaultpfp.png" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +139,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="aerocord.ico" />
+    <None Include="Resources\offline.png" />
+    <None Include="Resources\dnd.png" />
+    <None Include="Resources\idle.png" />
+    <None Include="Resources\online.png" />
     <None Include="Resources\logoRounded.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
