@@ -45,7 +45,7 @@
             // usernameLabel
             // 
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.usernameLabel.Location = new System.Drawing.Point(118, 12);
+            this.usernameLabel.Location = new System.Drawing.Point(74, 12);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(213, 23);
             this.usernameLabel.TabIndex = 1;
@@ -55,9 +55,9 @@
             // 
             this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
             this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.descriptionLabel.Location = new System.Drawing.Point(118, 41);
+            this.descriptionLabel.Location = new System.Drawing.Point(74, 41);
             this.descriptionLabel.Name = "descriptionLabel";
-            this.descriptionLabel.Size = new System.Drawing.Size(213, 72);
+            this.descriptionLabel.Size = new System.Drawing.Size(213, 21);
             this.descriptionLabel.TabIndex = 3;
             this.descriptionLabel.Text = "description";
             // 
@@ -81,7 +81,7 @@
             // 
             this.fsTabs.Controls.Add(this.friendsTab);
             this.fsTabs.Controls.Add(this.serversTab);
-            this.fsTabs.Location = new System.Drawing.Point(13, 119);
+            this.fsTabs.Location = new System.Drawing.Point(14, 73);
             this.fsTabs.Name = "fsTabs";
             this.fsTabs.SelectedIndex = 0;
             this.fsTabs.Size = new System.Drawing.Size(320, 387);
@@ -133,7 +133,7 @@
             this.profilepicture.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.Location = new System.Drawing.Point(12, 12);
             this.profilepicture.Name = "profilepicture";
-            this.profilepicture.Size = new System.Drawing.Size(100, 100);
+            this.profilepicture.Size = new System.Drawing.Size(50, 50);
             this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.profilepicture.TabIndex = 0;
             this.profilepicture.TabStop = false;
@@ -143,7 +143,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(345, 518);
+            this.ClientSize = new System.Drawing.Size(345, 473);
             this.Controls.Add(this.fsTabs);
             this.Controls.Add(this.descriptionLabel);
             this.Controls.Add(this.usernameLabel);
