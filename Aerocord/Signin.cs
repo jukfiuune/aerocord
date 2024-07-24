@@ -24,7 +24,7 @@ namespace Aerocord
         private static int MinorVersion = Int32.Parse(LCUVer.Split('.')[1]);
         private static int BuildNumber = Int32.Parse(LCUVer.Split('.')[2]);
         private bool DarkMode = !Convert.ToBoolean(Int32.Parse(MajorVersion != 10 ? "1" : SysInfo.GetRegistryValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1").ToString()));
-        private string RenderMode = MajorVersion == 10 ? (BuildNumber >= 22000 ? "Mica" : "Acrylic") : "Aero";
+        private string RenderMode = MajorVersion == 10 ? (BuildNumber >= 22000 ? "Mica" : (BuildNumber >= 16299 ? "Acrylic" : "Aero")) : "Aero";
 
         public Signin()
         {
@@ -194,7 +194,7 @@ namespace Aerocord
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
-                File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + "\ndarkmode=" + DarkMode);
+                File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + "\ncolormode=System");
             }
             catch (Exception ex)
             {
@@ -246,9 +246,19 @@ namespace Aerocord
                         {
                             RenderMode = line.Replace("rendermode=", "");
                         }
-                        if (line.Contains("darkmode="))
+                        if (line.Contains("colormode="))
                         {
-                            DarkMode = Convert.ToBoolean(line.Replace("darkmode=", ""));
+                            switch (line.Replace("colormode=", ""))
+                            {
+                                case "Default":
+                                    break;
+                                case "Light":
+                                    DarkMode = false;
+                                    break;
+                                case "Dark":
+                                    DarkMode = true;
+                                    break;
+                            }
                         }
                     }
                     PerformLogin(AccessToken, true);
