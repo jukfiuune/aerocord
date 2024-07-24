@@ -25,7 +25,12 @@ namespace Aerocord
             if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
-                _ = new DarkModeCS(this);
+                colormodelabel.BackColor = System.Drawing.SystemColors.ControlText;
+                colormodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+                rendermodelabel.BackColor = System.Drawing.SystemColors.ControlText;
+                rendermodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+                warning.BackColor = System.Drawing.SystemColors.ControlText;
+                warning.ForeColor = System.Drawing.SystemColors.ControlLightLight;
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
             }
             switch (RenderMode)
@@ -103,7 +108,12 @@ namespace Aerocord
             if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
-                _ = new DarkModeCS(this);
+                colormodelabel.BackColor = System.Drawing.SystemColors.ControlText;
+                colormodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+                rendermodelabel.BackColor = System.Drawing.SystemColors.ControlText;
+                rendermodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+                warning.BackColor = System.Drawing.SystemColors.ControlText;
+                warning.ForeColor = System.Drawing.SystemColors.ControlLightLight;
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
             }
             else
