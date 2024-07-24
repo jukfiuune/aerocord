@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PInvoke.cs" />
     <Compile Include="Signin.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -45,6 +45,7 @@
             // usernameLabel
             // 
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.usernameLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.usernameLabel.Location = new System.Drawing.Point(118, 12);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(213, 23);
@@ -54,7 +55,7 @@
             // descriptionLabel
             // 
             this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.descriptionLabel.Location = new System.Drawing.Point(118, 41);
             this.descriptionLabel.Name = "descriptionLabel";
             this.descriptionLabel.Size = new System.Drawing.Size(213, 72);
@@ -63,8 +64,9 @@
             // 
             // friendsList
             // 
+            this.friendsList.BackColor = System.Drawing.SystemColors.ControlText;
             this.friendsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.friendsList.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.friendsList.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.friendsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.friendsList.HideSelection = false;
             this.friendsList.LabelWrap = false;
@@ -111,8 +113,9 @@
             // 
             // serversList
             // 
+            this.serversList.BackColor = System.Drawing.SystemColors.ControlText;
             this.serversList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.serversList.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.serversList.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.serversList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.serversList.HideSelection = false;
             this.serversList.LabelWrap = false;

@@ -27,7 +27,9 @@ namespace Aerocord
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            GlassMargins = new Padding(82, 220, 11, 11);
+            GlassMargins = new Padding(-1, -1, -1, -1);
+            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
 
             CheckToken();
         }
