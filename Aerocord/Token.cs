@@ -23,7 +23,7 @@ namespace Aerocord
 
         public Token(Signin signinArg)
         {
-            InitializeComponent();
+            InitializeComponent(); _ = new DarkModeCS(this);
             signin = signinArg;
         }
         protected override void OnShown(EventArgs e)

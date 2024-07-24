@@ -23,7 +23,7 @@ namespace Aerocord
         private string lastMessageAuthor = "";
         public Server(long serverid, String token)
         {
-            InitializeComponent();
+            InitializeComponent(); _ = new DarkModeCS(this);
             AccessToken = token;
             ServerID = serverid;
             Thread.Sleep(1000);

@@ -25,7 +25,7 @@ namespace Aerocord
         private string lastMessageAuthor = "";
         public DM(long chatid, long friendid, string token, string userpfp)
         {
-            InitializeComponent();
+            InitializeComponent(); _ = new DarkModeCS(this);
             AccessToken = token;
             ChatID = chatid;
             FriendID = friendid;

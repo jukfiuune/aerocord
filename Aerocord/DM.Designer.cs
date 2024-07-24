@@ -45,7 +45,7 @@
             // descriptionLabel
             // 
             this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.descriptionLabel.Location = new System.Drawing.Point(118, 41);
             this.descriptionLabel.Name = "descriptionLabel";
             this.descriptionLabel.Size = new System.Drawing.Size(654, 22);
@@ -55,7 +55,6 @@
             // usernameLabel
             // 
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.usernameLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.usernameLabel.Location = new System.Drawing.Point(118, 12);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(213, 23);
@@ -64,8 +63,6 @@
             // 
             // messageBox
             // 
-            this.messageBox.BackColor = System.Drawing.SystemColors.ControlText;
-            this.messageBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.messageBox.Location = new System.Drawing.Point(118, 326);
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(654, 23);

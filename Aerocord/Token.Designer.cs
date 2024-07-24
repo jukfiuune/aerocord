@@ -42,7 +42,6 @@
             // username
             // 
             this.username.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.username.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.username.Location = new System.Drawing.Point(12, 118);
             this.username.Name = "username";
             this.username.Size = new System.Drawing.Size(321, 28);
@@ -53,7 +52,6 @@
             // themeLabel1
             // 
             this.themeLabel1.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel1.Location = new System.Drawing.Point(12, 152);
             this.themeLabel1.Name = "themeLabel1";
             this.themeLabel1.Size = new System.Drawing.Size(321, 23);
@@ -63,7 +61,6 @@
             // themeLabel2
             // 
             this.themeLabel2.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel2.Location = new System.Drawing.Point(12, 170);
             this.themeLabel2.Name = "themeLabel2";
             this.themeLabel2.Size = new System.Drawing.Size(257, 23);
@@ -93,7 +90,6 @@
             this.themeLabel3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.themeLabel3.Font = new System.Drawing.Font("Segoe UI", 10F, ((System.Drawing.FontStyle)(((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic) 
                 | System.Drawing.FontStyle.Underline))));
-            this.themeLabel3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel3.Location = new System.Drawing.Point(232, 170);
             this.themeLabel3.Name = "themeLabel3";
             this.themeLabel3.Size = new System.Drawing.Size(38, 23);
@@ -102,9 +98,7 @@
             // 
             // tokenBox
             // 
-            this.tokenBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.tokenBox.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tokenBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.tokenBox.Location = new System.Drawing.Point(12, 221);
             this.tokenBox.Name = "tokenBox";
             this.tokenBox.Size = new System.Drawing.Size(218, 25);
@@ -112,14 +106,12 @@
             // 
             // signinButton
             // 
-            this.signinButton.BackColor = System.Drawing.SystemColors.ControlText;
-            this.signinButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.signinButton.Location = new System.Drawing.Point(236, 221);
             this.signinButton.Name = "signinButton";
             this.signinButton.Size = new System.Drawing.Size(97, 25);
             this.signinButton.TabIndex = 8;
             this.signinButton.Text = "Sign in";
-            this.signinButton.UseVisualStyleBackColor = false;
+            this.signinButton.UseVisualStyleBackColor = true;
             this.signinButton.Click += new System.EventHandler(this.signinButton_Click);
             // 
             // profilepicture

@@ -45,7 +45,6 @@
             // username
             // 
             this.username.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.username.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.username.Location = new System.Drawing.Point(12, 118);
             this.username.Name = "username";
             this.username.Size = new System.Drawing.Size(321, 28);
@@ -56,7 +55,6 @@
             // themeLabel1
             // 
             this.themeLabel1.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel1.Location = new System.Drawing.Point(12, 152);
             this.themeLabel1.Name = "themeLabel1";
             this.themeLabel1.Size = new System.Drawing.Size(321, 23);
@@ -66,7 +64,6 @@
             // themeLabel2
             // 
             this.themeLabel2.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel2.Location = new System.Drawing.Point(12, 170);
             this.themeLabel2.Name = "themeLabel2";
             this.themeLabel2.Size = new System.Drawing.Size(257, 23);
@@ -96,7 +93,6 @@
             this.themeLabel3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.themeLabel3.Font = new System.Drawing.Font("Segoe UI", 10F, ((System.Drawing.FontStyle)(((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic) 
                 | System.Drawing.FontStyle.Underline))));
-            this.themeLabel3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel3.Location = new System.Drawing.Point(236, 170);
             this.themeLabel3.Name = "themeLabel3";
             this.themeLabel3.Size = new System.Drawing.Size(38, 23);
@@ -105,9 +101,7 @@
             // 
             // emailBox
             // 
-            this.emailBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.emailBox.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.emailBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.emailBox.Location = new System.Drawing.Point(83, 221);
             this.emailBox.Name = "emailBox";
             this.emailBox.Size = new System.Drawing.Size(250, 25);
@@ -115,14 +109,12 @@
             // 
             // signinButton
             // 
-            this.signinButton.BackColor = System.Drawing.SystemColors.ControlText;
-            this.signinButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.signinButton.Location = new System.Drawing.Point(83, 283);
             this.signinButton.Name = "signinButton";
             this.signinButton.Size = new System.Drawing.Size(250, 27);
             this.signinButton.TabIndex = 8;
             this.signinButton.Text = "Sign in";
-            this.signinButton.UseVisualStyleBackColor = false;
+            this.signinButton.UseVisualStyleBackColor = true;
             this.signinButton.Click += new System.EventHandler(this.signinButton_Click);
             // 
             // profilepicture
@@ -140,7 +132,6 @@
             // themeLabel4
             // 
             this.themeLabel4.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel4.Location = new System.Drawing.Point(12, 221);
             this.themeLabel4.Name = "themeLabel4";
             this.themeLabel4.Size = new System.Drawing.Size(60, 25);
@@ -149,9 +140,7 @@
             // 
             // passBox
             // 
-            this.passBox.BackColor = System.Drawing.SystemColors.ControlText;
             this.passBox.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.passBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.passBox.Location = new System.Drawing.Point(83, 252);
             this.passBox.Name = "passBox";
             this.passBox.Size = new System.Drawing.Size(250, 25);
@@ -160,7 +149,6 @@
             // themeLabel5
             // 
             this.themeLabel5.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.themeLabel5.Location = new System.Drawing.Point(12, 252);
             this.themeLabel5.Name = "themeLabel5";
             this.themeLabel5.Size = new System.Drawing.Size(65, 25);

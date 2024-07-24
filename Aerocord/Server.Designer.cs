@@ -40,7 +40,7 @@
             // channelLabel
             // 
             this.channelLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.channelLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.channelLabel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.channelLabel.Location = new System.Drawing.Point(118, 41);
             this.channelLabel.Name = "channelLabel";
             this.channelLabel.Size = new System.Drawing.Size(654, 22);
@@ -49,7 +49,6 @@
             // servernameLabel
             // 
             this.servernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.servernameLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.servernameLabel.Location = new System.Drawing.Point(118, 12);
             this.servernameLabel.Name = "servernameLabel";
             this.servernameLabel.Size = new System.Drawing.Size(213, 23);
@@ -58,8 +57,6 @@
             // 
             // messageBox
             // 
-            this.messageBox.BackColor = System.Drawing.SystemColors.ControlText;
-            this.messageBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.messageBox.Location = new System.Drawing.Point(118, 326);
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(654, 23);
@@ -92,8 +89,6 @@
             // 
             // channelList
             // 
-            this.channelList.BackColor = System.Drawing.SystemColors.ControlText;
-            this.channelList.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.channelList.HideSelection = false;
             this.channelList.Location = new System.Drawing.Point(13, 119);
             this.channelList.Name = "channelList";

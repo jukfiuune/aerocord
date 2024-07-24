@@ -15,7 +15,7 @@ namespace Aerocord
         private string userPFP;
         public Main(string token, Signin signinArg)
         {
-            InitializeComponent();
+            InitializeComponent(); _ = new DarkModeCS(this);
             signin = signinArg;
             AccessToken = token;
             SetUserInfo();

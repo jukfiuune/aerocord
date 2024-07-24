@@ -22,7 +22,7 @@ namespace Aerocord
 
         public Signin()
         {
-            InitializeComponent();
+            InitializeComponent(); _ = new DarkModeCS(this);
         }
         protected override void OnShown(EventArgs e)
         {
