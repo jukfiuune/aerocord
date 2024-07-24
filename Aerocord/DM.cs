@@ -23,9 +23,14 @@ namespace Aerocord
         public long FriendID;
         private string userPFP;
         private string lastMessageAuthor = "";
-        public DM(long chatid, long friendid, string token, string userpfp)
+        private bool DarkMode = false;
+        private string RenderMode = "Aero";
+        public DM(long chatid, long friendid, string token, string userpfp, bool darkmode, string rendermode)
         {
-            InitializeComponent(); _ = new DarkModeCS(this);
+            InitializeComponent();
+            DarkMode = darkmode;
+            RenderMode = rendermode;
+            if (DarkMode && RenderMode != "Aero") _ = new DarkModeCS(this);
             AccessToken = token;
             ChatID = chatid;
             FriendID = friendid;
@@ -366,9 +371,21 @@ namespace Aerocord
         {
             base.OnShown(e);
 
-            GlassMargins = new Padding(-1, -1, -1, -1);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            GlassMargins = new Padding(117, 325, 12, 12);
+            if (DarkMode && RenderMode != "Aero")
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+            }
 
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
             ScrollToBottom();

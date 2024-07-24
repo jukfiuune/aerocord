@@ -18,18 +18,39 @@ namespace Aerocord
 {
     public partial class Signin : WindowsFormsAero.AeroForm
     {
-        private const string TokenFileName = "token.txt";
+        private const string TokenFileName = "aerocord_config.txt";
+        private static string LCUVer = SysInfo.GetVersionString();
+        private static int MajorVersion = Int32.Parse(LCUVer.Split('.')[0]);
+        private static int MinorVersion = Int32.Parse(LCUVer.Split('.')[1]);
+        private static int BuildNumber = Int32.Parse(LCUVer.Split('.')[2]);
+        private bool DarkMode = !Convert.ToBoolean(Int32.Parse(MajorVersion != 10 ? "1" : SysInfo.GetRegistryValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1").ToString()));
+        private string RenderMode = MajorVersion == 10 ? (BuildNumber >= 22000 ? "Mica" : "Acrylic") : "Aero";
 
         public Signin()
         {
-            InitializeComponent(); _ = new DarkModeCS(this);
+            InitializeComponent();
+            Console.WriteLine(LCUVer);
+            if (DarkMode && RenderMode != "Aero") _ = new DarkModeCS(this);
         }
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            GlassMargins = new Padding(-1, -1, -1, -1);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+
+            GlassMargins = new Padding(82, 220, 11, 11);
+            if (DarkMode && RenderMode != "Aero")
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+            }
 
             CheckToken();
         }
@@ -105,7 +126,7 @@ namespace Aerocord
 
                     SetIEVer();
 
-                    Main mainForm = new Main(accessToken, this);
+                    Main mainForm = new Main(accessToken, DarkMode, RenderMode, this);
                     mainForm.Show();
                 }
                 catch (WebException ex)
@@ -173,7 +194,7 @@ namespace Aerocord
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
-                File.WriteAllText(filePath, "token=" + accessToken);
+                File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + "\ndarkmode=" + DarkMode);
             }
             catch (Exception ex)
             {
@@ -214,14 +235,23 @@ namespace Aerocord
 
                 if (File.Exists(filePath))
                 {
+                    string AccessToken = "";
                     foreach (string line in File.ReadLines(filePath))
                     {
                         if (line.Contains("token="))
                         {
-                            PerformLogin(line.Replace("token=", ""), true);
-                            return;
+                            AccessToken = line.Replace("token=", "");
+                        }
+                        if (line.Contains("rendermode="))
+                        {
+                            RenderMode = line.Replace("rendermode=", "");
+                        }
+                        if (line.Contains("darkmode="))
+                        {
+                            DarkMode = Convert.ToBoolean(line.Replace("darkmode=", ""));
                         }
                     }
+                    PerformLogin(AccessToken, true);
                 }
                 this.Show();
             }
@@ -259,7 +289,7 @@ namespace Aerocord
 
         private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
         {
-            Token token = new Token(this);
+            Token token = new Token(this, DarkMode, RenderMode);
             token.Show();
             this.Hide();
         }

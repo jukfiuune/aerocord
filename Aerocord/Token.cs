@@ -18,21 +18,38 @@ namespace Aerocord
     public partial class Token : WindowsFormsAero.AeroForm
     {
 
-        private const string TokenFileName = "token.txt";
+        private const string TokenFileName = "aerocord_config.txt";
         Signin signin;
+        private bool DarkMode = false;
+        private string RenderMode = "Aero";
 
-        public Token(Signin signinArg)
+        public Token(Signin signinArg, bool darkmode, string rendermode)
         {
-            InitializeComponent(); _ = new DarkModeCS(this);
+            InitializeComponent();
+            DarkMode = darkmode;
+            RenderMode = rendermode;
+            if (DarkMode && RenderMode != "Aero") _ = new DarkModeCS(this);
             signin = signinArg;
         }
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
-            GlassMargins = new Padding(-1, -1, -1, -1);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            GlassMargins = new Padding(11, 220, 11, 29);
+            if (DarkMode && RenderMode != "Aero")
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+            }
         }
 
         private void signinButton_Click(object sender, EventArgs e)
@@ -57,7 +74,7 @@ namespace Aerocord
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
-                File.WriteAllText(filePath, "token=" + accessToken);
+                File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + "\ndarkmode=" + DarkMode);
             }
             catch (Exception ex)
             {

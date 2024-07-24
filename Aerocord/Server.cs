@@ -18,12 +18,17 @@ namespace Aerocord
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
+        private bool DarkMode = false;
+        private string RenderMode = "Aero";
         public long ServerID;
         public long ChatID;
         private string lastMessageAuthor = "";
-        public Server(long serverid, String token)
+        public Server(long serverid, String token, bool darkmode, string rendermode)
         {
-            InitializeComponent(); _ = new DarkModeCS(this);
+            InitializeComponent();
+            DarkMode = darkmode;
+            RenderMode = rendermode;
+            if (DarkMode && RenderMode != "Aero") _ = new DarkModeCS(this);
             AccessToken = token;
             ServerID = serverid;
             Thread.Sleep(1000);
@@ -407,9 +412,21 @@ namespace Aerocord
         {
             base.OnShown(e);
 
-            GlassMargins = new Padding(-1, -1, -1, -1);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            GlassMargins = new Padding(12, 118, 12, 12);
+            if (DarkMode && RenderMode != "Aero")
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+            }
 
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
             ScrollToBottom();

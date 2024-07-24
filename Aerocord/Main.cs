@@ -13,11 +13,16 @@ namespace Aerocord
         private string AccessToken;
         private Signin signin;
         private string userPFP;
-        public Main(string token, Signin signinArg)
+        private bool DarkMode = false;
+        private string RenderMode = "Aero";
+        public Main(string token, bool darkmode, string rendermode, Signin signinArg)
         {
-            InitializeComponent(); _ = new DarkModeCS(this);
+            InitializeComponent();
             signin = signinArg;
             AccessToken = token;
+            DarkMode = darkmode;
+            RenderMode = rendermode;
+            if (DarkMode && RenderMode != "Aero") _ = new DarkModeCS(this);
             SetUserInfo();
             PopulateFriendsTab();
             PopulateServersTab();
@@ -184,9 +189,21 @@ namespace Aerocord
         { 
             base.OnShown(e);
 
-            GlassMargins = new Padding(-1, -1, -1, -1);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
-            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            GlassMargins = new Padding(12, 118, 12, 12);
+            if (DarkMode && RenderMode != "Aero")
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+            }
 
             signin.Hide();
         }
@@ -206,7 +223,7 @@ namespace Aerocord
                 long friendID = GetFriendID(selectedFriend);
                 if (chatID >= 0)
                 {
-                    DM dm = new DM(chatID, friendID, AccessToken, userPFP);
+                    DM dm = new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode);
                     dm.Show();
                 } else MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -219,7 +236,7 @@ namespace Aerocord
                 long serverID = GetServerID(selectedServer);
                 if (serverID >= 0)
                 {
-                    Server server = new Server(serverID, AccessToken);
+                    Server server = new Server(serverID, AccessToken, DarkMode, RenderMode);
                     server.Show();
                 }
                 else MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
