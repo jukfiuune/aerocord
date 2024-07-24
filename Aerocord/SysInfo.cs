@@ -10,7 +10,6 @@ namespace Aerocord
             string value = Default;
             RegistryHive Hive;
 
-            // Determine the registry hive based on the path
             switch (Path.Split('\\')[0])
             {
                 case "HKEY_CLASSES_ROOT":
@@ -52,7 +51,6 @@ namespace Aerocord
             }
             catch (Exception ex)
             {
-                // Optionally log the exception
                 Console.WriteLine($"Exception: {ex.Message}");
             }
 
