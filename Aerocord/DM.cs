@@ -30,7 +30,7 @@ namespace Aerocord
             InitializeComponent();
             DarkMode = darkmode;
             RenderMode = rendermode;
-            if (DarkMode && RenderMode != "Aero") _ = new DarkModeCS(this);
+            if (DarkMode) _ = new DarkModeCS(this);
             AccessToken = token;
             ChatID = chatid;
             FriendID = friendid;
@@ -372,7 +372,7 @@ namespace Aerocord
             base.OnShown(e);
 
             GlassMargins = new Padding(117, 325, 12, 12);
-            if (DarkMode && RenderMode != "Aero")
+            if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);

@@ -30,14 +30,14 @@ namespace Aerocord
         {
             InitializeComponent();
             Console.WriteLine(LCUVer);
-            if (DarkMode && RenderMode != "Aero") _ = new DarkModeCS(this);
+            if (DarkMode) _ = new DarkModeCS(this);
         }
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
 
             GlassMargins = new Padding(82, 220, 11, 11);
-            if (DarkMode && RenderMode != "Aero")
+            if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);

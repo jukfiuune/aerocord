@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+using WindowsFormsAero;
+using WindowsFormsAero.TaskDialog;
 
 namespace Aerocord
 {
-    public partial class Settings : Form
+    public partial class Settings : WindowsFormsAero.AeroForm
     {
         private const string TokenFileName = "aerocord_config.txt";
         private static string LCUVer = SysInfo.GetVersionString();
@@ -12,9 +14,32 @@ namespace Aerocord
         private static int MinorVersion = Int32.Parse(LCUVer.Split('.')[1]);
         private static int BuildNumber = Int32.Parse(LCUVer.Split('.')[2]);
 
-        public Settings()
+        private bool DarkMode;
+        private string RenderMode;
+
+        public Settings(bool darkmodee, string rendermodee)
         {
             InitializeComponent();
+            DarkMode = darkmodee;
+            RenderMode = rendermodee;
+            if (DarkMode)
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                _ = new DarkModeCS(this);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+            }
             if (BuildNumber < 22000)
             {
                 rendermode.Items.Remove("Mica");
@@ -59,6 +84,55 @@ namespace Aerocord
                 MessageBox.Show("Failed to save. Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+
+        private void colormode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (colormode.SelectedItem.ToString())
+            {
+                case "Default":
+                    DarkMode = !Convert.ToBoolean(Int32.Parse(MajorVersion != 10 ? "1" : SysInfo.GetRegistryValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1").ToString()));
+                    break;
+                case "Light":
+                    DarkMode = false;
+                    break;
+                case "Dark":
+                    DarkMode = true;
+                    break;
+            }
+            if (DarkMode)
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                _ = new DarkModeCS(this);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            else
+            {
+                GlassMargins = new Padding(0, 0, 0, 0);
+                colormodelabel.BackColor = System.Drawing.SystemColors.Control;
+                colormodelabel.ForeColor = System.Drawing.SystemColors.ControlText;
+                rendermodelabel.BackColor = System.Drawing.SystemColors.Control;
+                rendermodelabel.ForeColor = System.Drawing.SystemColors.ControlText;
+                warning.BackColor = System.Drawing.SystemColors.Control;
+                warning.ForeColor = System.Drawing.SystemColors.ControlText;
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 0);
+            }
+        }
+
+        private void rendermode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (rendermode.SelectedItem.ToString())
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+            }
         }
     }
 }

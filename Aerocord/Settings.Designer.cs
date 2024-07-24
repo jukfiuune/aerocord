@@ -33,7 +33,7 @@
             this.colormodelabel = new System.Windows.Forms.Label();
             this.colormode = new WindowsFormsAero.ComboBox();
             this.save = new WindowsFormsAero.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.warning = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // rendermode
@@ -45,16 +45,17 @@
             "Aero",
             "Acrylic",
             "Mica"});
-            this.rendermode.Location = new System.Drawing.Point(114, 13);
+            this.rendermode.Location = new System.Drawing.Point(133, 15);
             this.rendermode.Name = "rendermode";
-            this.rendermode.Size = new System.Drawing.Size(121, 21);
+            this.rendermode.Size = new System.Drawing.Size(140, 23);
             this.rendermode.TabIndex = 1;
+            this.rendermode.SelectedIndexChanged += new System.EventHandler(this.rendermode_SelectedIndexChanged);
             // 
             // rendermodelabel
             // 
             this.rendermodelabel.AutoSize = true;
             this.rendermodelabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.rendermodelabel.Location = new System.Drawing.Point(13, 13);
+            this.rendermodelabel.Location = new System.Drawing.Point(15, 15);
             this.rendermodelabel.Name = "rendermodelabel";
             this.rendermodelabel.Size = new System.Drawing.Size(95, 19);
             this.rendermodelabel.TabIndex = 1;
@@ -64,7 +65,7 @@
             // 
             this.colormodelabel.AutoSize = true;
             this.colormodelabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.colormodelabel.Location = new System.Drawing.Point(13, 40);
+            this.colormodelabel.Location = new System.Drawing.Point(15, 46);
             this.colormodelabel.Name = "colormodelabel";
             this.colormodelabel.Size = new System.Drawing.Size(85, 19);
             this.colormodelabel.TabIndex = 2;
@@ -79,37 +80,38 @@
             "Default",
             "Light",
             "Dark"});
-            this.colormode.Location = new System.Drawing.Point(114, 40);
+            this.colormode.Location = new System.Drawing.Point(133, 46);
             this.colormode.Name = "colormode";
-            this.colormode.Size = new System.Drawing.Size(121, 21);
+            this.colormode.Size = new System.Drawing.Size(140, 23);
             this.colormode.TabIndex = 3;
+            this.colormode.SelectedIndexChanged += new System.EventHandler(this.colormode_SelectedIndexChanged);
             // 
             // save
             // 
-            this.save.Location = new System.Drawing.Point(12, 88);
+            this.save.Location = new System.Drawing.Point(14, 102);
             this.save.Name = "save";
-            this.save.Size = new System.Drawing.Size(344, 23);
+            this.save.Size = new System.Drawing.Size(401, 27);
             this.save.TabIndex = 4;
             this.save.Text = "Save";
             this.save.UseVisualStyleBackColor = true;
             this.save.Click += new System.EventHandler(this.save_Click);
             // 
-            // label1
+            // warning
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(14, 68);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(285, 17);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "reopen Aerocord for the changes to take effect";
+            this.warning.AutoSize = true;
+            this.warning.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.warning.Location = new System.Drawing.Point(16, 78);
+            this.warning.Name = "warning";
+            this.warning.Size = new System.Drawing.Size(285, 17);
+            this.warning.TabIndex = 5;
+            this.warning.Text = "reopen Aerocord for the changes to take effect";
             // 
             // Settings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(368, 123);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(429, 142);
+            this.Controls.Add(this.warning);
             this.Controls.Add(this.save);
             this.Controls.Add(this.colormode);
             this.Controls.Add(this.colormodelabel);
@@ -129,7 +131,7 @@
         private System.Windows.Forms.Label rendermodelabel;
         private System.Windows.Forms.Label colormodelabel;
         private WindowsFormsAero.Button save;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label warning;
         private WindowsFormsAero.ComboBox rendermode;
         private WindowsFormsAero.ComboBox colormode;
     }
