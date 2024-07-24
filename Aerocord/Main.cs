@@ -242,5 +242,11 @@ namespace Aerocord
                 else MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void profilepicture_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
+            settings.Show();
+        }
     }
 }

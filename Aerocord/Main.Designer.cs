@@ -137,6 +137,7 @@
             this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.profilepicture.TabIndex = 0;
             this.profilepicture.TabStop = false;
+            this.profilepicture.Click += new System.EventHandler(this.profilepicture_Click);
             // 
             // Main
             // 
