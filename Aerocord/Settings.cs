@@ -45,10 +45,14 @@ namespace Aerocord
                 case "Acrylic":
                     PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
                     break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                    break;
             }
             if (BuildNumber < 22000)
             {
                 rendermode.Items.Remove("Mica");
+                rendermode.Items.Remove("Mica Alt");
                 if (BuildNumber < 16299)
                 {
                     rendermode.Items.Remove("Acrylic");
@@ -142,6 +146,9 @@ namespace Aerocord
                     break;
                 case "Acrylic":
                     PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
                     break;
             }
         }

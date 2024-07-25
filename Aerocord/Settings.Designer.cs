@@ -44,7 +44,8 @@
             this.rendermode.Items.AddRange(new object[] {
             "Aero",
             "Acrylic",
-            "Mica"});
+            "Mica",
+            "Mica Alt"});
             this.rendermode.Location = new System.Drawing.Point(133, 15);
             this.rendermode.Name = "rendermode";
             this.rendermode.Size = new System.Drawing.Size(140, 23);
