@@ -23,7 +23,10 @@ namespace Aerocord
             AccessToken = token;
             DarkMode = darkmode;
             RenderMode = rendermode;
-            if (DarkMode) _ = new DarkModeCS(this);
+            if (DarkMode)
+            {
+                _ = new DarkModeCS(this);
+            }
             SetUserInfo();
             PopulateFriendsTab();
             //PopulateServersTab();
@@ -67,6 +70,11 @@ namespace Aerocord
                             Username = username,
                             ProfilePictureUrl = avatarUrl
                         };
+
+                        if (!DarkMode)
+                        {
+                            friendItem.LabelColor = System.Drawing.Color.Black;
+                        }
 
                         friendItem.Clicked += (sender, e) =>
                         {
@@ -211,10 +219,9 @@ namespace Aerocord
         { 
             base.OnShown(e);
 
-            GlassMargins = new Padding(12, 118, 12, 12);
+            GlassMargins = new Padding(-1, -1, -1, -1);
             if (DarkMode)
             {
-                GlassMargins = new Padding(-1, -1, -1, -1);
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
             }
             switch (RenderMode)
