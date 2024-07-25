@@ -19,6 +19,11 @@ namespace Aerocord
         private bool DarkMode = false;
         private string RenderMode = "Aero";
 
+        private WebSocketClient websocketClient;
+
+        public dynamic friends;
+        public dynamic guilds;
+
         public Main(string token, bool darkmode, string rendermode, Signin signinArg)
         {
             InitializeComponent();
@@ -31,9 +36,9 @@ namespace Aerocord
                 _ = new DarkModeCS(this);
             }
             SetUserInfo();
-            PopulateFriendsTab();
             friendsButton.Click += FriendsButton_Click;
             button2.Click += ServersButton_Click;
+            websocketClient = new WebSocketClient(AccessToken, this);
         }
 
         private void SetUserInfo()
@@ -63,103 +68,118 @@ namespace Aerocord
             PopulateServersTab();
         }
 
-        private void PopulateFriendsTab()
+        delegate void PopulateFriendsTabCallback();
+        public void PopulateFriendsTab()
         {
-            try
+            if (InvokeRequired)
             {
-                dynamic friends = GetApiResponse("users/@me/relationships");
-                friendserverPanel.Controls.Clear();
-
-                foreach (var friend in friends)
+                PopulateFriendsTabCallback d = new PopulateFriendsTabCallback(PopulateFriendsTab);
+                Invoke(d);
+            }
+            else
+            {
+                try
                 {
-                    if (friend.type == 1)
-                    {
-                        string username = friend.user.global_name ?? friend.user.username;
-                        string avatarUrl = $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png";
+                    friendserverPanel.Controls.Clear();
 
-                        FriendItem friendItem = new FriendItem
+                    foreach (var friend in friends)
+                    {
+                        if (friend.type == 1)
                         {
-                            Username = username,
-                            ProfilePictureUrl = avatarUrl
+                            string username = friend.user.global_name ?? friend.user.username;
+                            string avatarUrl = $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png";
+
+                            FriendItem friendItem = new FriendItem
+                            {
+                                Username = username,
+                                ProfilePictureUrl = avatarUrl
+                            };
+
+                            if (!DarkMode)
+                            {
+                                friendItem.LabelColor = System.Drawing.Color.Black;
+                            }
+
+                            friendItem.Clicked += (sender, e) =>
+                            {
+                                var clickedFriendItem = (FriendItem)sender;
+                                string selectedFriend = clickedFriendItem.Username;
+                                long chatID = GetChatID(selectedFriend);
+                                long friendID = GetFriendID(selectedFriend);
+                                if (chatID >= 0)
+                                {
+                                    DM dm = new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode);
+                                    dm.Show();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            };
+
+                            friendserverPanel.Controls.Add(friendItem);
+                        }
+                    }
+                }
+                catch (WebException ex)
+                {
+                    ShowErrorMessage("Failed to retrieve friend list", ex);
+                }
+            }
+        }
+
+        delegate void PopulateServersTabCallback();
+        public void PopulateServersTab()
+        {
+            if (InvokeRequired)
+            {
+                PopulateServersTabCallback d = new PopulateServersTabCallback(PopulateServersTab);
+                Invoke(d);
+            }
+            else
+            {
+                try
+                {
+                    friendserverPanel.Controls.Clear();
+
+                    foreach (var guild in guilds)
+                    {
+                        string guildName = guild.name.ToString();
+                        string iconUrl = $"https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png";
+
+                        FriendItem serverItem = new FriendItem
+                        {
+                            ServerName = guildName,
+                            ProfilePictureUrl = iconUrl
                         };
 
                         if (!DarkMode)
                         {
-                            friendItem.LabelColor = System.Drawing.Color.Black;
+                            serverItem.LabelColor = System.Drawing.Color.Black;
                         }
 
-                        friendItem.Clicked += (sender, e) =>
+                        serverItem.Clicked += (sender, e) =>
                         {
-                            var clickedFriendItem = (FriendItem)sender;
-                            string selectedFriend = clickedFriendItem.Username;
-                            long chatID = GetChatID(selectedFriend);
-                            long friendID = GetFriendID(selectedFriend);
-                            if (chatID >= 0)
+                            var clickedServerItem = (FriendItem)sender;
+                            string selectedServer = clickedServerItem.ServerName;
+                            long serverID = GetServerID(selectedServer);
+                            if (serverID >= 0)
                             {
-                                DM dm = new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode);
-                                dm.Show();
+                                Server server = new Server(serverID, AccessToken, DarkMode, RenderMode);
+                                server.Show();
                             }
                             else
                             {
-                                MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         };
-
-                        friendserverPanel.Controls.Add(friendItem);
+                        friendserverPanel.Controls.Add(serverItem);
                     }
                 }
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve friend list", ex);
-            }
-        }
-
-        private void PopulateServersTab()
-        {
-            try
-            {
-                dynamic guilds = GetApiResponse("users/@me/guilds");
-                friendserverPanel.Controls.Clear();
-
-                foreach (var guild in guilds)
+                catch (WebException ex)
                 {
-                    string guildName = guild.name.ToString();
-                    string iconUrl = $"https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png";
-
-                    FriendItem serverItem = new FriendItem
-                    {
-                        ServerName = guildName,
-                        ProfilePictureUrl = iconUrl
-                    };
-
-                    if (!DarkMode)
-                    {
-                        serverItem.LabelColor = System.Drawing.Color.Black;
-                    }
-
-                    serverItem.Clicked += (sender, e) =>
-                    {
-                        var clickedServerItem = (FriendItem)sender;
-                        string selectedServer = clickedServerItem.ServerName;
-                        long serverID = GetServerID(selectedServer);
-                        if (serverID >= 0)
-                        {
-                            Server server = new Server(serverID, AccessToken, DarkMode, RenderMode);
-                            server.Show();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    };
-
-                    friendserverPanel.Controls.Add(serverItem);
+                    ShowErrorMessage("Failed to retrieve friend list", ex);
                 }
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve server list", ex);
             }
         }
 
