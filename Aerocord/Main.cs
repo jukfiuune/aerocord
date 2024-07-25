@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Drawing;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -42,7 +44,6 @@ namespace Aerocord
                 string displayname = userProfile.global_name ?? userProfile.username;
                 string bio = userProfile.bio;
                 usernameLabel.Text = displayname;
-                descriptionLabel.Text = bio;
                 userPFP = $"https://cdn.discordapp.com/avatars/{userProfile.id}/{userProfile.avatar}.png";
                 profilepicture.ImageLocation = userPFP;
             }
@@ -67,7 +68,7 @@ namespace Aerocord
             try
             {
                 dynamic friends = GetApiResponse("users/@me/relationships");
-                friendsPanel.Controls.Clear();
+                friendserverPanel.Controls.Clear();
 
                 foreach (var friend in friends)
                 {
@@ -104,7 +105,7 @@ namespace Aerocord
                             }
                         };
 
-                        friendsPanel.Controls.Add(friendItem);
+                        friendserverPanel.Controls.Add(friendItem);
                     }
                 }
             }
@@ -119,7 +120,7 @@ namespace Aerocord
             try
             {
                 dynamic guilds = GetApiResponse("users/@me/guilds");
-                friendsPanel.Controls.Clear();
+                friendserverPanel.Controls.Clear();
 
                 foreach (var guild in guilds)
                 {
@@ -153,7 +154,7 @@ namespace Aerocord
                         }
                     };
 
-                    friendsPanel.Controls.Add(serverItem);
+                    friendserverPanel.Controls.Add(serverItem);
                 }
             }
             catch (WebException ex)
@@ -294,6 +295,11 @@ namespace Aerocord
         {
             Settings settings = new Settings(DarkMode, RenderMode);
             settings.Show();
+        }
+
+        private void descriptionLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
