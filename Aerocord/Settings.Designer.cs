@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.rendermode = new WindowsFormsAero.ComboBox();
-            this.rendermodelabel = new System.Windows.Forms.Label();
-            this.colormodelabel = new System.Windows.Forms.Label();
+            this.rendermodelabel = new WindowsFormsAero.ThemeLabel();
+            this.colormodelabel = new WindowsFormsAero.ThemeLabel();
             this.colormode = new WindowsFormsAero.ComboBox();
             this.save = new WindowsFormsAero.Button();
-            this.warning = new System.Windows.Forms.Label();
+            this.warning = new WindowsFormsAero.ThemeLabel();
             this.SuspendLayout();
             // 
             // rendermode
@@ -128,10 +128,10 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label rendermodelabel;
-        private System.Windows.Forms.Label colormodelabel;
+        private WindowsFormsAero.ThemeLabel rendermodelabel;
+        private WindowsFormsAero.ThemeLabel colormodelabel;
         private WindowsFormsAero.Button save;
-        private System.Windows.Forms.Label warning;
+        private WindowsFormsAero.ThemeLabel warning;
         private WindowsFormsAero.ComboBox rendermode;
         private WindowsFormsAero.ComboBox colormode;
     }

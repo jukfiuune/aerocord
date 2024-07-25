@@ -22,6 +22,7 @@ namespace Aerocord
             InitializeComponent();
             DarkMode = darkmodee;
             RenderMode = rendermodee;
+            GlassMargins = new Padding(133, 15, 156, 73);
             if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
@@ -118,7 +119,7 @@ namespace Aerocord
             }
             else
             {
-                GlassMargins = new Padding(0, 0, 0, 0);
+                GlassMargins = new Padding(133, 15, 156, 73);
                 colormodelabel.BackColor = System.Drawing.SystemColors.Control;
                 colormodelabel.ForeColor = System.Drawing.SystemColors.ControlText;
                 rendermodelabel.BackColor = System.Drawing.SystemColors.Control;
