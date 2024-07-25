@@ -36,16 +36,14 @@
             this.emailBox = new WindowsFormsAero.TextBox();
             this.signinButton = new WindowsFormsAero.Button();
             this.profilepicture = new System.Windows.Forms.PictureBox();
-            this.themeLabel4 = new WindowsFormsAero.ThemeLabel();
             this.passBox = new WindowsFormsAero.TextBox();
-            this.themeLabel5 = new WindowsFormsAero.ThemeLabel();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
             this.SuspendLayout();
             // 
             // username
             // 
             this.username.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.username.Location = new System.Drawing.Point(12, 118);
+            this.username.Location = new System.Drawing.Point(12, 123);
             this.username.Name = "username";
             this.username.Size = new System.Drawing.Size(321, 28);
             this.username.TabIndex = 2;
@@ -55,7 +53,7 @@
             // themeLabel1
             // 
             this.themeLabel1.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel1.Location = new System.Drawing.Point(12, 152);
+            this.themeLabel1.Location = new System.Drawing.Point(25, 152);
             this.themeLabel1.Name = "themeLabel1";
             this.themeLabel1.Size = new System.Drawing.Size(321, 23);
             this.themeLabel1.TabIndex = 3;
@@ -64,7 +62,7 @@
             // themeLabel2
             // 
             this.themeLabel2.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel2.Location = new System.Drawing.Point(12, 170);
+            this.themeLabel2.Location = new System.Drawing.Point(40, 170);
             this.themeLabel2.Name = "themeLabel2";
             this.themeLabel2.Size = new System.Drawing.Size(257, 23);
             this.themeLabel2.TabIndex = 4;
@@ -86,14 +84,13 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "here";
             this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // themeLabel3
             // 
             this.themeLabel3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.themeLabel3.Font = new System.Drawing.Font("Segoe UI", 10F, ((System.Drawing.FontStyle)(((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic) 
                 | System.Drawing.FontStyle.Underline))));
-            this.themeLabel3.Location = new System.Drawing.Point(236, 170);
+            this.themeLabel3.Location = new System.Drawing.Point(264, 170);
             this.themeLabel3.Name = "themeLabel3";
             this.themeLabel3.Size = new System.Drawing.Size(38, 23);
             this.themeLabel3.TabIndex = 5;
@@ -102,16 +99,16 @@
             // emailBox
             // 
             this.emailBox.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.emailBox.Location = new System.Drawing.Point(83, 221);
+            this.emailBox.Location = new System.Drawing.Point(12, 202);
             this.emailBox.Name = "emailBox";
-            this.emailBox.Size = new System.Drawing.Size(250, 25);
+            this.emailBox.Size = new System.Drawing.Size(321, 25);
             this.emailBox.TabIndex = 7;
             // 
             // signinButton
             // 
-            this.signinButton.Location = new System.Drawing.Point(83, 283);
+            this.signinButton.Location = new System.Drawing.Point(136, 264);
             this.signinButton.Name = "signinButton";
-            this.signinButton.Size = new System.Drawing.Size(250, 27);
+            this.signinButton.Size = new System.Drawing.Size(75, 27);
             this.signinButton.TabIndex = 8;
             this.signinButton.Text = "Sign in";
             this.signinButton.UseVisualStyleBackColor = true;
@@ -122,47 +119,27 @@
             this.profilepicture.BackColor = System.Drawing.Color.Black;
             this.profilepicture.Image = global::Aerocord.Properties.Resources.logoRounded;
             this.profilepicture.ImageLocation = "";
-            this.profilepicture.Location = new System.Drawing.Point(121, 12);
+            this.profilepicture.Location = new System.Drawing.Point(121, 14);
             this.profilepicture.Name = "profilepicture";
             this.profilepicture.Size = new System.Drawing.Size(100, 100);
             this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.profilepicture.TabIndex = 0;
             this.profilepicture.TabStop = false;
             // 
-            // themeLabel4
-            // 
-            this.themeLabel4.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel4.Location = new System.Drawing.Point(12, 221);
-            this.themeLabel4.Name = "themeLabel4";
-            this.themeLabel4.Size = new System.Drawing.Size(60, 25);
-            this.themeLabel4.TabIndex = 9;
-            this.themeLabel4.Text = "Email:";
-            // 
             // passBox
             // 
             this.passBox.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.passBox.Location = new System.Drawing.Point(83, 252);
+            this.passBox.Location = new System.Drawing.Point(12, 233);
             this.passBox.Name = "passBox";
-            this.passBox.Size = new System.Drawing.Size(250, 25);
+            this.passBox.Size = new System.Drawing.Size(321, 25);
             this.passBox.TabIndex = 10;
-            // 
-            // themeLabel5
-            // 
-            this.themeLabel5.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.themeLabel5.Location = new System.Drawing.Point(12, 252);
-            this.themeLabel5.Name = "themeLabel5";
-            this.themeLabel5.Size = new System.Drawing.Size(65, 25);
-            this.themeLabel5.TabIndex = 11;
-            this.themeLabel5.Text = "Password:";
             // 
             // Signin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(345, 322);
-            this.Controls.Add(this.themeLabel5);
+            this.ClientSize = new System.Drawing.Size(345, 302);
             this.Controls.Add(this.passBox);
-            this.Controls.Add(this.themeLabel4);
             this.Controls.Add(this.signinButton);
             this.Controls.Add(this.emailBox);
             this.Controls.Add(this.themeLabel3);
@@ -192,9 +169,7 @@
         private WindowsFormsAero.ThemeLabel themeLabel3;
         private WindowsFormsAero.TextBox emailBox;
         private WindowsFormsAero.Button signinButton;
-        private WindowsFormsAero.ThemeLabel themeLabel4;
         private WindowsFormsAero.TextBox passBox;
-        private WindowsFormsAero.ThemeLabel themeLabel5;
     }
 }
 

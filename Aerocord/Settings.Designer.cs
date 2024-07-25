@@ -46,15 +46,14 @@
             "Acrylic",
             "Mica",
             "Mica Alt"});
-            this.rendermode.Location = new System.Drawing.Point(133, 15);
+            this.rendermode.Location = new System.Drawing.Point(116, 15);
             this.rendermode.Name = "rendermode";
-            this.rendermode.Size = new System.Drawing.Size(140, 23);
+            this.rendermode.Size = new System.Drawing.Size(299, 23);
             this.rendermode.TabIndex = 1;
             this.rendermode.SelectedIndexChanged += new System.EventHandler(this.rendermode_SelectedIndexChanged);
             // 
             // rendermodelabel
             // 
-            this.rendermodelabel.AutoSize = true;
             this.rendermodelabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.rendermodelabel.Location = new System.Drawing.Point(15, 15);
             this.rendermodelabel.Name = "rendermodelabel";
@@ -64,7 +63,6 @@
             // 
             // colormodelabel
             // 
-            this.colormodelabel.AutoSize = true;
             this.colormodelabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.colormodelabel.Location = new System.Drawing.Point(15, 46);
             this.colormodelabel.Name = "colormodelabel";
@@ -81,9 +79,9 @@
             "Default",
             "Light",
             "Dark"});
-            this.colormode.Location = new System.Drawing.Point(133, 46);
+            this.colormode.Location = new System.Drawing.Point(116, 46);
             this.colormode.Name = "colormode";
-            this.colormode.Size = new System.Drawing.Size(140, 23);
+            this.colormode.Size = new System.Drawing.Size(299, 23);
             this.colormode.TabIndex = 3;
             this.colormode.SelectedIndexChanged += new System.EventHandler(this.colormode_SelectedIndexChanged);
             // 
@@ -99,13 +97,12 @@
             // 
             // warning
             // 
-            this.warning.AutoSize = true;
-            this.warning.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.warning.Location = new System.Drawing.Point(16, 78);
+            this.warning.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.warning.Location = new System.Drawing.Point(49, 81);
             this.warning.Name = "warning";
-            this.warning.Size = new System.Drawing.Size(285, 17);
+            this.warning.Size = new System.Drawing.Size(341, 17);
             this.warning.TabIndex = 5;
-            this.warning.Text = "reopen Aerocord for the changes to take effect";
+            this.warning.Text = "Aerocord needs to be restarted for the changes to take place.";
             // 
             // Settings
             // 
@@ -118,7 +115,7 @@
             this.Controls.Add(this.colormodelabel);
             this.Controls.Add(this.rendermodelabel);
             this.Controls.Add(this.rendermode);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "Settings";
             this.ShowIcon = false;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsFormsAero;
 using WindowsFormsAero.TaskDialog;
@@ -25,7 +26,7 @@ namespace Aerocord
             if (DarkMode) _ = new DarkModeCS(this);
             SetUserInfo();
             PopulateFriendsTab();
-            PopulateServersTab();
+            //PopulateServersTab();
         }
 
         private void SetUserInfo()
@@ -33,7 +34,6 @@ namespace Aerocord
             try
             {
                 dynamic userProfile = GetApiResponse("users/@me");
-                //Console.WriteLine(userProfile);
                 string displayname = userProfile.global_name;
                 if (userProfile.global_name != null) { displayname = userProfile.global_name; } else { displayname = userProfile.username; }
                 string bio = userProfile.bio;
@@ -53,26 +53,48 @@ namespace Aerocord
             try
             {
                 dynamic friends = GetApiResponse("users/@me/relationships");
-                //Console.WriteLine(friends);
-                List<ListViewItem> friendNames = new List<ListViewItem>();
+                friendsPanel.Controls.Clear();
+
                 foreach (var friend in friends)
                 {
-                    if (friend.type == 1 && friend.user.global_name != null)
+                    if (friend.type == 1)
                     {
-                        friendNames.Add(new ListViewItem((string)friend.user.global_name/*, $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png"*/));
-                    }
-                    else if(friend.type == 1 && friend.user.username != null)
-                    {
-                        friendNames.Add(new ListViewItem((string)friend.user.username/*, $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png"*/));
+                        string username = friend.user.global_name ?? friend.user.username;
+                        string avatarUrl = $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png";
+
+                        FriendItem friendItem = new FriendItem
+                        {
+                            Username = username,
+                            ProfilePictureUrl = avatarUrl
+                        };
+
+                        friendItem.Clicked += (sender, e) =>
+                        {
+                            var clickedFriendItem = (FriendItem)sender;
+                            string selectedFriend = clickedFriendItem.Username;
+                            long chatID = GetChatID(selectedFriend);
+                            long friendID = GetFriendID(selectedFriend);
+                            if (chatID >= 0)
+                            {
+                                DM dm = new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode);
+                                dm.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        };
+
+                        friendsPanel.Controls.Add(friendItem);
                     }
                 }
-                friendsList.Items.AddRange(friendNames.ToArray());
             }
             catch (WebException ex)
             {
                 ShowErrorMessage("Failed to retrieve friend list", ex);
             }
         }
+
         private long GetChatID(string name)
         {
             try
@@ -150,7 +172,7 @@ namespace Aerocord
                 return -1;
             }
         }
-        private void PopulateServersTab()
+        /*private void PopulateServersTab()
         {
             try
             {
@@ -168,7 +190,7 @@ namespace Aerocord
             {
                 ShowErrorMessage("Failed to retrieve server list", ex);
             }
-        }
+        }*/
 
         private dynamic GetApiResponse(string endpoint)
         {
@@ -220,11 +242,11 @@ namespace Aerocord
             signin.Close();
         }
 
-        private void friendsList_DoubleClick(object sender, EventArgs ex)
+        /*private void friendsList_DoubleClick(object sender, EventArgs ex)
         {
-            if (friendsList.SelectedItems[0].Text != null)
+            if (friendsPanel.SelectedItems[0].Text != null)
             {
-                string selectedFriend = friendsList.SelectedItems[0].Text;
+                string selectedFriend = friendsPanel.SelectedItems[0].Text;
                 long chatID = GetChatID(selectedFriend);
                 long friendID = GetFriendID(selectedFriend);
                 if (chatID >= 0)
@@ -247,7 +269,7 @@ namespace Aerocord
                 }
                 else MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
+        }*/
 
         private void profilepicture_Click(object sender, EventArgs e)
         {

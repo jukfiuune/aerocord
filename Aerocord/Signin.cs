@@ -302,12 +302,5 @@ namespace Aerocord
                 if (Key.GetValue(System.Diagnostics.Process.GetCurrentProcess().ProcessName + ".exe") == null)
                     Key.SetValue(System.Diagnostics.Process.GetCurrentProcess().ProcessName + ".exe", RegVal, RegistryValueKind.DWord);
         }
-
-        private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
-        {
-            Token token = new Token(this, DarkMode, RenderMode);
-            token.Show();
-            this.Hide();
-        }
     }
 }

@@ -80,6 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DarkModeCS.cs" />
+    <Compile Include="FriendItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FriendItem.Designer.cs">
+      <DependentUpon>FriendItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="PInvoke.cs" />
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>
@@ -94,12 +100,6 @@
       <DependentUpon>Signin.cs</DependentUpon>
     </Compile>
     <Compile Include="SysInfo.cs" />
-    <Compile Include="Token.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Token.Designer.cs">
-      <DependentUpon>Token.cs</DependentUpon>
-    </Compile>
     <Compile Include="Server.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,14 +125,14 @@
     <EmbeddedResource Include="DM.resx">
       <DependentUpon>DM.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FriendItem.resx">
+      <DependentUpon>FriendItem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Signin.resx">
       <DependentUpon>Signin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Token.resx">
-      <DependentUpon>Token.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
