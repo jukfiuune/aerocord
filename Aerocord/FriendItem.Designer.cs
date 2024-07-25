@@ -39,7 +39,7 @@
             this.usernameLabel.ForeColor = System.Drawing.Color.White;
             this.usernameLabel.Location = new System.Drawing.Point(40, 7);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(138, 19);
+            this.usernameLabel.Size = new System.Drawing.Size(195, 19);
             this.usernameLabel.TabIndex = 1;
             this.usernameLabel.Text = "usernameLabel";
             // 

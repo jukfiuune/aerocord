@@ -16,6 +16,7 @@ namespace Aerocord
         private string userPFP;
         private bool DarkMode = false;
         private string RenderMode = "Aero";
+
         public Main(string token, bool darkmode, string rendermode, Signin signinArg)
         {
             InitializeComponent();
@@ -29,7 +30,8 @@ namespace Aerocord
             }
             SetUserInfo();
             PopulateFriendsTab();
-            //PopulateServersTab();
+            friendsButton.Click += FriendsButton_Click;
+            button2.Click += ServersButton_Click;
         }
 
         private void SetUserInfo()
@@ -37,8 +39,7 @@ namespace Aerocord
             try
             {
                 dynamic userProfile = GetApiResponse("users/@me");
-                string displayname = userProfile.global_name;
-                if (userProfile.global_name != null) { displayname = userProfile.global_name; } else { displayname = userProfile.username; }
+                string displayname = userProfile.global_name ?? userProfile.username;
                 string bio = userProfile.bio;
                 usernameLabel.Text = displayname;
                 descriptionLabel.Text = bio;
@@ -49,6 +50,16 @@ namespace Aerocord
             {
                 ShowErrorMessage("Failed to retrieve user profile", ex);
             }
+        }
+
+        private void FriendsButton_Click(object sender, EventArgs e)
+        {
+            PopulateFriendsTab();
+        }
+
+        private void ServersButton_Click(object sender, EventArgs e)
+        {
+            PopulateServersTab();
         }
 
         private void PopulateFriendsTab()
@@ -103,6 +114,64 @@ namespace Aerocord
             }
         }
 
+        private void PopulateServersTab()
+        {
+            try
+            {
+                dynamic guilds = GetApiResponse("users/@me/guilds");
+                friendsPanel.Controls.Clear();
+
+                foreach (var guild in guilds)
+                {
+                    string guildName = guild.name.ToString();
+                    string iconUrl = $"https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png";
+
+                    FriendItem serverItem = new FriendItem
+                    {
+                        ServerName = guildName,
+                        ProfilePictureUrl = iconUrl
+                    };
+
+                    if (!DarkMode)
+                    {
+                        serverItem.LabelColor = System.Drawing.Color.Black;
+                    }
+
+                    serverItem.Clicked += (sender, e) =>
+                    {
+                        var clickedServerItem = (FriendItem)sender;
+                        string selectedServer = clickedServerItem.ServerName;
+                        long serverID = GetServerID(selectedServer);
+                        if (serverID >= 0)
+                        {
+                            Server server = new Server(serverID, AccessToken, DarkMode, RenderMode);
+                            server.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    };
+
+                    friendsPanel.Controls.Add(serverItem);
+                }
+            }
+            catch (WebException ex)
+            {
+                ShowErrorMessage("Failed to retrieve server list", ex);
+            }
+        }
+
+        private dynamic GetApiResponse(string endpoint)
+        {
+            using (var webClient = new WebClient())
+            {
+                webClient.Headers[HttpRequestHeader.Authorization] = AccessToken;
+                string jsonResponse = webClient.DownloadString(DiscordApiBaseUrl + endpoint);
+                return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
+            }
+        }
+
         private long GetChatID(string name)
         {
             try
@@ -133,6 +202,7 @@ namespace Aerocord
                 return -1;
             }
         }
+
         private long GetFriendID(string name)
         {
             try
@@ -180,35 +250,6 @@ namespace Aerocord
                 return -1;
             }
         }
-        /*private void PopulateServersTab()
-        {
-            try
-            {
-                dynamic guilds = GetApiResponse("users/@me/guilds");
-                List<ListViewItem> serverNames = new List<ListViewItem>();
-                foreach (var guild in guilds)
-                {
-                    string guildName = guild.name.ToString();
-
-                    serverNames.Add(new ListViewItem(guildName));
-                }
-                serversList.Items.AddRange(serverNames.ToArray());
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve server list", ex);
-            }
-        }*/
-
-        private dynamic GetApiResponse(string endpoint)
-        {
-            using (var webClient = new WebClient())
-            {
-                webClient.Headers[HttpRequestHeader.Authorization] = AccessToken;
-                string jsonResponse = webClient.DownloadString(DiscordApiBaseUrl + endpoint);
-                return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
-            }
-        }
 
         private void ShowErrorMessage(string message, Exception ex)
         {
@@ -216,7 +257,7 @@ namespace Aerocord
         }
 
         protected override void OnShown(EventArgs e)
-        { 
+        {
             base.OnShown(e);
 
             GlassMargins = new Padding(-1, -1, -1, -1);
@@ -248,35 +289,6 @@ namespace Aerocord
             base.OnFormClosing(e);
             signin.Close();
         }
-
-        /*private void friendsList_DoubleClick(object sender, EventArgs ex)
-        {
-            if (friendsPanel.SelectedItems[0].Text != null)
-            {
-                string selectedFriend = friendsPanel.SelectedItems[0].Text;
-                long chatID = GetChatID(selectedFriend);
-                long friendID = GetFriendID(selectedFriend);
-                if (chatID >= 0)
-                {
-                    DM dm = new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode);
-                    dm.Show();
-                } else MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void serversList_DoubleClick(object sender, EventArgs ex)
-        {
-            if (serversList.SelectedItems[0].Text != null)
-            {
-                string selectedServer = serversList.SelectedItems[0].Text;
-                long serverID = GetServerID(selectedServer);
-                if (serverID >= 0)
-                {
-                    Server server = new Server(serverID, AccessToken, DarkMode, RenderMode);
-                    server.Show();
-                }
-                else MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }*/
 
         private void profilepicture_Click(object sender, EventArgs e)
         {

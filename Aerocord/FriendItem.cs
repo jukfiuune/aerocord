@@ -24,6 +24,12 @@ namespace Aerocord
             set => usernameLabel.Text = value;
         }
 
+        public string ServerName
+        {
+            get => usernameLabel.Text;
+            set => usernameLabel.Text = value;
+        }
+
         public string ProfilePictureUrl
         {
             get => profilePictureFriend.ImageLocation;

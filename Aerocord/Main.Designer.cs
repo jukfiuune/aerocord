@@ -32,6 +32,8 @@
             this.descriptionLabel = new WindowsFormsAero.ThemeLabel();
             this.friendsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.profilepicture = new System.Windows.Forms.PictureBox();
+            this.friendsButton = new WindowsFormsAero.Button();
+            this.button2 = new WindowsFormsAero.Button();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,9 +61,9 @@
             this.friendsPanel.AutoScroll = true;
             this.friendsPanel.BackColor = System.Drawing.Color.Black;
             this.friendsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.friendsPanel.Location = new System.Drawing.Point(16, 68);
+            this.friendsPanel.Location = new System.Drawing.Point(16, 95);
             this.friendsPanel.Name = "friendsPanel";
-            this.friendsPanel.Size = new System.Drawing.Size(317, 393);
+            this.friendsPanel.Size = new System.Drawing.Size(317, 366);
             this.friendsPanel.TabIndex = 4;
             // 
             // profilepicture
@@ -79,11 +81,31 @@
             this.profilepicture.TabStop = false;
             this.profilepicture.Click += new System.EventHandler(this.profilepicture_Click);
             // 
+            // friendsButton
+            // 
+            this.friendsButton.Location = new System.Drawing.Point(16, 68);
+            this.friendsButton.Name = "friendsButton";
+            this.friendsButton.Size = new System.Drawing.Size(75, 23);
+            this.friendsButton.TabIndex = 5;
+            this.friendsButton.Text = "Friends";
+            this.friendsButton.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(97, 68);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "Servers";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(345, 473);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.friendsButton);
             this.Controls.Add(this.friendsPanel);
             this.Controls.Add(this.descriptionLabel);
             this.Controls.Add(this.usernameLabel);
@@ -104,6 +126,8 @@
         private WindowsFormsAero.ThemeLabel usernameLabel;
         private WindowsFormsAero.ThemeLabel descriptionLabel;
         private System.Windows.Forms.FlowLayoutPanel friendsPanel;
+        private WindowsFormsAero.Button friendsButton;
+        private WindowsFormsAero.Button button2;
     }
 }
 
