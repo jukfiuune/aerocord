@@ -10,6 +10,8 @@ namespace Aerocord
 {
     public class WebSocketClient
     {
+        private bool init = false;
+
         private Main parentForm;
         private WebSocket webSocket;
         private string accessToken;
@@ -85,7 +87,7 @@ namespace Aerocord
                     switch (eventType)
                     {
                         case "READY":
-                            HandleReadyEvent(json["d"]);
+                            if(!init) HandleReadyEvent(json["d"]);
                             break;
                         case "MESSAGE_CREATE":
                             HandleMessageCreateEvent(json["d"]);
@@ -120,14 +122,40 @@ namespace Aerocord
         private void HandleReadyEvent(JToken data)
         {
             dynamic eventData = data;
-            string customStatus = eventData["user_settings"]["custom_status"] ?? "";
+            string status = eventData["user_settings"]["status"];
+            string customStatus = eventData["user_settings"]["custom_status"]["text"] ?? "";
             dynamic friendData = eventData["relationships"];
             dynamic serverData = eventData["guilds"];
 
+            if(customStatus == "") switch(status)
+                {
+                    case "online":
+                        customStatus = "Online";
+                        break;
+                    case "dnd":
+                        customStatus = "Do Not Disturb";
+                        break;
+                    case "idle":
+                        customStatus = "Idle";
+                        break;
+                    case "offline":
+                        customStatus = "Offline";
+                        break;
+                    default:
+                        customStatus = "Online";
+                        break;
+                }
+
             parentForm.friends = friendData;
             parentForm.guilds = serverData;
-            foreach(var presence in eventData["presences"]) parentForm.friendStatuses.Add(long.Parse((string)presence["user"]["id"]), (string)presence["status"]);
+            parentForm.statusLabel.Text = customStatus;
+            parentForm.userStatus = status;
+            foreach (var presence in eventData["presences"]) {
+                if (!parentForm.friendStatuses.ContainsKey(long.Parse((string)presence["user"]["id"]))) parentForm.friendStatuses.Add(long.Parse((string)presence["user"]["id"]), (string)presence["status"]);
+                foreach(var activity in presence["activities"]) if (activity["type"] == 4 && activity["id"] == "custom") { if (!parentForm.friendCustomStatuses.ContainsKey(long.Parse((string)eventData["user"]["id"]))) parentForm.friendCustomStatuses.Add(long.Parse((string)eventData["user"]["id"]), (string)activity["state"]); break; }
+            }
             parentForm.PopulateFriendsTab();
+            init = true;
         }
 
         private void HandleMessageCreateEvent(JToken data)
@@ -142,27 +170,24 @@ namespace Aerocord
             List<Attachment> attachmentsFormed = new List<Attachment>();
             List<Embed> embedsFormed = new List<Embed>();
 
-            if (attachmentData != null)
-            {
-                foreach (var attachment in attachmentData)
-                {
-                    attachmentsFormed.Add(new Attachment { URL = attachment.url, Type = attachment.content_type });
-                }
-            }
-
-            if (embedData != null)
-            {
-                foreach (var embed in embedData)
-                {
-                    embedsFormed.Add(new Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
-                }
-            }
-
             if (parentForm.listDMs.ContainsKey(long.Parse(channelId)))
             {
                 DM parentDMForm = parentForm.listDMs[long.Parse(channelId)];
-                if (channelId == parentDMForm.ChatID.ToString())
-                {
+                    if (attachmentData != null)
+                    {
+                        foreach (var attachment in attachmentData)
+                        {
+                            attachmentsFormed.Add(new Attachment { URL = attachment.url, Type = attachment.content_type });
+                        }
+                    }
+
+                    if (embedData != null)
+                    {
+                        foreach (var embed in embedData)
+                        {
+                            embedsFormed.Add(new Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
+                        }
+                    }
                     switch ((int)eventData["type"].Value)
                     {
                         case 7:
@@ -192,13 +217,25 @@ namespace Aerocord
                             parentDMForm.AddMessage(author, content, "said", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
                             break;
                     }
-                }
             }
             else if (parentForm.listServers.ContainsKey(long.Parse(channelId)))
             {
-                Server parentServerForm = parentForm.listServers[long.Parse(channelId)];
-                if (channelId == parentServerForm.ChatID.ToString())
+                if (attachmentData != null)
                 {
+                    foreach (var attachment in attachmentData)
+                    {
+                        attachmentsFormed.Add(new Attachment { URL = attachment.url, Type = attachment.content_type });
+                    }
+                }
+
+                if (embedData != null)
+                {
+                    foreach (var embed in embedData)
+                    {
+                        embedsFormed.Add(new Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
+                    }
+                }
+                Server parentServerForm = parentForm.listServers[long.Parse(channelId)];
                     switch ((int)eventData["type"].Value)
                     {
                         case 7:
@@ -228,7 +265,6 @@ namespace Aerocord
                             parentServerForm.AddMessage(author, content, "said", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
                             break;
                     }
-                }
             }
         }
 
@@ -236,7 +272,11 @@ namespace Aerocord
         {
             dynamic eventData = data;
             string status = eventData["status"];
+            string custom_status = "";
+            foreach (var activity in eventData["activities"]) if(activity["type"] == 4 && activity["id"] == "custom") { custom_status = activity["state"] ?? ""; break; }
             if (parentForm.friendStatuses.ContainsKey(long.Parse((string)eventData["user"]["id"]))) parentForm.friendStatuses[long.Parse((string)eventData["user"]["id"])] = status;
+            if (parentForm.friendCustomStatuses.ContainsKey(long.Parse((string)eventData["user"]["id"]))) parentForm.friendCustomStatuses[long.Parse((string)eventData["user"]["id"])] = custom_status; else parentForm.friendCustomStatuses.Add(long.Parse((string)eventData["user"]["id"]), custom_status);
+            foreach (DM dm in parentForm.listDMs.Values) if (dm.FriendID == long.Parse((string)eventData["user"]["id"])) dm.ChangeStatus(status, custom_status);
             
         }
 

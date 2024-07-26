@@ -16,6 +16,7 @@ namespace Aerocord
         private string AccessToken;
         private Signin signin;
         private string userPFP;
+        public string userStatus = "online";
         private bool DarkMode = false;
         private string RenderMode = "Aero";
 
@@ -24,6 +25,7 @@ namespace Aerocord
         public dynamic friends;
         public dynamic guilds;
         public Dictionary<long, string> friendStatuses = new Dictionary<long, string>();
+        public Dictionary<long, string> friendCustomStatuses = new Dictionary<long, string>();
 
         public Dictionary<long, DM> listDMs = new Dictionary<long, DM>();
         public Dictionary<long, Server> listServers = new Dictionary<long, Server>();
@@ -38,6 +40,23 @@ namespace Aerocord
             if (DarkMode)
             {
                 _ = new DarkModeCS(this);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+
+            switch (RenderMode)
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                    break;
             }
             SetUserInfo();
             friendsButton.Click += FriendsButton_Click;
@@ -82,7 +101,6 @@ namespace Aerocord
             }
             else
             {
-                this.Show();
                 try
                 {
                     friendserverPanel.Controls.Clear();
@@ -113,8 +131,19 @@ namespace Aerocord
                                 long friendID = GetFriendID(selectedFriend);
                                 if (chatID >= 0)
                                 {
-                                    listDMs.Add(chatID, new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode));
-                                    listDMs[chatID].ChangeStatus(friendStatuses[friendID]);
+                                    listDMs.Add(chatID, new DM(this, chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode));
+                                    if (friendCustomStatuses.ContainsKey(friendID) && friendStatuses.ContainsKey(friendID))
+                                    {
+                                        listDMs[chatID].ChangeStatus(friendStatuses[friendID], friendCustomStatuses[friendID]);
+                                    }
+                                    else if (friendStatuses.ContainsKey(friendID))
+                                    {
+                                        listDMs[chatID].ChangeStatus(friendStatuses[friendID], "");
+                                    }
+                                    else
+                                    {
+                                        listDMs[chatID].ChangeStatus("offline", "");
+                                    }
                                     listDMs[chatID].Show();
                                 }
                                 else
@@ -126,6 +155,7 @@ namespace Aerocord
                             friendserverPanel.Controls.Add(friendItem);
                         }
                     }
+                    this.Show();
                 }
                 catch (WebException ex)
                 {
@@ -287,26 +317,8 @@ namespace Aerocord
         {
             base.OnShown(e);
 
-            GlassMargins = new Padding(-1, -1, -1, -1);
-            if (DarkMode)
-            {
-                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
-            }
-            switch (RenderMode)
-            {
-                case "Aero":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
-                    break;
-                case "Mica":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
-                    break;
-                case "Acrylic":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
-                    break;
-                case "Mica Alt":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
-                    break;
-            }
+            GlassMargins = new Padding(15, 65, 205, 380);
+            if(DarkMode) GlassMargins = new Padding(-1, -1, -1, -1);
 
             signin.Hide();
         }

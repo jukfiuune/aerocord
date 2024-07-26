@@ -46,10 +46,13 @@
             // profilePictureFriend
             // 
             this.profilePictureFriend.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.profilePictureFriend.ErrorImage = global::Aerocord.Properties.Resources.defaultpfp;
+            this.profilePictureFriend.Image = global::Aerocord.Properties.Resources.defaultpfp;
+            this.profilePictureFriend.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilePictureFriend.Location = new System.Drawing.Point(4, 3);
             this.profilePictureFriend.Name = "profilePictureFriend";
             this.profilePictureFriend.Size = new System.Drawing.Size(27, 27);
-            this.profilePictureFriend.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.profilePictureFriend.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.profilePictureFriend.TabIndex = 0;
             this.profilePictureFriend.TabStop = false;
             // 

@@ -125,7 +125,7 @@
 
         private System.Windows.Forms.PictureBox profilepicture;
         private WindowsFormsAero.ThemeLabel usernameLabel;
-        private WindowsFormsAero.ThemeLabel statusLabel;
+        public WindowsFormsAero.ThemeLabel statusLabel;
         private System.Windows.Forms.FlowLayoutPanel friendserverPanel;
         private WindowsFormsAero.Button friendsButton;
         private WindowsFormsAero.Button button2;

@@ -67,6 +67,7 @@
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(654, 23);
             this.messageBox.TabIndex = 6;
+            this.messageBox.KeyDown += this.messageBox_KeyDown;
             // 
             // chatBox
             // 

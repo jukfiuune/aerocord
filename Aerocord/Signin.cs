@@ -283,6 +283,27 @@ namespace Aerocord
                             }
                         }
                     }
+                    GlassMargins = new Padding(11, 200, 11, 11);
+                    if (DarkMode)
+                    {
+                        GlassMargins = new Padding(-1, -1, -1, -1);
+                        PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+                    }
+                    switch (RenderMode)
+                    {
+                        case "Aero":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                            break;
+                        case "Mica":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                            break;
+                        case "Acrylic":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                            break;
+                        case "Mica Alt":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                            break;
+                    }
                     PerformLogin(AccessToken, true);
                 }
                 this.Show();

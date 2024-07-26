@@ -26,17 +26,33 @@ namespace Aerocord
         private string lastMessageAuthor = "";
         private bool DarkMode = false;
         private string RenderMode = "Aero";
-        public DM(long chatid, long friendid, string token, string userpfp, bool darkmode, string rendermode)
+        public DM(Main parentForm, long chatid, long friendid, string token, string userpfp, bool darkmode, string rendermode)
         {
             InitializeComponent();
             DarkMode = darkmode;
             RenderMode = rendermode;
             htmlStart = htmlStartLight;
-            if (DarkMode) { _ = new DarkModeCS(this); htmlStart = htmlStartDark; }
+            if (DarkMode) { _ = new DarkModeCS(this); PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1); htmlStart = htmlStartDark; }
+            switch (RenderMode)
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                    break;
+            }
             AccessToken = token;
             ChatID = chatid;
             FriendID = friendid;
             userPFP = userpfp;
+            frame.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(parentForm.userStatus);
             SetFriendInfo();
             LoadMessages();
         }
@@ -60,9 +76,43 @@ namespace Aerocord
             }
         }
 
-        public void ChangeStatus(string status)
+        delegate void ChangeStatusCallback(string status, string custom_status);
+        public void ChangeStatus(string status, string custom_status)
         {
-            framefriend.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(status);
+            if (InvokeRequired)
+            {
+                ChangeStatusCallback d = new ChangeStatusCallback(ChangeStatus);
+                Invoke(d, new object[] { status, custom_status });
+            }
+            else
+            {
+                framefriend.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(status);
+                if (custom_status == "")
+                {
+                    switch (status)
+                    {
+                        case "online":
+                            descriptionLabel.Text = "Online";
+                            break;
+                        case "dnd":
+                            descriptionLabel.Text = "Do Not Disturb";
+                            break;
+                        case "idle":
+                            descriptionLabel.Text = "Idle";
+                            break;
+                        case "offline":
+                            descriptionLabel.Text = "Offline";
+                            break;
+                        default:
+                            descriptionLabel.Text = "Online";
+                            break;
+                    }
+                }
+                else
+                {
+                    descriptionLabel.Text = custom_status;
+                }
+            }
         }
 
         private void LoadMessages()
@@ -376,22 +426,6 @@ namespace Aerocord
             if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
-                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
-            }
-            switch (RenderMode)
-            {
-                case "Aero":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
-                    break;
-                case "Mica":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
-                    break;
-                case "Acrylic":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
-                    break;
-                case "Mica Alt":
-                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
-                    break;
             }
 
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
