@@ -236,7 +236,7 @@ namespace Aerocord
         {
             dynamic eventData = data;
             string status = eventData["status"];
-            if (parentForm.friendStatuses.ContainsKey(long.Parse(eventData["user"]["id"]))) parentForm.friendStatuses[long.Parse(eventData["user"]["id"])] = status;
+            if (parentForm.friendStatuses.ContainsKey(long.Parse((string)eventData["user"]["id"]))) parentForm.friendStatuses[long.Parse((string)eventData["user"]["id"])] = status;
             
         }
 

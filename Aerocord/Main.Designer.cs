@@ -40,7 +40,7 @@
             // usernameLabel
             // 
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.usernameLabel.Location = new System.Drawing.Point(75, 14);
+            this.usernameLabel.Location = new System.Drawing.Point(75, 11);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(213, 23);
             this.usernameLabel.TabIndex = 1;
@@ -50,7 +50,7 @@
             // 
             this.statusLabel.Font = new System.Drawing.Font("Segoe UI Variable Text Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.statusLabel.Location = new System.Drawing.Point(75, 37);
+            this.statusLabel.Location = new System.Drawing.Point(75, 34);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(258, 21);
             this.statusLabel.TabIndex = 3;
@@ -74,7 +74,7 @@
             this.profilepicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.ImageLocation = "";
             this.profilepicture.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
-            this.profilepicture.Location = new System.Drawing.Point(16, 12);
+            this.profilepicture.Location = new System.Drawing.Point(16, 9);
             this.profilepicture.Name = "profilepicture";
             this.profilepicture.Size = new System.Drawing.Size(50, 50);
             this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
