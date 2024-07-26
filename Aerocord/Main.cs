@@ -23,6 +23,10 @@ namespace Aerocord
 
         public dynamic friends;
         public dynamic guilds;
+        public Dictionary<long, string> friendStatuses = new Dictionary<long, string>();
+
+        public Dictionary<long, DM> listDMs = new Dictionary<long, DM>();
+        public Dictionary<long, Server> listServers = new Dictionary<long, Server>();
 
         public Main(string token, bool darkmode, string rendermode, Signin signinArg)
         {
@@ -78,6 +82,7 @@ namespace Aerocord
             }
             else
             {
+                this.Show();
                 try
                 {
                     friendserverPanel.Controls.Clear();
@@ -108,8 +113,9 @@ namespace Aerocord
                                 long friendID = GetFriendID(selectedFriend);
                                 if (chatID >= 0)
                                 {
-                                    DM dm = new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode);
-                                    dm.Show();
+                                    listDMs.Add(chatID, new DM(chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode));
+                                    listDMs[chatID].ChangeStatus(friendStatuses[friendID]);
+                                    listDMs[chatID].Show();
                                 }
                                 else
                                 {
@@ -165,8 +171,8 @@ namespace Aerocord
                             long serverID = GetServerID(selectedServer);
                             if (serverID >= 0)
                             {
-                                Server server = new Server(serverID, AccessToken, DarkMode, RenderMode);
-                                server.Show();
+                                listServers.Add(serverID, new Server(serverID, AccessToken, DarkMode, RenderMode));
+                                listServers[serverID].Show();
                             }
                             else
                             {

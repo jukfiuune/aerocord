@@ -8,7 +8,7 @@ using System.Security.Authentication;
 
 namespace Aerocord
 {
-    class WebSocketClient
+    public class WebSocketClient
     {
         private Main parentForm;
         private WebSocket webSocket;
@@ -87,6 +87,12 @@ namespace Aerocord
                         case "READY":
                             HandleReadyEvent(json["d"]);
                             break;
+                        case "MESSAGE_CREATE":
+                            HandleMessageCreateEvent(json["d"]);
+                            break;
+                        case "PRESENCE_UPDATE":
+                            HandlePresenceUpdateEvent(json["d"]);
+                            break;
                     }
                     break;
                 default:
@@ -94,36 +100,6 @@ namespace Aerocord
                     break;
             }
         }
-
-        /*private void HandleTypingStartEvent(JToken jToken)
-        {
-            string channelId = (string)jToken["channel_id"];
-            if (channelId == parentForm.CurrentChannelId)
-            {
-                string userId = (string)jToken["user_id"];
-                string username = GetUsernameById(userId);
-                string message = $"{username} is typing...";
-
-                parentForm.Invoke((MethodInvoker)(() =>
-                {
-                    parentForm.typingStatus.Text = message;
-                }));
-            }
-        }
-
-        private void HandleTypingStopEvent(JToken jToken)
-        {
-            string channelId = (string)jToken["channel_id"];
-            if (channelId == parentForm.CurrentChannelId)
-            {
-                string message = "";
-
-                parentForm.Invoke((MethodInvoker)(() =>
-                {
-                    parentForm.typingStatus.Text = message;
-                }));
-            }
-        }*/
 
         public class Attachment
         {
@@ -150,7 +126,118 @@ namespace Aerocord
 
             parentForm.friends = friendData;
             parentForm.guilds = serverData;
+            foreach(var presence in eventData["presences"]) parentForm.friendStatuses.Add(long.Parse((string)presence["user"]["id"]), (string)presence["status"]);
             parentForm.PopulateFriendsTab();
+        }
+
+        private void HandleMessageCreateEvent(JToken data)
+        {
+            dynamic eventData = data;
+            dynamic attachmentData = eventData["attachments"];
+            dynamic embedData = eventData["embeds"];
+            string channelId = eventData["channel_id"];
+            string author = eventData["author"]["global_name"];
+            if (eventData["author"]["global_name"] == null) author = eventData["author"]["username"];
+            string content = eventData["content"];
+            List<Attachment> attachmentsFormed = new List<Attachment>();
+            List<Embed> embedsFormed = new List<Embed>();
+
+            if (attachmentData != null)
+            {
+                foreach (var attachment in attachmentData)
+                {
+                    attachmentsFormed.Add(new Attachment { URL = attachment.url, Type = attachment.content_type });
+                }
+            }
+
+            if (embedData != null)
+            {
+                foreach (var embed in embedData)
+                {
+                    embedsFormed.Add(new Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
+                }
+            }
+
+            if (parentForm.listDMs.ContainsKey(long.Parse(channelId)))
+            {
+                DM parentDMForm = parentForm.listDMs[long.Parse(channelId)];
+                if (channelId == parentDMForm.ChatID.ToString())
+                {
+                    switch ((int)eventData["type"].Value)
+                    {
+                        case 7:
+                            // Join message
+                            parentDMForm.AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
+                            break;
+
+                        case 19:
+                            // Reply
+                            bool found = false;
+                            foreach (var message in parentDMForm.GetApiResponse($"channels/{parentDMForm.ChatID.ToString()}/messages"))
+                            {
+                                if (message.id == eventData["message_reference"]["message_id"])
+                                {
+                                    string replyAuthor = message.author.global_name;
+                                    if (replyAuthor == null) replyAuthor = message.author.username;
+                                    parentDMForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, replyAuthor, message.content.Value);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) parentDMForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, " ", "Unable to load message");
+                            break;
+
+                        default:
+                            //Normal text or unimplemented
+                            parentDMForm.AddMessage(author, content, "said", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
+                            break;
+                    }
+                }
+            }
+            else if (parentForm.listServers.ContainsKey(long.Parse(channelId)))
+            {
+                Server parentServerForm = parentForm.listServers[long.Parse(channelId)];
+                if (channelId == parentServerForm.ChatID.ToString())
+                {
+                    switch ((int)eventData["type"].Value)
+                    {
+                        case 7:
+                            // Join message
+                            parentServerForm.AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
+                            break;
+
+                        case 19:
+                            // Reply
+                            bool found = false;
+                            foreach (var message in parentServerForm.GetApiResponse($"channels/{parentServerForm.ChatID.ToString()}/messages"))
+                            {
+                                if (message.id == eventData["message_reference"]["message_id"])
+                                {
+                                    string replyAuthor = message.author.global_name;
+                                    if (replyAuthor == null) replyAuthor = message.author.username;
+                                    parentServerForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, replyAuthor, message.content.Value);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) parentServerForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, " ", "Unable to load message");
+                            break;
+
+                        default:
+                            //Normal text or unimplemented
+                            parentServerForm.AddMessage(author, content, "said", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void HandlePresenceUpdateEvent(JToken data)
+        {
+            dynamic eventData = data;
+            string status = eventData["status"];
+            if (parentForm.friendStatuses.ContainsKey(long.Parse(eventData["user"]["id"]))) parentForm.friendStatuses[long.Parse(eventData["user"]["id"])] = status;
+            
         }
 
         private void HandleWebSocketError(string errorMessage)

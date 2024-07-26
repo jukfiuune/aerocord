@@ -36,7 +36,7 @@ namespace Aerocord
         {
             base.OnShown(e);
 
-            GlassMargins = new Padding(82, 220, 11, 11);
+            GlassMargins = new Padding(11, 200, 11, 11);
             if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
@@ -126,6 +126,15 @@ namespace Aerocord
 
                 try
                 {
+                    emailBox.Hide();
+                    passBox.Hide();
+                    signinButton.Hide();
+                    themeLabel1.Hide();
+                    themeLabel2.Hide();
+                    themeLabel3.Hide();
+                    linkLabel1.Hide();
+                    username.Text = "Login in progress...";
+
                     string userProfileJson = webClient.DownloadString("https://discord.com/api/v9/users/@me");
 
                     if(!isAutomated) SaveToken(accessToken);
@@ -133,11 +142,18 @@ namespace Aerocord
                     SetIEVer();
 
                     Main mainForm = new Main(accessToken, DarkMode, RenderMode, this);
-                    mainForm.Show();
                 }
                 catch (WebException ex)
                 {
                     MessageBox.Show("Failed to login. Please enter a valid token! Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    emailBox.Show();
+                    passBox.Show();
+                    signinButton.Show();
+                    themeLabel1.Show();
+                    themeLabel2.Show();
+                    themeLabel3.Show();
+                    linkLabel1.Show();
+                    username.Text = "Sign in";
                 }
             }
         }

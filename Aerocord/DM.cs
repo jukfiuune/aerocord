@@ -14,7 +14,6 @@ namespace Aerocord
     public partial class DM : WindowsFormsAero.AeroForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
-        private WebSocketClientDM websocketClient;
         string htmlStart;
         const string htmlStartLight = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: black; padding: 10px;}</style></head><body>";
         const string htmlStartDark = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} body {background-color: black;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline; color: white;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: white; color: white; border-radius: 5px;} .spoiler:hover {background-color: white; color: black; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: white; padding: 10px;}</style></head><body>";
@@ -40,7 +39,6 @@ namespace Aerocord
             userPFP = userpfp;
             SetFriendInfo();
             LoadMessages();
-            websocketClient = new WebSocketClientDM(AccessToken, this);
         }
 
         private void SetFriendInfo()
@@ -79,17 +77,17 @@ namespace Aerocord
                     string author = messages[i].author.global_name;
                     if (author == null) author = messages[i].author.username;
                     string content = messages[i].content;
-                    List<WebSocketClientDM.Attachment> attachmentsFormed = new List<WebSocketClientDM.Attachment>();
-                    List<WebSocketClientDM.Embed> embedsFormed = new List<WebSocketClientDM.Embed>();
+                    List<WebSocketClient.Attachment> attachmentsFormed = new List<WebSocketClient.Attachment>();
+                    List<WebSocketClient.Embed> embedsFormed = new List<WebSocketClient.Embed>();
 
                     if (messages[i].attachments != null) foreach (var attachment in messages[i].attachments)
                         {
-                            attachmentsFormed.Add(new WebSocketClientDM.Attachment { URL = attachment.url, Type = attachment.content_type });
+                            attachmentsFormed.Add(new WebSocketClient.Attachment { URL = attachment.url, Type = attachment.content_type });
                             //Console.WriteLine(attachment.url);
                         }
                     if (messages[i].embeds != null) foreach (var embed in messages[i].embeds)
                         {
-                            embedsFormed.Add(new WebSocketClientDM.Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
+                            embedsFormed.Add(new WebSocketClient.Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
                         }
                     switch ((int)messages[i].type.Value)
                     {
@@ -132,7 +130,7 @@ namespace Aerocord
                 ShowErrorMessage("Failed to retrieve messages", ex);
             }
         }
-        public void AddMessage(string name, string message, string action, WebSocketClientDM.Attachment[] attachments, WebSocketClientDM.Embed[] embeds, bool reload = true, bool scroll = true, string replyname = "", string replymessage = "")
+        public void AddMessage(string name, string message, string action, WebSocketClient.Attachment[] attachments, WebSocketClient.Embed[] embeds, bool reload = true, bool scroll = true, string replyname = "", string replymessage = "")
         {
             if (name == lastMessageAuthor && action == "said")
             {
@@ -403,7 +401,6 @@ namespace Aerocord
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            if (websocketClient != null) websocketClient.CloseWebSocket();
             GC.Collect();
         }
     }
