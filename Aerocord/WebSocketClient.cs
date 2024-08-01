@@ -126,6 +126,8 @@ namespace Aerocord
             string customStatus = eventData["user_settings"]["custom_status"]["text"] ?? "";
             dynamic friendData = eventData["relationships"];
             dynamic serverData = eventData["guilds"];
+            dynamic channelData = eventData["private_channels"];
+            dynamic userProfileData = eventData["user"];
 
             if(customStatus == "") switch(status)
                 {
@@ -148,12 +150,15 @@ namespace Aerocord
 
             parentForm.friends = friendData;
             parentForm.guilds = serverData;
-            parentForm.statusLabel.Text = customStatus;
+            parentForm.channels = channelData;
+            parentForm.userProfile = userProfileData;
+            //parentForm.statusLabel.Text = customStatus;
             parentForm.userStatus = status;
             foreach (var presence in eventData["presences"]) {
                 if (!parentForm.friendStatuses.ContainsKey(long.Parse((string)presence["user"]["id"]))) parentForm.friendStatuses.Add(long.Parse((string)presence["user"]["id"]), (string)presence["status"]);
                 foreach(var activity in presence["activities"]) if (activity["type"] == 4 && activity["id"] == "custom") { if (!parentForm.friendCustomStatuses.ContainsKey(long.Parse((string)eventData["user"]["id"]))) parentForm.friendCustomStatuses.Add(long.Parse((string)eventData["user"]["id"]), (string)activity["state"]); break; }
             }
+            parentForm.SetUserInfo();
             parentForm.PopulateFriendsTab();
             init = true;
         }

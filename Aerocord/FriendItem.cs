@@ -37,6 +37,10 @@ namespace Aerocord
             get => profilePictureFriend.ImageLocation;
             set => profilePictureFriend.ImageLocation = value;
         }
+
+        public long ChatId;
+        public long FriendId;
+
         public System.Drawing.Color LabelColor
         {
             get => usernameLabel.ForeColor;

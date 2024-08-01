@@ -17,21 +17,18 @@ namespace Aerocord
         private bool DarkMode;
         private string RenderMode;
 
+        public Padding GlassMarginsLight = new Padding(115, 15, 15, 73);
+
         public Settings(bool darkmodee, string rendermodee)
         {
             InitializeComponent();
             DarkMode = darkmodee;
             RenderMode = rendermodee;
-            GlassMargins = new Padding(133, 15, 156, 73);
+            GlassMargins = new Padding(115, 15, 15, 73);
             if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
-                colormodelabel.BackColor = System.Drawing.SystemColors.ControlText;
-                colormodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-                rendermodelabel.BackColor = System.Drawing.SystemColors.ControlText;
-                rendermodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-                warning.BackColor = System.Drawing.SystemColors.ControlText;
-                warning.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+                _ = new DarkModeCS(this, _DarkMode: true);
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
             }
             switch (RenderMode)
@@ -113,23 +110,13 @@ namespace Aerocord
             if (DarkMode)
             {
                 GlassMargins = new Padding(-1, -1, -1, -1);
-                colormodelabel.BackColor = System.Drawing.SystemColors.ControlText;
-                colormodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-                rendermodelabel.BackColor = System.Drawing.SystemColors.ControlText;
-                rendermodelabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-                warning.BackColor = System.Drawing.SystemColors.ControlText;
-                warning.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+                _ = new DarkModeCS(this, _DarkMode: true);
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
             }
             else
             {
-                GlassMargins = new Padding(133, 15, 156, 73);
-                colormodelabel.BackColor = System.Drawing.SystemColors.Control;
-                colormodelabel.ForeColor = System.Drawing.SystemColors.ControlText;
-                rendermodelabel.BackColor = System.Drawing.SystemColors.Control;
-                rendermodelabel.ForeColor = System.Drawing.SystemColors.ControlText;
-                warning.BackColor = System.Drawing.SystemColors.Control;
-                warning.ForeColor = System.Drawing.SystemColors.ControlText;
+                GlassMargins = new Padding(115, 15, 15, 73);
+                _ = new DarkModeCS(this, _DarkMode: false);
                 PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 0);
             }
         }

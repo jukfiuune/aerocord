@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Aerocord
 {
-    public partial class DM : WindowsFormsAero.AeroForm
+    public partial class DM : AutoForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
         string htmlStart;
@@ -24,10 +24,10 @@ namespace Aerocord
         public long FriendID;
         private string userPFP;
         private string lastMessageAuthor = "";
-        private bool DarkMode = false;
-        private string RenderMode = "Aero";
+
         public DM(Main parentForm, long chatid, long friendid, string token, string userpfp, bool darkmode, string rendermode)
         {
+            GlassMarginsLight = new Padding(117, 325, 12, 12);
             InitializeComponent();
             DarkMode = darkmode;
             RenderMode = rendermode;

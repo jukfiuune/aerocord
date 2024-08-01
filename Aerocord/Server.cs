@@ -10,7 +10,7 @@ using WindowsFormsAero.TaskDialog;
 
 namespace Aerocord
 {
-    public partial class Server : WindowsFormsAero.AeroForm
+    public partial class Server : AutoForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
         string htmlStart;
@@ -19,13 +19,13 @@ namespace Aerocord
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
-        private bool DarkMode = false;
-        private string RenderMode = "Aero";
         public long ServerID;
         public long ChatID;
         private string lastMessageAuthor = "";
+
         public Server(long serverid, String token, bool darkmode, string rendermode)
         {
+            GlassMarginsLight = new Padding(12, 118, 12, 12);
             InitializeComponent();
             DarkMode = darkmode;
             RenderMode = rendermode;

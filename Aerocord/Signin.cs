@@ -23,8 +23,11 @@ namespace Aerocord
         private static int MajorVersion = Int32.Parse(LCUVer.Split('.')[0]);
         private static int MinorVersion = Int32.Parse(LCUVer.Split('.')[1]);
         private static int BuildNumber = Int32.Parse(LCUVer.Split('.')[2]);
+        private bool AutoColorMode = MajorVersion >= 10 ? true : false;
         private bool DarkMode = !Convert.ToBoolean(Int32.Parse(MajorVersion != 10 ? "1" : SysInfo.GetRegistryValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1").ToString()));
-        private string RenderMode = MajorVersion == 10 ? (BuildNumber >= 22000 ? "Mica" : (BuildNumber >= 16299 ? "Acrylic" : "Aero")) : "Aero";
+        private string RenderMode = MajorVersion >= 10 ? (BuildNumber >= 22000 ? "Mica" : (BuildNumber >= 16299 ? "Acrylic" : "Aero")) : "Aero";
+
+        public Padding GlassMarginsLight = new Padding(11, 200, 11, 11);
 
         public Signin()
         {
@@ -141,7 +144,7 @@ namespace Aerocord
 
                     SetIEVer();
 
-                    Main mainForm = new Main(accessToken, DarkMode, RenderMode, this);
+                    Main mainForm = new Main(accessToken, DarkMode, RenderMode, AutoColorMode, this);
                 }
                 catch (WebException ex)
                 {
@@ -216,7 +219,7 @@ namespace Aerocord
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
-                File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + "\ncolormode=System");
+                File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + (MajorVersion >= 10 ? "\ncolormode=System" : "\ncolormode=Light"));
             }
             catch (Exception ex)
             {
@@ -273,11 +276,14 @@ namespace Aerocord
                             switch (line.Replace("colormode=", ""))
                             {
                                 case "Default":
+                                    AutoColorMode = true;
                                     break;
                                 case "Light":
+                                    AutoColorMode = false;
                                     DarkMode = false;
                                     break;
                                 case "Dark":
+                                    AutoColorMode = false;
                                     DarkMode = true;
                                     break;
                             }

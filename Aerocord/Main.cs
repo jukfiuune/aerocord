@@ -10,31 +10,33 @@ using WindowsFormsAero.TaskDialog;
 
 namespace Aerocord
 {
-    public partial class Main : WindowsFormsAero.AeroForm
+    public partial class Main : AutoForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
         private string AccessToken;
         private Signin signin;
         private string userPFP;
         public string userStatus = "online";
-        private bool DarkMode = false;
-        private string RenderMode = "Aero";
 
         private WebSocketClient websocketClient;
 
         public dynamic friends;
+        public dynamic channels;
         public dynamic guilds;
+        public dynamic userProfile;
         public Dictionary<long, string> friendStatuses = new Dictionary<long, string>();
         public Dictionary<long, string> friendCustomStatuses = new Dictionary<long, string>();
 
         public Dictionary<long, DM> listDMs = new Dictionary<long, DM>();
         public Dictionary<long, Server> listServers = new Dictionary<long, Server>();
 
-        public Main(string token, bool darkmode, string rendermode, Signin signinArg)
+        public Main(string token, bool darkmode, string rendermode, bool autocolormode, Signin signinArg)
         {
+            GlassMarginsLight = new Padding(15, 65, 205, 380);
             InitializeComponent();
             signin = signinArg;
             AccessToken = token;
+            AutoColorMode = autocolormode;
             DarkMode = darkmode;
             RenderMode = rendermode;
             if (DarkMode)
@@ -58,26 +60,28 @@ namespace Aerocord
                     PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
                     break;
             }
-            SetUserInfo();
             friendsButton.Click += FriendsButton_Click;
             button2.Click += ServersButton_Click;
             websocketClient = new WebSocketClient(AccessToken, this);
+
+            if (AutoColorMode) { AutoColorMode autoColorMode = new AutoColorMode(this); }
         }
 
-        private void SetUserInfo()
+        delegate void SetUserInfoCallback();
+        public void SetUserInfo()
         {
-            try
+            if (InvokeRequired)
             {
-                dynamic userProfile = GetApiResponse("users/@me");
+                SetUserInfoCallback d = new SetUserInfoCallback(SetUserInfo);
+                Invoke(d);
+            }
+            else
+            {
                 string displayname = userProfile.global_name ?? userProfile.username;
                 string bio = userProfile.bio;
                 usernameLabel.Text = displayname;
                 userPFP = $"https://cdn.discordapp.com/avatars/{userProfile.id}/{userProfile.avatar}.png";
                 profilepicture.ImageLocation = userPFP;
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve user profile", ex);
             }
         }
 
@@ -110,12 +114,16 @@ namespace Aerocord
                         if (friend.type == 1)
                         {
                             string username = friend.user.global_name ?? friend.user.username;
+                            long friendId = long.Parse((string)friend.user.id);
+                            long chatId = GetChatID(friendId);
                             string avatarUrl = $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png";
 
                             FriendItem friendItem = new FriendItem
                             {
                                 Username = username,
-                                ProfilePictureUrl = avatarUrl
+                                ProfilePictureUrl = avatarUrl,
+                                ChatId = chatId,
+                                FriendId = friendId
                             };
 
                             if (!DarkMode)
@@ -123,12 +131,14 @@ namespace Aerocord
                                 friendItem.LabelColor = System.Drawing.Color.Black;
                             }
 
+
+
                             friendItem.Clicked += (sender, e) =>
                             {
                                 var clickedFriendItem = (FriendItem)sender;
                                 string selectedFriend = clickedFriendItem.Username;
-                                long chatID = GetChatID(selectedFriend);
-                                long friendID = GetFriendID(selectedFriend);
+                                long chatID = clickedFriendItem.ChatId;
+                                long friendID = clickedFriendItem.FriendId;
                                 if (chatID >= 0)
                                 {
                                     listDMs.Add(chatID, new DM(this, chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode));
@@ -181,12 +191,14 @@ namespace Aerocord
                     foreach (var guild in guilds)
                     {
                         string guildName = guild.name.ToString();
+                        long serverId = long.Parse((string)guild.id);
                         string iconUrl = $"https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png";
 
                         FriendItem serverItem = new FriendItem
                         {
                             ServerName = guildName,
-                            ProfilePictureUrl = iconUrl
+                            ProfilePictureUrl = iconUrl,
+                            FriendId = serverId
                         };
 
                         if (!DarkMode)
@@ -198,7 +210,7 @@ namespace Aerocord
                         {
                             var clickedServerItem = (FriendItem)sender;
                             string selectedServer = clickedServerItem.ServerName;
-                            long serverID = GetServerID(selectedServer);
+                            long serverID = clickedServerItem.FriendId;
                             if (serverID >= 0)
                             {
                                 listServers.Add(serverID, new Server(serverID, AccessToken, DarkMode, RenderMode));
@@ -229,83 +241,40 @@ namespace Aerocord
             }
         }
 
-        private long GetChatID(string name)
+        private long GetChatID(long friendId)
         {
-            try
+            foreach (var channel in channels)
             {
-                dynamic channels = GetApiResponse("users/@me/channels");
-                foreach (var channel in channels)
+                if (channel.type == 1 && channel.recipients[0].id == friendId.ToString())
                 {
-                    if (channel.type == 1 && channel.recipients[0].global_name != null)
-                    {
-                        if ((string)channel.recipients[0].global_name == name)
-                        {
-                            return (long)channel.id;
-                        }
-                    }
-                    else if (channel.type == 1 && channel.recipients[0].username != null)
-                    {
-                        if ((string)channel.recipients[0].username == name)
-                        {
-                            return (long)channel.id;
-                        }
-                    }
+                    return long.Parse((string)channel.id);
                 }
-                return -1;
             }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve friends", ex);
-                return -1;
-            }
+            return -1;
         }
 
-        private long GetFriendID(string name)
+        delegate void SetGlobalModeCallback(bool DarkMode);
+        public void SetGlobalMode(bool DarkMode)
         {
-            try
+            if (InvokeRequired)
             {
-                dynamic friends = GetApiResponse("users/@me/relationships");
-                foreach (var friend in friends)
+                SetGlobalModeCallback d = new SetGlobalModeCallback(SetGlobalMode);
+                Invoke(d, new object[] { DarkMode });
+            }
+            else
+            {
+                this.DarkMode = DarkMode;
+                foreach(var form in Application.OpenForms)
                 {
-                    if (friend.type == 1 && friend.user.global_name != null)
+                    if(form.GetType().BaseType == typeof(AutoForm))
                     {
-                        if ((string)friend.user.global_name == name)
-                        {
-                            return (long)friend.id;
-                        }
-                    }
-                    else if (friend.type == 1 && friend.user.username != null)
-                    {
-                        if ((string)friend.user.username == name)
-                        {
-                            return (long)friend.id;
-                        }
+                        AutoForm autoform = (AutoForm)form;
+                        autoform.GlassMargins = autoform.GlassMarginsLight;
+                        _ = new DarkModeCS(autoform, _DarkMode: DarkMode);
                     }
                 }
-                return -1;
             }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve friends", ex);
-                return -1;
-            }
-        }
-        private long GetServerID(string name)
-        {
-            try
-            {
-                dynamic guilds = GetApiResponse("users/@me/guilds");
-                foreach (var guild in guilds)
-                {
-                    if (guild.name.ToString() == name) return (long)guild.id;
-                }
-                return -1;
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve server list", ex);
-                return -1;
-            }
+
         }
 
         private void ShowErrorMessage(string message, Exception ex)
