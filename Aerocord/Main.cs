@@ -269,7 +269,14 @@ namespace Aerocord
                     if(form.GetType().BaseType == typeof(AutoForm))
                     {
                         AutoForm autoform = (AutoForm)form;
-                        autoform.GlassMargins = autoform.GlassMarginsLight;
+                        if (DarkMode)
+                        {
+                            autoform.GlassMargins = autoform.GlassMarginsDark;
+                        }
+                        else
+                        {
+                            autoform.GlassMargins = autoform.GlassMarginsLight;
+                        }
                         _ = new DarkModeCS(autoform, _DarkMode: DarkMode);
                     }
                 }

@@ -55,7 +55,7 @@ namespace Aerocord
                     rendermode.Items.Remove("Acrylic");
                     if (MajorVersion < 10)
                     {
-                        colormode.Items.Remove("Light");
+                        colormode.Items.Remove("System");
                         colormode.Items.Remove("Dark");
                     }
                 }
@@ -97,7 +97,7 @@ namespace Aerocord
         {
             switch (colormode.SelectedItem.ToString())
             {
-                case "Default":
+                case "System":
                     DarkMode = !Convert.ToBoolean(Int32.Parse(MajorVersion != 10 ? "1" : SysInfo.GetRegistryValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1").ToString()));
                     break;
                 case "Light":

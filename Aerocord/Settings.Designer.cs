@@ -76,7 +76,7 @@
             this.colormode.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.colormode.FormattingEnabled = true;
             this.colormode.Items.AddRange(new object[] {
-            "Default",
+            "System",
             "Light",
             "Dark"});
             this.colormode.Location = new System.Drawing.Point(116, 46);
