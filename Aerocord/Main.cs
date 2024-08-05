@@ -1,167 +1,233 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
+using System.Drawing;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsFormsAero;
 using WindowsFormsAero.TaskDialog;
 
 namespace Aerocord
 {
-    public partial class Main : WindowsFormsAero.AeroForm
+    public partial class Main : AutoForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
         private string AccessToken;
         private Signin signin;
         private string userPFP;
-        public Main(string token, Signin signinArg)
+        public string userStatus = "online";
+
+        private WebSocketClient websocketClient;
+
+        public dynamic friends;
+        public dynamic channels;
+        public dynamic guilds;
+        public dynamic userProfile;
+        public Dictionary<long, string> friendStatuses = new Dictionary<long, string>();
+        public Dictionary<long, string> friendCustomStatuses = new Dictionary<long, string>();
+
+        public Dictionary<long, DM> listDMs = new Dictionary<long, DM>();
+        public Dictionary<long, Server> listServers = new Dictionary<long, Server>();
+
+        public Main(string token, bool darkmode, string rendermode, bool autocolormode, Signin signinArg)
         {
+            GlassMarginsLight = new Padding(15, 65, 205, 380);
             InitializeComponent();
             signin = signinArg;
             AccessToken = token;
-            SetUserInfo();
-            PopulateFriendsTab();
-            PopulateServersTab();
+            AutoColorMode = autocolormode;
+            DarkMode = darkmode;
+            RenderMode = rendermode;
+            if (DarkMode)
+            {
+                _ = new DarkModeCS(this);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+
+            switch (RenderMode)
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                    break;
+            }
+            friendsButton.Click += FriendsButton_Click;
+            button2.Click += ServersButton_Click;
+            websocketClient = new WebSocketClient(AccessToken, this);
+
+            if (AutoColorMode) { AutoColorMode autoColorMode = new AutoColorMode(this); }
         }
 
-        private void SetUserInfo()
+        delegate void SetUserInfoCallback();
+        public void SetUserInfo()
         {
-            try
+            if (InvokeRequired)
             {
-                dynamic userProfile = GetApiResponse("users/@me");
-                //Console.WriteLine(userProfile);
-                string displayname = userProfile.global_name;
-                if (userProfile.global_name != null) { displayname = userProfile.global_name; } else { displayname = userProfile.username; }
+                SetUserInfoCallback d = new SetUserInfoCallback(SetUserInfo);
+                Invoke(d);
+            }
+            else
+            {
+                string displayname = userProfile.global_name ?? userProfile.username;
                 string bio = userProfile.bio;
                 usernameLabel.Text = displayname;
-                descriptionLabel.Text = bio;
                 userPFP = $"https://cdn.discordapp.com/avatars/{userProfile.id}/{userProfile.avatar}.png";
                 profilepicture.ImageLocation = userPFP;
             }
-            catch (WebException ex)
+        }
+
+        private void FriendsButton_Click(object sender, EventArgs e)
+        {
+            PopulateFriendsTab();
+        }
+
+        private void ServersButton_Click(object sender, EventArgs e)
+        {
+            PopulateServersTab();
+        }
+
+        delegate void PopulateFriendsTabCallback();
+        public void PopulateFriendsTab()
+        {
+            if (InvokeRequired)
             {
-                ShowErrorMessage("Failed to retrieve user profile", ex);
+                PopulateFriendsTabCallback d = new PopulateFriendsTabCallback(PopulateFriendsTab);
+                Invoke(d);
+            }
+            else
+            {
+                try
+                {
+                    friendserverPanel.Controls.Clear();
+
+                    foreach (var friend in friends)
+                    {
+                        if (friend.type == 1)
+                        {
+                            string username = friend.user.global_name ?? friend.user.username;
+                            long friendId = long.Parse((string)friend.user.id);
+                            long chatId = GetChatID(friendId);
+                            string avatarUrl = $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png";
+
+                            FriendItem friendItem = new FriendItem
+                            {
+                                Username = username,
+                                ProfilePictureUrl = avatarUrl,
+                                ChatId = chatId,
+                                FriendId = friendId
+                            };
+
+                            if (!DarkMode)
+                            {
+                                friendItem.LabelColor = System.Drawing.Color.Black;
+                            }
+
+
+
+                            friendItem.Clicked += (sender, e) =>
+                            {
+                                var clickedFriendItem = (FriendItem)sender;
+                                string selectedFriend = clickedFriendItem.Username;
+                                long chatID = clickedFriendItem.ChatId;
+                                long friendID = clickedFriendItem.FriendId;
+                                if (chatID >= 0)
+                                {
+                                    listDMs.Add(chatID, new DM(this, chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode));
+                                    if (friendCustomStatuses.ContainsKey(friendID) && friendStatuses.ContainsKey(friendID))
+                                    {
+                                        listDMs[chatID].ChangeStatus(friendStatuses[friendID], friendCustomStatuses[friendID]);
+                                    }
+                                    else if (friendStatuses.ContainsKey(friendID))
+                                    {
+                                        listDMs[chatID].ChangeStatus(friendStatuses[friendID], "");
+                                    }
+                                    else
+                                    {
+                                        listDMs[chatID].ChangeStatus("offline", "");
+                                    }
+                                    listDMs[chatID].Show();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            };
+
+                            friendserverPanel.Controls.Add(friendItem);
+                        }
+                    }
+                    this.Show();
+                }
+                catch (WebException ex)
+                {
+                    ShowErrorMessage("Failed to retrieve friend list", ex);
+                }
             }
         }
 
-        private void PopulateFriendsTab()
+        delegate void PopulateServersTabCallback();
+        public void PopulateServersTab()
         {
-            try
+            if (InvokeRequired)
             {
-                dynamic friends = GetApiResponse("users/@me/relationships");
-                //Console.WriteLine(friends);
-                List<ListViewItem> friendNames = new List<ListViewItem>();
-                foreach (var friend in friends)
+                PopulateServersTabCallback d = new PopulateServersTabCallback(PopulateServersTab);
+                Invoke(d);
+            }
+            else
+            {
+                try
                 {
-                    if (friend.type == 1 && friend.user.global_name != null)
-                    {
-                        friendNames.Add(new ListViewItem((string)friend.user.global_name/*, $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png"*/));
-                    }
-                    else if(friend.type == 1 && friend.user.username != null)
-                    {
-                        friendNames.Add(new ListViewItem((string)friend.user.username/*, $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png"*/));
-                    }
-                }
-                friendsList.Items.AddRange(friendNames.ToArray());
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve friend list", ex);
-            }
-        }
-        private long GetChatID(string name)
-        {
-            try
-            {
-                dynamic channels = GetApiResponse("users/@me/channels");
-                foreach (var channel in channels)
-                {
-                    if (channel.type == 1 && channel.recipients[0].global_name != null)
-                    {
-                        if ((string)channel.recipients[0].global_name == name)
-                        {
-                            return (long)channel.id;
-                        }
-                    }
-                    else if (channel.type == 1 && channel.recipients[0].username != null)
-                    {
-                        if ((string)channel.recipients[0].username == name)
-                        {
-                            return (long)channel.id;
-                        }
-                    }
-                }
-                return -1;
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve friends", ex);
-                return -1;
-            }
-        }
-        private long GetFriendID(string name)
-        {
-            try
-            {
-                dynamic friends = GetApiResponse("users/@me/relationships");
-                foreach (var friend in friends)
-                {
-                    if (friend.type == 1 && friend.user.global_name != null)
-                    {
-                        if ((string)friend.user.global_name == name)
-                        {
-                            return (long)friend.id;
-                        }
-                    }
-                    else if (friend.type == 1 && friend.user.username != null)
-                    {
-                        if ((string)friend.user.username == name)
-                        {
-                            return (long)friend.id;
-                        }
-                    }
-                }
-                return -1;
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve friends", ex);
-                return -1;
-            }
-        }
-        private long GetServerID(string name)
-        {
-            try
-            {
-                dynamic guilds = GetApiResponse("users/@me/guilds");
-                foreach (var guild in guilds)
-                {
-                    if (guild.name.ToString() == name) return (long)guild.id;
-                }
-                return -1;
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve server list", ex);
-                return -1;
-            }
-        }
-        private void PopulateServersTab()
-        {
-            try
-            {
-                dynamic guilds = GetApiResponse("users/@me/guilds");
-                List<ListViewItem> serverNames = new List<ListViewItem>();
-                foreach (var guild in guilds)
-                {
-                    string guildName = guild.name.ToString();
+                    friendserverPanel.Controls.Clear();
 
-                    serverNames.Add(new ListViewItem(guildName));
+                    foreach (var guild in guilds)
+                    {
+                        string guildName = guild.name.ToString();
+                        long serverId = long.Parse((string)guild.id);
+                        string iconUrl = $"https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png";
+
+                        FriendItem serverItem = new FriendItem
+                        {
+                            ServerName = guildName,
+                            ProfilePictureUrl = iconUrl,
+                            FriendId = serverId
+                        };
+
+                        if (!DarkMode)
+                        {
+                            serverItem.LabelColor = System.Drawing.Color.Black;
+                        }
+
+                        serverItem.Clicked += (sender, e) =>
+                        {
+                            var clickedServerItem = (FriendItem)sender;
+                            string selectedServer = clickedServerItem.ServerName;
+                            long serverID = clickedServerItem.FriendId;
+                            if (serverID >= 0)
+                            {
+                                listServers.Add(serverID, new Server(serverID, AccessToken, DarkMode, RenderMode));
+                                listServers[serverID].Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        };
+                        friendserverPanel.Controls.Add(serverItem);
+                    }
                 }
-                serversList.Items.AddRange(serverNames.ToArray());
-            }
-            catch (WebException ex)
-            {
-                ShowErrorMessage("Failed to retrieve server list", ex);
+                catch (WebException ex)
+                {
+                    ShowErrorMessage("Failed to retrieve friend list", ex);
+                }
             }
         }
 
@@ -175,16 +241,60 @@ namespace Aerocord
             }
         }
 
+        private long GetChatID(long friendId)
+        {
+            foreach (var channel in channels)
+            {
+                if (channel.type == 1 && channel.recipients[0].id == friendId.ToString())
+                {
+                    return long.Parse((string)channel.id);
+                }
+            }
+            return -1;
+        }
+
+        delegate void SetGlobalModeCallback(bool DarkMode);
+        public void SetGlobalMode(bool DarkMode)
+        {
+            if (InvokeRequired)
+            {
+                SetGlobalModeCallback d = new SetGlobalModeCallback(SetGlobalMode);
+                Invoke(d, new object[] { DarkMode });
+            }
+            else
+            {
+                this.DarkMode = DarkMode;
+                foreach(var form in Application.OpenForms)
+                {
+                    if(form.GetType().BaseType == typeof(AutoForm))
+                    {
+                        AutoForm autoform = (AutoForm)form;
+                        if (DarkMode)
+                        {
+                            autoform.GlassMargins = autoform.GlassMarginsDark;
+                        }
+                        else
+                        {
+                            autoform.GlassMargins = autoform.GlassMarginsLight;
+                        }
+                        _ = new DarkModeCS(autoform, _DarkMode: DarkMode);
+                    }
+                }
+            }
+
+        }
+
         private void ShowErrorMessage(string message, Exception ex)
         {
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         protected override void OnShown(EventArgs e)
-        { 
+        {
             base.OnShown(e);
 
-            GlassMargins = new Padding(12, 118, 12, 12);
+            GlassMargins = new Padding(15, 65, 205, 380);
+            if(DarkMode) GlassMargins = new Padding(-1, -1, -1, -1);
 
             signin.Hide();
         }
@@ -195,33 +305,15 @@ namespace Aerocord
             signin.Close();
         }
 
-        private void friendsList_DoubleClick(object sender, EventArgs ex)
+        private void profilepicture_Click(object sender, EventArgs e)
         {
-            if (friendsList.SelectedItems[0].Text != null)
-            {
-                string selectedFriend = friendsList.SelectedItems[0].Text;
-                long chatID = GetChatID(selectedFriend);
-                long friendID = GetFriendID(selectedFriend);
-                if (chatID >= 0)
-                {
-                    DM dm = new DM(chatID, friendID, AccessToken, userPFP);
-                    dm.Show();
-                } else MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            Settings settings = new Settings(DarkMode, RenderMode);
+            settings.Show();
         }
-        private void serversList_DoubleClick(object sender, EventArgs ex)
+
+        private void descriptionLabel_Click(object sender, EventArgs e)
         {
-            if (serversList.SelectedItems[0].Text != null)
-            {
-                string selectedServer = serversList.SelectedItems[0].Text;
-                long serverID = GetServerID(selectedServer);
-                if (serverID >= 0)
-                {
-                    Server server = new Server(serverID, AccessToken);
-                    server.Show();
-                }
-                else MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
         }
     }
 }

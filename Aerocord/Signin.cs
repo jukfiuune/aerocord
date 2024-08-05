@@ -18,16 +18,48 @@ namespace Aerocord
 {
     public partial class Signin : WindowsFormsAero.AeroForm
     {
-        private const string TokenFileName = "token.txt";
+        private const string TokenFileName = "aerocord_config.txt";
+        private static string LCUVer = SysInfo.GetVersionString();
+        private static int MajorVersion = Int32.Parse(LCUVer.Split('.')[0]);
+        private static int MinorVersion = Int32.Parse(LCUVer.Split('.')[1]);
+        private static int BuildNumber = Int32.Parse(LCUVer.Split('.')[2]);
+        private bool AutoColorMode = MajorVersion >= 10 ? true : false;
+        private bool DarkMode = !Convert.ToBoolean(Int32.Parse(MajorVersion != 10 ? "1" : SysInfo.GetRegistryValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "AppsUseLightTheme", "1").ToString()));
+        private string RenderMode = MajorVersion >= 10 ? (BuildNumber >= 22000 ? "Mica" : (BuildNumber >= 16299 ? "Acrylic" : "Aero")) : "Aero";
+
+        public Padding GlassMarginsLight = new Padding(11, 200, 11, 11);
 
         public Signin()
         {
             InitializeComponent();
+            Console.WriteLine(LCUVer);
+            if (DarkMode) _ = new DarkModeCS(this);
         }
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            GlassMargins = new Padding(82, 220, 11, 11);
+
+            GlassMargins = new Padding(11, 200, 11, 11);
+            if (DarkMode)
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                    break;
+            }
 
             CheckToken();
         }
@@ -97,18 +129,34 @@ namespace Aerocord
 
                 try
                 {
+                    emailBox.Hide();
+                    passBox.Hide();
+                    signinButton.Hide();
+                    themeLabel1.Hide();
+                    themeLabel2.Hide();
+                    themeLabel3.Hide();
+                    linkLabel1.Hide();
+                    username.Text = "Login in progress...";
+
                     string userProfileJson = webClient.DownloadString("https://discord.com/api/v9/users/@me");
 
                     if(!isAutomated) SaveToken(accessToken);
 
                     SetIEVer();
 
-                    Main mainForm = new Main(accessToken, this);
-                    mainForm.Show();
+                    Main mainForm = new Main(accessToken, DarkMode, RenderMode, AutoColorMode, this);
                 }
                 catch (WebException ex)
                 {
                     MessageBox.Show("Failed to login. Please enter a valid token! Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    emailBox.Show();
+                    passBox.Show();
+                    signinButton.Show();
+                    themeLabel1.Show();
+                    themeLabel2.Show();
+                    themeLabel3.Show();
+                    linkLabel1.Show();
+                    username.Text = "Sign in";
                 }
             }
         }
@@ -171,7 +219,7 @@ namespace Aerocord
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
-                File.WriteAllText(filePath, "token=" + accessToken);
+                File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + (MajorVersion >= 10 ? "\ncolormode=System" : "\ncolormode=Light"));
             }
             catch (Exception ex)
             {
@@ -212,14 +260,57 @@ namespace Aerocord
 
                 if (File.Exists(filePath))
                 {
+                    string AccessToken = "";
                     foreach (string line in File.ReadLines(filePath))
                     {
                         if (line.Contains("token="))
                         {
-                            PerformLogin(line.Replace("token=", ""), true);
-                            return;
+                            AccessToken = line.Replace("token=", "");
+                        }
+                        if (line.Contains("rendermode="))
+                        {
+                            RenderMode = line.Replace("rendermode=", "");
+                        }
+                        if (line.Contains("colormode="))
+                        {
+                            switch (line.Replace("colormode=", ""))
+                            {
+                                case "Default":
+                                    AutoColorMode = true;
+                                    break;
+                                case "Light":
+                                    AutoColorMode = false;
+                                    DarkMode = false;
+                                    break;
+                                case "Dark":
+                                    AutoColorMode = false;
+                                    DarkMode = true;
+                                    break;
+                            }
                         }
                     }
+                    GlassMargins = new Padding(11, 200, 11, 11);
+                    if (DarkMode)
+                    {
+                        GlassMargins = new Padding(-1, -1, -1, -1);
+                        PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+                    }
+                    switch (RenderMode)
+                    {
+                        case "Aero":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                            break;
+                        case "Mica":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                            break;
+                        case "Acrylic":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                            break;
+                        case "Mica Alt":
+                            PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                            break;
+                    }
+                    PerformLogin(AccessToken, true);
                 }
                 this.Show();
             }
@@ -253,13 +344,6 @@ namespace Aerocord
             using (RegistryKey Key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", RegistryKeyPermissionCheck.ReadWriteSubTree))
                 if (Key.GetValue(System.Diagnostics.Process.GetCurrentProcess().ProcessName + ".exe") == null)
                     Key.SetValue(System.Diagnostics.Process.GetCurrentProcess().ProcessName + ".exe", RegVal, RegistryValueKind.DWord);
-        }
-
-        private void linkLabel1_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
-        {
-            Token token = new Token(this);
-            token.Show();
-            this.Hide();
         }
     }
 }

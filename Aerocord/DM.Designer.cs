@@ -139,7 +139,7 @@
             this.Controls.Add(this.profilepicturefriend);
             this.Controls.Add(this.framefriend);
             this.Controls.Add(this.frame);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "DM";
             this.ShowIcon = false;

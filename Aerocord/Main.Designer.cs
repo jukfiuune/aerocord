@@ -29,100 +29,43 @@
         private void InitializeComponent()
         {
             this.usernameLabel = new WindowsFormsAero.ThemeLabel();
-            this.descriptionLabel = new WindowsFormsAero.ThemeLabel();
-            this.friendsList = new WindowsFormsAero.ListView();
-            this.fsTabs = new System.Windows.Forms.TabControl();
-            this.friendsTab = new System.Windows.Forms.TabPage();
-            this.serversTab = new System.Windows.Forms.TabPage();
-            this.serversList = new WindowsFormsAero.ListView();
+            this.statusLabel = new WindowsFormsAero.ThemeLabel();
+            this.friendserverPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.profilepicture = new System.Windows.Forms.PictureBox();
-            this.fsTabs.SuspendLayout();
-            this.friendsTab.SuspendLayout();
-            this.serversTab.SuspendLayout();
+            this.friendsButton = new WindowsFormsAero.Button();
+            this.button2 = new WindowsFormsAero.Button();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
             this.SuspendLayout();
             // 
             // usernameLabel
             // 
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.usernameLabel.Location = new System.Drawing.Point(118, 12);
+            this.usernameLabel.Location = new System.Drawing.Point(75, 11);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(213, 23);
             this.usernameLabel.TabIndex = 1;
             this.usernameLabel.Text = "username";
             // 
-            // descriptionLabel
+            // statusLabel
             // 
-            this.descriptionLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
-            this.descriptionLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.descriptionLabel.Location = new System.Drawing.Point(118, 41);
-            this.descriptionLabel.Name = "descriptionLabel";
-            this.descriptionLabel.Size = new System.Drawing.Size(213, 72);
-            this.descriptionLabel.TabIndex = 3;
-            this.descriptionLabel.Text = "description";
+            this.statusLabel.Font = new System.Drawing.Font("Segoe UI Variable Text Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.statusLabel.Location = new System.Drawing.Point(75, 34);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(258, 21);
+            this.statusLabel.TabIndex = 3;
+            this.statusLabel.Text = "Set a custom status";
+            this.statusLabel.Click += new System.EventHandler(this.descriptionLabel_Click);
             // 
-            // friendsList
+            // friendserverPanel
             // 
-            this.friendsList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.friendsList.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.friendsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.friendsList.HideSelection = false;
-            this.friendsList.LabelWrap = false;
-            this.friendsList.Location = new System.Drawing.Point(6, 6);
-            this.friendsList.Name = "friendsList";
-            this.friendsList.Size = new System.Drawing.Size(300, 347);
-            this.friendsList.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.friendsList.TabIndex = 0;
-            this.friendsList.UseCompatibleStateImageBehavior = false;
-            this.friendsList.View = System.Windows.Forms.View.Tile;
-            this.friendsList.DoubleClick += new System.EventHandler(this.friendsList_DoubleClick);
-            // 
-            // fsTabs
-            // 
-            this.fsTabs.Controls.Add(this.friendsTab);
-            this.fsTabs.Controls.Add(this.serversTab);
-            this.fsTabs.Location = new System.Drawing.Point(13, 119);
-            this.fsTabs.Name = "fsTabs";
-            this.fsTabs.SelectedIndex = 0;
-            this.fsTabs.Size = new System.Drawing.Size(320, 387);
-            this.fsTabs.TabIndex = 4;
-            // 
-            // friendsTab
-            // 
-            this.friendsTab.Controls.Add(this.friendsList);
-            this.friendsTab.Location = new System.Drawing.Point(4, 24);
-            this.friendsTab.Name = "friendsTab";
-            this.friendsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.friendsTab.Size = new System.Drawing.Size(312, 359);
-            this.friendsTab.TabIndex = 0;
-            this.friendsTab.Text = "Friends";
-            this.friendsTab.UseVisualStyleBackColor = true;
-            // 
-            // serversTab
-            // 
-            this.serversTab.Controls.Add(this.serversList);
-            this.serversTab.Location = new System.Drawing.Point(4, 24);
-            this.serversTab.Name = "serversTab";
-            this.serversTab.Padding = new System.Windows.Forms.Padding(3);
-            this.serversTab.Size = new System.Drawing.Size(312, 359);
-            this.serversTab.TabIndex = 1;
-            this.serversTab.Text = "Servers";
-            this.serversTab.UseVisualStyleBackColor = true;
-            // 
-            // serversList
-            // 
-            this.serversList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.serversList.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.serversList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.serversList.HideSelection = false;
-            this.serversList.LabelWrap = false;
-            this.serversList.Location = new System.Drawing.Point(6, 6);
-            this.serversList.Name = "serversList";
-            this.serversList.Size = new System.Drawing.Size(300, 347);
-            this.serversList.TabIndex = 1;
-            this.serversList.UseCompatibleStateImageBehavior = false;
-            this.serversList.View = System.Windows.Forms.View.Tile;
-            this.serversList.DoubleClick += new System.EventHandler(this.serversList_DoubleClick);
+            this.friendserverPanel.AutoScroll = true;
+            this.friendserverPanel.BackColor = System.Drawing.Color.Black;
+            this.friendserverPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.friendserverPanel.Location = new System.Drawing.Point(16, 95);
+            this.friendserverPanel.Name = "friendserverPanel";
+            this.friendserverPanel.Size = new System.Drawing.Size(317, 366);
+            this.friendserverPanel.TabIndex = 4;
             // 
             // profilepicture
             // 
@@ -131,20 +74,41 @@
             this.profilepicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.ImageLocation = "";
             this.profilepicture.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
-            this.profilepicture.Location = new System.Drawing.Point(12, 12);
+            this.profilepicture.Location = new System.Drawing.Point(16, 9);
             this.profilepicture.Name = "profilepicture";
-            this.profilepicture.Size = new System.Drawing.Size(100, 100);
+            this.profilepicture.Size = new System.Drawing.Size(50, 50);
             this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.profilepicture.TabIndex = 0;
             this.profilepicture.TabStop = false;
+            this.profilepicture.Click += new System.EventHandler(this.profilepicture_Click);
+            // 
+            // friendsButton
+            // 
+            this.friendsButton.Location = new System.Drawing.Point(16, 68);
+            this.friendsButton.Name = "friendsButton";
+            this.friendsButton.Size = new System.Drawing.Size(59, 23);
+            this.friendsButton.TabIndex = 5;
+            this.friendsButton.Text = "Friends";
+            this.friendsButton.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(77, 68);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(59, 23);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "Servers";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(345, 518);
-            this.Controls.Add(this.fsTabs);
-            this.Controls.Add(this.descriptionLabel);
+            this.ClientSize = new System.Drawing.Size(345, 473);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.friendsButton);
+            this.Controls.Add(this.friendserverPanel);
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.profilepicture);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -152,9 +116,6 @@
             this.Name = "Main";
             this.ShowIcon = false;
             this.Text = "Aerocord";
-            this.fsTabs.ResumeLayout(false);
-            this.friendsTab.ResumeLayout(false);
-            this.serversTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).EndInit();
             this.ResumeLayout(false);
 
@@ -164,12 +125,10 @@
 
         private System.Windows.Forms.PictureBox profilepicture;
         private WindowsFormsAero.ThemeLabel usernameLabel;
-        private WindowsFormsAero.ThemeLabel descriptionLabel;
-        private System.Windows.Forms.TabControl fsTabs;
-        private System.Windows.Forms.TabPage friendsTab;
-        private System.Windows.Forms.TabPage serversTab;
-        private WindowsFormsAero.ListView friendsList;
-        private WindowsFormsAero.ListView serversList;
+        public WindowsFormsAero.ThemeLabel statusLabel;
+        private System.Windows.Forms.FlowLayoutPanel friendserverPanel;
+        private WindowsFormsAero.Button friendsButton;
+        private WindowsFormsAero.Button button2;
     }
 }
 

@@ -11,11 +11,12 @@ using Newtonsoft.Json;
 
 namespace Aerocord
 {
-    public partial class DM : WindowsFormsAero.AeroForm
+    public partial class DM : AutoForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
-        private WebSocketClientDM websocketClient;
-        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: black; padding: 10px;}</style></head><body>";
+        string htmlStart;
+        const string htmlStartLight = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: black; padding: 10px;}</style></head><body>";
+        const string htmlStartDark = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} body {background-color: black;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline; color: white;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: white; color: white; border-radius: 5px;} .spoiler:hover {background-color: white; color: black; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: white; padding: 10px;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
@@ -23,16 +24,37 @@ namespace Aerocord
         public long FriendID;
         private string userPFP;
         private string lastMessageAuthor = "";
-        public DM(long chatid, long friendid, string token, string userpfp)
+
+        public DM(Main parentForm, long chatid, long friendid, string token, string userpfp, bool darkmode, string rendermode)
         {
+            GlassMarginsLight = new Padding(117, 325, 12, 12);
             InitializeComponent();
+            DarkMode = darkmode;
+            RenderMode = rendermode;
+            htmlStart = htmlStartLight;
+            if (DarkMode) { _ = new DarkModeCS(this); PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1); htmlStart = htmlStartDark; }
+            switch (RenderMode)
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                    break;
+            }
             AccessToken = token;
             ChatID = chatid;
             FriendID = friendid;
             userPFP = userpfp;
+            frame.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(parentForm.userStatus);
             SetFriendInfo();
             LoadMessages();
-            websocketClient = new WebSocketClientDM(AccessToken, this);
         }
 
         private void SetFriendInfo()
@@ -54,9 +76,43 @@ namespace Aerocord
             }
         }
 
-        public void ChangeStatus(string status)
+        delegate void ChangeStatusCallback(string status, string custom_status);
+        public void ChangeStatus(string status, string custom_status)
         {
-            framefriend.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(status);
+            if (InvokeRequired)
+            {
+                ChangeStatusCallback d = new ChangeStatusCallback(ChangeStatus);
+                Invoke(d, new object[] { status, custom_status });
+            }
+            else
+            {
+                framefriend.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(status);
+                if (custom_status == "")
+                {
+                    switch (status)
+                    {
+                        case "online":
+                            descriptionLabel.Text = "Online";
+                            break;
+                        case "dnd":
+                            descriptionLabel.Text = "Do Not Disturb";
+                            break;
+                        case "idle":
+                            descriptionLabel.Text = "Idle";
+                            break;
+                        case "offline":
+                            descriptionLabel.Text = "Offline";
+                            break;
+                        default:
+                            descriptionLabel.Text = "Online";
+                            break;
+                    }
+                }
+                else
+                {
+                    descriptionLabel.Text = custom_status;
+                }
+            }
         }
 
         private void LoadMessages()
@@ -71,17 +127,17 @@ namespace Aerocord
                     string author = messages[i].author.global_name;
                     if (author == null) author = messages[i].author.username;
                     string content = messages[i].content;
-                    List<WebSocketClientDM.Attachment> attachmentsFormed = new List<WebSocketClientDM.Attachment>();
-                    List<WebSocketClientDM.Embed> embedsFormed = new List<WebSocketClientDM.Embed>();
+                    List<WebSocketClient.Attachment> attachmentsFormed = new List<WebSocketClient.Attachment>();
+                    List<WebSocketClient.Embed> embedsFormed = new List<WebSocketClient.Embed>();
 
                     if (messages[i].attachments != null) foreach (var attachment in messages[i].attachments)
                         {
-                            attachmentsFormed.Add(new WebSocketClientDM.Attachment { URL = attachment.url, Type = attachment.content_type });
+                            attachmentsFormed.Add(new WebSocketClient.Attachment { URL = attachment.url, Type = attachment.content_type });
                             //Console.WriteLine(attachment.url);
                         }
                     if (messages[i].embeds != null) foreach (var embed in messages[i].embeds)
                         {
-                            embedsFormed.Add(new WebSocketClientDM.Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
+                            embedsFormed.Add(new WebSocketClient.Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
                         }
                     switch ((int)messages[i].type.Value)
                     {
@@ -124,7 +180,7 @@ namespace Aerocord
                 ShowErrorMessage("Failed to retrieve messages", ex);
             }
         }
-        public void AddMessage(string name, string message, string action, WebSocketClientDM.Attachment[] attachments, WebSocketClientDM.Embed[] embeds, bool reload = true, bool scroll = true, string replyname = "", string replymessage = "")
+        public void AddMessage(string name, string message, string action, WebSocketClient.Attachment[] attachments, WebSocketClient.Embed[] embeds, bool reload = true, bool scroll = true, string replyname = "", string replymessage = "")
         {
             if (name == lastMessageAuthor && action == "said")
             {
@@ -367,6 +423,11 @@ namespace Aerocord
             base.OnShown(e);
 
             GlassMargins = new Padding(117, 325, 12, 12);
+            if (DarkMode)
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+            }
+
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
             ScrollToBottom();
         }
@@ -374,7 +435,6 @@ namespace Aerocord
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            if (websocketClient != null) websocketClient.CloseWebSocket();
             GC.Collect();
         }
     }

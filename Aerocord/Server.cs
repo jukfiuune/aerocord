@@ -10,20 +10,27 @@ using WindowsFormsAero.TaskDialog;
 
 namespace Aerocord
 {
-    public partial class Server : WindowsFormsAero.AeroForm
+    public partial class Server : AutoForm
     {
         private const string DiscordApiBaseUrl = "https://discord.com/api/v9/";
-        private WebSocketClientServer websocketClient;
-        const string htmlStart = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: black; padding: 10px;}</style></head><body>";
+        string htmlStart;
+        const string htmlStartLight = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: black; color: black; border-radius: 5px;} .spoiler:hover {background-color: black; color: white; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: black; padding: 10px;}</style></head><body>";
+        const string htmlStartDark = "<!DOCTYPE html><html><head><style>* {font-family: \"Segoe UI\", sans-serif; font-size: 10pt; overflow-x: hidden;} body {background-color: black;} p,strong,b,i,em,mark,small,del,ins,sub,sup,h1,h2,h3,h4,h5,h6 {display: inline; color: white;} img {width: auto; height: auto; max-width: 60% !important; max-height: 60% !important;} .spoiler {background-color: white; color: white; border-radius: 5px;} .spoiler:hover {background-color: white; color: black; border-radius: 5px;} .ping {background-color: #e6e8fd; color: #5865f3; border-radius: 5px;} .rich {width: 60%; border-style: solid; border-radius: 5px; border-width: 2px; border-color: white; padding: 10px;}</style></head><body>";
         string htmlMiddle = "";
         const string htmlEnd = "</body></html>";
         private string AccessToken;
         public long ServerID;
         public long ChatID;
         private string lastMessageAuthor = "";
-        public Server(long serverid, String token)
+
+        public Server(long serverid, String token, bool darkmode, string rendermode)
         {
+            GlassMarginsLight = new Padding(12, 118, 12, 12);
             InitializeComponent();
+            DarkMode = darkmode;
+            RenderMode = rendermode;
+            htmlStart = htmlStartLight;
+            if (DarkMode) { _ = new DarkModeCS(this); htmlStart = htmlStartDark; }
             AccessToken = token;
             ServerID = serverid;
             Thread.Sleep(1000);
@@ -81,7 +88,7 @@ namespace Aerocord
                 ShowErrorMessage("Failed to retrieve server list", ex);
             }
         }
-        public void AddMessage(string name, string message, string action, WebSocketClientServer.Attachment[] attachments, WebSocketClientServer.Embed[] embeds, bool reload = true, bool scroll = true, string replyname = "", string replymessage = "")
+        public void AddMessage(string name, string message, string action, WebSocketClient.Attachment[] attachments, WebSocketClient.Embed[] embeds, bool reload = true, bool scroll = true, string replyname = "", string replymessage = "")
         {
             if (name == lastMessageAuthor && action == "said")
             {
@@ -278,17 +285,17 @@ namespace Aerocord
                     string author = messages[i].author.global_name;
                     if (author == null) author = messages[i].author.username;
                     string content = messages[i].content;
-                    List<WebSocketClientServer.Attachment> attachmentsFormed = new List<WebSocketClientServer.Attachment>();
-                    List<WebSocketClientServer.Embed> embedsFormed = new List<WebSocketClientServer.Embed>();
+                    List<WebSocketClient.Attachment> attachmentsFormed = new List<WebSocketClient.Attachment>();
+                    List<WebSocketClient.Embed> embedsFormed = new List<WebSocketClient.Embed>();
 
                     if(messages[i].attachments != null) foreach (var attachment in messages[i].attachments)
                         {
-                            attachmentsFormed.Add(new WebSocketClientServer.Attachment { URL = attachment.url, Type = attachment.content_type });
+                            attachmentsFormed.Add(new WebSocketClient.Attachment { URL = attachment.url, Type = attachment.content_type });
                             //Console.WriteLine(attachment.url);
                         }
                     if (messages[i].embeds != null) foreach (var embed in messages[i].embeds)
                         {
-                            embedsFormed.Add(new WebSocketClientServer.Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
+                            embedsFormed.Add(new WebSocketClient.Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
                         }
                     switch ((int)messages[i].type.Value)
                     {
@@ -383,7 +390,6 @@ namespace Aerocord
         {
             if (channelList.SelectedItems[0].Text != null)
             {
-                if (websocketClient != null) websocketClient.CloseWebSocket();
                 string selectedChannel = channelList.SelectedItems[0].Text;
                 long channelID = (long)channelList.SelectedItems[0].Tag;
                 if (channelID>=0)
@@ -391,7 +397,6 @@ namespace Aerocord
                     channelLabel.Text = selectedChannel;
                     ChatID = channelID;
                     LoadMessages(channelID);
-                    websocketClient = new WebSocketClientServer(AccessToken, this);
                 }
                 else MessageBox.Show("Unable to open this channel", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -408,6 +413,27 @@ namespace Aerocord
             base.OnShown(e);
 
             GlassMargins = new Padding(12, 118, 12, 12);
+            if (DarkMode)
+            {
+                GlassMargins = new Padding(-1, -1, -1, -1);
+                PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, 1);
+            }
+            switch (RenderMode)
+            {
+                case "Aero":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 1);
+                    break;
+                case "Mica":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 2);
+                    break;
+                case "Acrylic":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 3);
+                    break;
+                case "Mica Alt":
+                    PInvoke.Methods.SetWindowAttribute(Handle, PInvoke.ParameterTypes.DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE, 4);
+                    break;
+            }
+
             chatBox.DocumentText = htmlStart + htmlMiddle + htmlEnd;
             ScrollToBottom();
         }
@@ -415,7 +441,6 @@ namespace Aerocord
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            if (websocketClient != null) websocketClient.CloseWebSocket();
             GC.Collect();
         }
     }
