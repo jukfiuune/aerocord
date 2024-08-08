@@ -18,13 +18,13 @@ Supports Windows Vista - Windows 11 (Windows Vista needs proxy settings to work)
 - Image viewing
 - Video viewing
 - Markdown Support
+- Mica, Mica Alt and Acryllic Support
+- Statuses (work-in-progress)
 # Todo
 - Custom Emojis
 - File uploading
 - Reactions
-- Status
 - Fix Aero Glass
-- Add Mica or Acrylic
 - Deleting messages
 - Editing messages
 - Replying to messages
