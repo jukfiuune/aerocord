@@ -4,7 +4,7 @@
   Aerocord
 </h1>
 
-Aerocord is a Discord client written in C#.<sup>(tasty glass included)</sup>
+Aerocord is a Discord client written in Windows Forms (C#).<sup>(tasty glass included)</sup>
 
 Supports Windows 7 - Windows 11
 
@@ -20,13 +20,13 @@ Supports Windows 7 - Windows 11
 - Mica, Mica Alt and Acryllic Support
 - Statuses
 # Todo
+- Fix list background becoming almost opaque in dark mode
 - Custom Emojis
 - File uploading
 - Reactions
 - Deleting messages
 - Editing messages
 - Replying to messages
-- Fix list background becoming almost opaque in dark mode
 - ~~Fix Aero Glass~~ Very impossible
 - ~~VC~~ Nuh uh
 
