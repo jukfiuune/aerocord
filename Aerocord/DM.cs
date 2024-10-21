@@ -25,6 +25,10 @@ namespace Aerocord
         private string userPFP;
         private string lastMessageAuthor = "";
 
+        public System.Drawing.Image friendFramePic;
+        public string status;
+
+
         public DM(Main parentForm, long chatid, long friendid, string token, string userpfp, bool darkmode, string rendermode)
         {
             GlassMarginsLight = new Padding(117, 325, 12, 12);
@@ -87,6 +91,7 @@ namespace Aerocord
             else
             {
                 framefriend.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(status);
+                friendFramePic = framefriend.Image;
                 if (custom_status == "")
                 {
                     switch (status)
@@ -112,6 +117,7 @@ namespace Aerocord
                 {
                     descriptionLabel.Text = custom_status;
                 }
+                this.status = descriptionLabel.Text;
             }
         }
 
@@ -436,6 +442,12 @@ namespace Aerocord
         {
             base.OnFormClosing(e);
             GC.Collect();
+        }
+
+        private void profilepicturefriend_Click(object sender, EventArgs e)
+        {
+            AeroForm userProfile = new UserProfile(this, FriendID, AccessToken, DarkMode, RenderMode);
+            userProfile.Show();
         }
     }
 }

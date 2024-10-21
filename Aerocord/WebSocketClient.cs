@@ -129,29 +129,11 @@ namespace Aerocord
             dynamic channelData = eventData["private_channels"];
             dynamic userProfileData = eventData["user"];
 
-            if(customStatus == "") switch(status)
-                {
-                    case "online":
-                        customStatus = "Online";
-                        break;
-                    case "dnd":
-                        customStatus = "Do Not Disturb";
-                        break;
-                    case "idle":
-                        customStatus = "Idle";
-                        break;
-                    case "offline":
-                        customStatus = "Offline";
-                        break;
-                    default:
-                        customStatus = "Online";
-                        break;
-                }
-
             parentForm.friends = friendData;
             parentForm.guilds = serverData;
             parentForm.channels = channelData;
             parentForm.userProfile = userProfileData;
+            parentForm.ChangeStatus(status, customStatus);
             //parentForm.statusLabel.Text = customStatus;
             parentForm.userStatus = status;
             foreach (var presence in eventData["presences"]) {

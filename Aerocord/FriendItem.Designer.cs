@@ -36,7 +36,7 @@
             // usernameLabel
             // 
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.usernameLabel.ForeColor = System.Drawing.Color.White;
+            this.usernameLabel.ForeColor = System.Drawing.Color.Black;
             this.usernameLabel.Location = new System.Drawing.Point(40, 7);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(195, 19);
@@ -60,9 +60,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
+            this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.profilePictureFriend);
+            this.ForeColor = System.Drawing.Color.Transparent;
             this.Name = "FriendItem";
             this.Size = new System.Drawing.Size(252, 35);
             ((System.ComponentModel.ISupportInitialize)(this.profilePictureFriend)).EndInit();

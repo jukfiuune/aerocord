@@ -440,7 +440,7 @@ namespace Aerocord
 					control.GetType().GetProperty("LineColor")?.SetValue(control, OScolors.Background);
 					break;
 				case "PictureBox":
-					control.GetType().GetProperty("BackColor")?.SetValue(control, control.Parent.BackColor);
+					control.GetType().GetProperty("BackColor")?.SetValue(control, Color.Black);
 					control.GetType().GetProperty("ForeColor")?.SetValue(control, OScolors.TextActive);
 					control.GetType().GetProperty("BorderStyle")?.SetValue(control, BorderStyle.None);
 					break;

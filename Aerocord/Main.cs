@@ -85,6 +85,45 @@ namespace Aerocord
             }
         }
 
+        delegate void ChangeStatusCallback(string status, string custom_status);
+        public void ChangeStatus(string status, string custom_status)
+        {
+            if (InvokeRequired)
+            {
+                ChangeStatusCallback d = new ChangeStatusCallback(ChangeStatus);
+                Invoke(d, new object[] { status, custom_status });
+            }
+            else
+            {
+                frame.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(status);
+                if (custom_status == "")
+                {
+                    switch (status)
+                    {
+                        case "online":
+                            statusLabel.Text = "Online";
+                            break;
+                        case "dnd":
+                            statusLabel.Text = "Do Not Disturb";
+                            break;
+                        case "idle":
+                            statusLabel.Text = "Idle";
+                            break;
+                        case "offline":
+                            statusLabel.Text = "Offline";
+                            break;
+                        default:
+                            statusLabel.Text = "Online";
+                            break;
+                    }
+                }
+                else
+                {
+                    statusLabel.Text = custom_status;
+                }
+            }
+        }
+
         private void FriendsButton_Click(object sender, EventArgs e)
         {
             PopulateFriendsTab();

@@ -32,13 +32,13 @@
             this.usernameLabel = new WindowsFormsAero.ThemeLabel();
             this.messageBox = new WindowsFormsAero.TextBox();
             this.chatBox = new System.Windows.Forms.WebBrowser();
-            this.framefriend = new System.Windows.Forms.PictureBox();
             this.profilepicture = new System.Windows.Forms.PictureBox();
             this.profilepicturefriend = new System.Windows.Forms.PictureBox();
+            this.framefriend = new System.Windows.Forms.PictureBox();
             this.frame = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.framefriend)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicturefriend)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.framefriend)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.frame)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,7 +67,6 @@
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(654, 23);
             this.messageBox.TabIndex = 6;
-            this.messageBox.KeyDown += this.messageBox_KeyDown;
             // 
             // chatBox
             // 
@@ -79,16 +78,6 @@
             this.chatBox.TabIndex = 9;
             this.chatBox.Url = new System.Uri("", System.UriKind.Relative);
             this.chatBox.WebBrowserShortcutsEnabled = false;
-            // 
-            // framefriend
-            // 
-            this.framefriend.BackColor = System.Drawing.Color.Black;
-            this.framefriend.Image = global::Aerocord.Properties.Resources.offline;
-            this.framefriend.Location = new System.Drawing.Point(12, 12);
-            this.framefriend.Name = "framefriend";
-            this.framefriend.Size = new System.Drawing.Size(100, 100);
-            this.framefriend.TabIndex = 10;
-            this.framefriend.TabStop = false;
             // 
             // profilepicture
             // 
@@ -115,6 +104,17 @@
             this.profilepicturefriend.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.profilepicturefriend.TabIndex = 0;
             this.profilepicturefriend.TabStop = false;
+            this.profilepicturefriend.Click += new System.EventHandler(this.profilepicturefriend_Click);
+            // 
+            // framefriend
+            // 
+            this.framefriend.BackColor = System.Drawing.Color.Black;
+            this.framefriend.Image = global::Aerocord.Properties.Resources.offline;
+            this.framefriend.Location = new System.Drawing.Point(12, 12);
+            this.framefriend.Name = "framefriend";
+            this.framefriend.Size = new System.Drawing.Size(100, 100);
+            this.framefriend.TabIndex = 10;
+            this.framefriend.TabStop = false;
             // 
             // frame
             // 
@@ -144,9 +144,9 @@
             this.Name = "DM";
             this.ShowIcon = false;
             this.Text = "Aerocord - Chat";
-            ((System.ComponentModel.ISupportInitialize)(this.framefriend)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicturefriend)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.framefriend)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.frame)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

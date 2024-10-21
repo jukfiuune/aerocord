@@ -133,9 +133,6 @@ namespace Aerocord
                     passBox.Hide();
                     signinButton.Hide();
                     themeLabel1.Hide();
-                    themeLabel2.Hide();
-                    themeLabel3.Hide();
-                    linkLabel1.Hide();
                     username.Text = "Login in progress...";
 
                     string userProfileJson = webClient.DownloadString("https://discord.com/api/v9/users/@me");
@@ -153,9 +150,6 @@ namespace Aerocord
                     passBox.Show();
                     signinButton.Show();
                     themeLabel1.Show();
-                    themeLabel2.Show();
-                    themeLabel3.Show();
-                    linkLabel1.Show();
                     username.Text = "Sign in";
                 }
             }
@@ -219,6 +213,15 @@ namespace Aerocord
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
+                using (CredentialManagement.Credential credential = new CredentialManagement.Credential())
+                {
+                    credential.Password = accessToken;
+                    credential.Target = "Aerocord";
+                    credential.Type = CredentialManagement.CredentialType.Generic;
+                    credential.PersistanceType = CredentialManagement.PersistanceType.LocalComputer;
+                    credential.Save();
+                }
+
                 File.WriteAllText(filePath, "token=" + accessToken + "\nrendermode=" + RenderMode + (MajorVersion >= 10 ? "\ncolormode=System" : "\ncolormode=Light"));
             }
             catch (Exception ex)
@@ -261,12 +264,14 @@ namespace Aerocord
                 if (File.Exists(filePath))
                 {
                     string AccessToken = "";
+                    using (CredentialManagement.Credential credential = new CredentialManagement.Credential { Target = "Aerocord" })
+                    {
+                        credential.Load();
+                        AccessToken = credential.Password;
+                    }
+
                     foreach (string line in File.ReadLines(filePath))
                     {
-                        if (line.Contains("token="))
-                        {
-                            AccessToken = line.Replace("token=", "");
-                        }
                         if (line.Contains("rendermode="))
                         {
                             RenderMode = line.Replace("rendermode=", "");
@@ -316,7 +321,7 @@ namespace Aerocord
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to save token: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Failed to load token: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

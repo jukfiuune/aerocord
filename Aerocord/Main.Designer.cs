@@ -31,18 +31,20 @@
             this.usernameLabel = new WindowsFormsAero.ThemeLabel();
             this.statusLabel = new WindowsFormsAero.ThemeLabel();
             this.friendserverPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.frame = new System.Windows.Forms.PictureBox();
             this.profilepicture = new System.Windows.Forms.PictureBox();
             this.friendsButton = new WindowsFormsAero.Button();
             this.button2 = new WindowsFormsAero.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.frame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).BeginInit();
             this.SuspendLayout();
             // 
             // usernameLabel
             // 
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.usernameLabel.Location = new System.Drawing.Point(75, 11);
+            this.usernameLabel.Location = new System.Drawing.Point(86, 9);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(213, 23);
+            this.usernameLabel.Size = new System.Drawing.Size(247, 23);
             this.usernameLabel.TabIndex = 1;
             this.usernameLabel.Text = "username";
             // 
@@ -50,9 +52,9 @@
             // 
             this.statusLabel.Font = new System.Drawing.Font("Segoe UI Variable Text Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.statusLabel.Location = new System.Drawing.Point(75, 34);
+            this.statusLabel.Location = new System.Drawing.Point(86, 32);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(258, 21);
+            this.statusLabel.Size = new System.Drawing.Size(247, 21);
             this.statusLabel.TabIndex = 3;
             this.statusLabel.Text = "Set a custom status";
             this.statusLabel.Click += new System.EventHandler(this.descriptionLabel_Click);
@@ -67,6 +69,17 @@
             this.friendserverPanel.Size = new System.Drawing.Size(317, 366);
             this.friendserverPanel.TabIndex = 4;
             // 
+            // frame
+            // 
+            this.frame.BackColor = System.Drawing.Color.Black;
+            this.frame.Image = global::Aerocord.Properties.Resources.offline;
+            this.frame.Location = new System.Drawing.Point(10, -2);
+            this.frame.Name = "frame";
+            this.frame.Size = new System.Drawing.Size(72, 72);
+            this.frame.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.frame.TabIndex = 12;
+            this.frame.TabStop = false;
+            // 
             // profilepicture
             // 
             this.profilepicture.BackColor = System.Drawing.Color.Black;
@@ -74,7 +87,7 @@
             this.profilepicture.Image = global::Aerocord.Properties.Resources.defaultpfp;
             this.profilepicture.ImageLocation = "";
             this.profilepicture.InitialImage = global::Aerocord.Properties.Resources.defaultpfp;
-            this.profilepicture.Location = new System.Drawing.Point(16, 9);
+            this.profilepicture.Location = new System.Drawing.Point(22, 7);
             this.profilepicture.Name = "profilepicture";
             this.profilepicture.Size = new System.Drawing.Size(50, 50);
             this.profilepicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -111,11 +124,13 @@
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.profilepicture);
+            this.Controls.Add(this.frame);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Main";
             this.ShowIcon = false;
             this.Text = "Aerocord";
+            ((System.ComponentModel.ISupportInitialize)(this.frame)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.profilepicture)).EndInit();
             this.ResumeLayout(false);
 
@@ -123,6 +138,7 @@
 
         #endregion
 
+        private System.Windows.Forms.PictureBox frame;
         private System.Windows.Forms.PictureBox profilepicture;
         private WindowsFormsAero.ThemeLabel usernameLabel;
         public WindowsFormsAero.ThemeLabel statusLabel;
