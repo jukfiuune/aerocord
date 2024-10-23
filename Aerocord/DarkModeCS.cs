@@ -611,6 +611,7 @@ namespace Aerocord
                 case "FriendItem":
                     control.GetType().GetProperty("BackColor")?.SetValue(control, System.Drawing.Color.Black);
                     control.GetType().GetProperty("ForeColor")?.SetValue(control, System.Drawing.Color.Black);
+                    control.Parent.GetType().GetProperty("BackColor")?.SetValue(control.Parent, System.Drawing.Color.Black);
                     break;
                 default:
 					//control.GetType().GetProperty("BackColor")?.SetValue(control, OScolors.Control);

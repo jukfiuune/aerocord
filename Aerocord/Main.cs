@@ -152,7 +152,7 @@ namespace Aerocord
                     {
                         if (friend.type == 1)
                         {
-                            string username = friend.user.global_name ?? friend.user.username;
+                            string username = friend.nickname != null ? friend.nickname : friend.user.global_name != null ? friend.user.global_name : friend.user.username;
                             long friendId = long.Parse((string)friend.user.id);
                             long chatId = GetChatID(friendId);
                             string avatarUrl = $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png";
@@ -160,10 +160,11 @@ namespace Aerocord
                             FriendItem friendItem = new FriendItem
                             {
                                 Username = username,
-                                ProfilePictureUrl = avatarUrl,
                                 ChatId = chatId,
                                 FriendId = friendId
                             };
+
+                            if (friend.user.avatar != null) friendItem.ProfilePictureUrl = avatarUrl;
 
                             if (!DarkMode)
                             {
@@ -234,9 +235,10 @@ namespace Aerocord
                         FriendItem serverItem = new FriendItem
                         {
                             ServerName = guildName,
-                            ProfilePictureUrl = iconUrl,
                             FriendId = serverId
                         };
+
+                        if (guild.icon != null) serverItem.ProfilePictureUrl = iconUrl;
 
                         if (!DarkMode)
                         {
