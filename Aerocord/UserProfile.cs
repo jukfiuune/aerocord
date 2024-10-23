@@ -43,6 +43,7 @@ namespace Aerocord
             SetFriendInfo();
             frame.Image = parentForm.friendFramePic;
             statusLabel.Text = parentForm.status;
+            usernameLabel.Text = parentForm.username;
         }
 
         protected override void OnShown(EventArgs e)
@@ -58,9 +59,7 @@ namespace Aerocord
             try
             {
                 dynamic userProfile = GetApiResponse($"users/{FriendID}/profile");
-                string displayname = userProfile.user.global_name ?? userProfile.user.username;
                 string bio = Regex.Replace((string)userProfile.user.bio, @"(<.*?>)|(\*\*|\*|__|_|~~|\|\|)", string.Empty);
-                usernameLabel.Text = displayname;
                 profilepicture.ImageLocation = $"https://cdn.discordapp.com/avatars/{userProfile.user.id}/{userProfile.user.avatar}.png";
                 pronounsLabel.Text = userProfile.user_profile.pronouns;
                 bioLabel.Text = bio;

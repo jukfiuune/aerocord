@@ -157,6 +157,8 @@ namespace Aerocord
                             long chatId = GetChatID(friendId);
                             string avatarUrl = $"https://cdn.discordapp.com/avatars/{friend.user.id}/{friend.user.avatar}.png";
 
+                            if (chatId == -1) continue;
+
                             FriendItem friendItem = new FriendItem
                             {
                                 Username = username,
@@ -179,7 +181,7 @@ namespace Aerocord
                                 long friendID = clickedFriendItem.FriendId;
                                 if (chatID >= 0)
                                 {
-                                    listDMs.Add(chatID, new DM(this, chatID, friendID, AccessToken, userPFP, DarkMode, RenderMode));
+                                    listDMs.Add(chatID, new DM(this, chatID, friendID, AccessToken, userPFP, username, DarkMode, RenderMode));
                                     if (friendCustomStatuses.ContainsKey(friendID) && friendStatuses.ContainsKey(friendID))
                                     {
                                         listDMs[chatID].ChangeStatus(friendStatuses[friendID], friendCustomStatuses[friendID]);
@@ -196,7 +198,7 @@ namespace Aerocord
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Unable to open this DM", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show($"Unable to open this DM ({chatID.ToString()}, {friendId.ToString()})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                             };
 

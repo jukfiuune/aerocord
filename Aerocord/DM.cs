@@ -27,9 +27,10 @@ namespace Aerocord
 
         public System.Drawing.Image friendFramePic;
         public string status;
+        public string username;
 
 
-        public DM(Main parentForm, long chatid, long friendid, string token, string userpfp, bool darkmode, string rendermode)
+        public DM(Main parentForm, long chatid, long friendid, string token, string userpfp, string username, bool darkmode, string rendermode)
         {
             GlassMarginsLight = new Padding(117, 325, 12, 12);
             InitializeComponent();
@@ -56,6 +57,7 @@ namespace Aerocord
             ChatID = chatid;
             FriendID = friendid;
             userPFP = userpfp;
+            this.username = username;
             frame.Image = (System.Drawing.Image)Properties.Resources.ResourceManager.GetObject(parentForm.userStatus);
             SetFriendInfo();
             LoadMessages();
@@ -66,8 +68,7 @@ namespace Aerocord
             try
             {
                 dynamic userProfile = GetApiResponse($"users/{FriendID}/profile");
-                string displayname;
-                if (userProfile.user.global_name != null) { displayname = userProfile.user.global_name; } else { displayname = userProfile.user.username; }
+                string displayname = username;
                 string bio = userProfile.user.bio;
                 usernameLabel.Text = displayname;
                 descriptionLabel.Text = bio;
@@ -126,7 +127,6 @@ namespace Aerocord
             try
             {
                 dynamic messages = GetApiResponse($"channels/{ChatID.ToString()}/messages");
-                Console.WriteLine(messages);
                 htmlMiddle = "";
                 for (int i = messages.Count - 1; i >= 0; i--)
                 {

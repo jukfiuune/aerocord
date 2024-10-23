@@ -57,7 +57,7 @@
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.usernameLabel.Location = new System.Drawing.Point(118, 12);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(213, 23);
+            this.usernameLabel.Size = new System.Drawing.Size(654, 23);
             this.usernameLabel.TabIndex = 4;
             this.usernameLabel.Text = "username";
             // 
