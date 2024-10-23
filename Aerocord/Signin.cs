@@ -31,6 +31,11 @@ namespace Aerocord
 
         public Signin()
         {
+            if ((MajorVersion == 6 && MinorVersion < 1) || MajorVersion < 6)
+            {
+                MessageBox.Show("This version of Windows is unsupported", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
             InitializeComponent();
             Console.WriteLine(LCUVer);
             if (DarkMode) _ = new DarkModeCS(this);

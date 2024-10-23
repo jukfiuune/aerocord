@@ -608,7 +608,11 @@ namespace Aerocord
 					grid.RowHeadersDefaultCellStyle.SelectionBackColor = OScolors.AccentOpaque;
 					grid.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
 					break;
-				default:
+                case "FriendItem":
+                    control.GetType().GetProperty("BackColor")?.SetValue(control, System.Drawing.Color.Black);
+                    control.GetType().GetProperty("ForeColor")?.SetValue(control, System.Drawing.Color.Black);
+                    break;
+                default:
 					//control.GetType().GetProperty("BackColor")?.SetValue(control, OScolors.Control);
 					//control.GetType().GetProperty("ForeColor")?.SetValue(control, OScolors.TextActive);
 					//control.GetType().GetProperty("BorderStyle")?.SetValue(control, BStyle);

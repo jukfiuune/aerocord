@@ -20,7 +20,6 @@ Supports Windows 7 - Windows 11
 - Mica, Mica Alt and Acryllic Support
 - Statuses
 # Todo
-- Fix list background becoming almost opaque in dark mode
 - Custom Emojis
 - File uploading
 - Reactions

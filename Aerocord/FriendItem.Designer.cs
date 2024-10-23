@@ -60,10 +60,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Transparent;
+            this.BackColor = System.Drawing.Color.Black;
             this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.profilePictureFriend);
-            this.ForeColor = System.Drawing.Color.Transparent;
+            this.ForeColor = System.Drawing.Color.Black;
             this.Name = "FriendItem";
             this.Size = new System.Drawing.Size(252, 35);
             ((System.ComponentModel.ISupportInitialize)(this.profilePictureFriend)).EndInit();

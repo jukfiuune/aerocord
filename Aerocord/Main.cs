@@ -169,9 +169,7 @@ namespace Aerocord
                             {
                                 friendItem.LabelColor = System.Drawing.Color.Black;
                             }
-
-
-
+                            
                             friendItem.Clicked += (sender, e) =>
                             {
                                 var clickedFriendItem = (FriendItem)sender;
