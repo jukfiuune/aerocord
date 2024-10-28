@@ -204,9 +204,16 @@ namespace Aerocord
             lastMessageAuthor = name;
             if (attachments.Length > 0) foreach (var attachment in attachments)
                 {
-                    chatBox.ScriptErrorsSuppressed = true;
-                    if (attachment.Type.Contains("image")) htmlMiddle += "<br><img src=\"" + attachment.URL + "\"></img>";
-                    if (attachment.Type.Contains("video")) htmlMiddle += "<br><embed src=\"" + attachment.URL + "\" type=\"" + attachment.Type + "\" width=\"60%\" height=\"60%\">";
+                    try
+                    {
+                        chatBox.ScriptErrorsSuppressed = true;
+                        if (attachment.Type.Contains("image")) htmlMiddle += "<br><img src=\"" + attachment.URL + "\"></img>";
+                        if (attachment.Type.Contains("video")) htmlMiddle += "<br><embed src=\"" + attachment.URL + "\" type=\"" + attachment.Type + "\" width=\"60%\" height=\"60%\">";
+                    }
+                    catch
+                    {
+                        htmlMiddle += "<br><strong>Failed to load attachement</strong>";
+                    }
                 }
             if (embeds.Length > 0) foreach (var embed in embeds)
                 {
