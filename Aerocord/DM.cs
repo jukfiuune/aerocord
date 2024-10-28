@@ -153,7 +153,7 @@ namespace Aerocord
                             break;
 
                         case 19:
-                            Console.WriteLine("replyyayaya");
+                            //Console.WriteLine("replyyayaya");
                             // Reply
                             bool found = false;
                             foreach (var message in messages)
@@ -194,7 +194,7 @@ namespace Aerocord
             }
             else if (action == "replied")
             {
-                Console.WriteLine("ligmaballzsd");
+                //Console.WriteLine("ligmaballzsd");
                 htmlMiddle += "<br><em style=\"color: darkgray\">┌ @" + replyname + ": " + DiscordMDToHtml(replymessage) + "</em><br><strong>" + name + " " + action + ":</strong><br><p>" + DiscordMDToHtml(message) + "</p>";
             }
             else
@@ -366,7 +366,7 @@ namespace Aerocord
         {
             if (e.KeyCode == Keys.Enter)
             {
-                Console.WriteLine("Ligma");
+                //Console.WriteLine("Ligma");
                 e.SuppressKeyPress = true;
                 SendMessage();
             }
@@ -410,7 +410,7 @@ namespace Aerocord
             {
                 webClient.Headers[HttpRequestHeader.Authorization] = AccessToken;
                 string jsonResponse = webClient.DownloadString(DiscordApiBaseUrl + endpoint);
-                Console.WriteLine(jsonResponse.ToString());
+                //Console.WriteLine(jsonResponse.ToString());
                 return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
             }
         }
@@ -427,6 +427,7 @@ namespace Aerocord
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+            this.messageBox.KeyDown += this.messageBox_KeyDown;
 
             GlassMargins = new Padding(117, 325, 12, 12);
             if (DarkMode)

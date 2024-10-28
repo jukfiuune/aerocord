@@ -88,14 +88,18 @@
             // 
             // channelList
             // 
+            this.channelList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.channelList.Cursor = System.Windows.Forms.Cursors.Hand;
             this.channelList.HideSelection = false;
+            this.channelList.LabelWrap = false;
             this.channelList.Location = new System.Drawing.Point(13, 119);
+            this.channelList.MultiSelect = false;
             this.channelList.Name = "channelList";
             this.channelList.Size = new System.Drawing.Size(100, 230);
             this.channelList.TabIndex = 10;
             this.channelList.UseCompatibleStateImageBehavior = false;
             this.channelList.View = System.Windows.Forms.View.Tile;
-            this.channelList.DoubleClick += new System.EventHandler(this.channelList_DoubleClick);
+            this.channelList.Click += new System.EventHandler(this.channelList_Click);
             // 
             // Server
             // 

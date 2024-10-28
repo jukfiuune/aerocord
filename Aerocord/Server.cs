@@ -95,7 +95,7 @@ namespace Aerocord
                 htmlMiddle += "<br><p>" + DiscordMDToHtml(message) + "</p>";
             }else if(action == "replied")
             {
-                Console.WriteLine("ligmaballzsd");
+                //Console.WriteLine("ligmaballzsd");
                 htmlMiddle += "<br><em style=\"color: darkgray\">┌ @" + replyname + ": " + DiscordMDToHtml(replymessage) + "</em><br><strong>" + name + " " + action + ":</strong><br><p>" + DiscordMDToHtml(message) + "</p>";
             }
             else
@@ -278,7 +278,7 @@ namespace Aerocord
             try
             {
                 dynamic messages = GetApiResponse($"channels/{channelID.ToString()}/messages");
-                Console.WriteLine(messages);
+                //Console.WriteLine(messages);
                 htmlMiddle = "";
                 for (int i = messages.Count - 1; i >= 0; i--)
                 {
@@ -305,7 +305,7 @@ namespace Aerocord
                             break;
 
                         case 19:
-                            Console.WriteLine("replyyayaya");
+                            //Console.WriteLine("replyyayaya");
                             // Reply
                             bool found = false;
                             foreach (var message in messages)
@@ -343,7 +343,7 @@ namespace Aerocord
         {
             if (e.KeyCode == Keys.Enter)
             {
-                Console.WriteLine("Ligma");
+                //Console.WriteLine("Ligma");
                 e.SuppressKeyPress = true;
                 SendMessage();
             }
@@ -386,7 +386,7 @@ namespace Aerocord
             MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void channelList_DoubleClick(object sender, EventArgs ex)
+        private void channelList_Click(object sender, EventArgs ex)
         {
             if (channelList.SelectedItems[0].Text != null)
             {
@@ -411,6 +411,7 @@ namespace Aerocord
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+            this.messageBox.KeyDown += this.messageBox_KeyDown;
 
             GlassMargins = new Padding(12, 118, 12, 12);
             if (DarkMode)

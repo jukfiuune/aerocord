@@ -64,6 +64,7 @@
             this.friendserverPanel.AutoScroll = true;
             this.friendserverPanel.BackColor = System.Drawing.Color.Black;
             this.friendserverPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.friendserverPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.friendserverPanel.Location = new System.Drawing.Point(16, 95);
             this.friendserverPanel.Name = "friendserverPanel";
             this.friendserverPanel.Size = new System.Drawing.Size(317, 366);

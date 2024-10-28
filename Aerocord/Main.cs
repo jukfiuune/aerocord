@@ -32,7 +32,7 @@ namespace Aerocord
 
         public Main(string token, bool darkmode, string rendermode, bool autocolormode, Signin signinArg)
         {
-            GlassMarginsLight = new Padding(15, 65, 205, 380);
+            GlassMarginsLight = new Padding(15, 68, 208, 382);
             InitializeComponent();
             signin = signinArg;
             AccessToken = token;
@@ -173,7 +173,7 @@ namespace Aerocord
                                 friendItem.LabelColor = System.Drawing.Color.Black;
                             }
                             
-                            friendItem.Clicked += (sender, e) =>
+                            friendItem.Click += (sender, e) =>
                             {
                                 var clickedFriendItem = (FriendItem)sender;
                                 string selectedFriend = clickedFriendItem.Username;
@@ -246,8 +246,7 @@ namespace Aerocord
                         {
                             serverItem.LabelColor = System.Drawing.Color.Black;
                         }
-
-                        serverItem.Clicked += (sender, e) =>
+                        serverItem.Click += (sender, e) =>
                         {
                             var clickedServerItem = (FriendItem)sender;
                             string selectedServer = clickedServerItem.ServerName;
@@ -334,7 +333,7 @@ namespace Aerocord
         {
             base.OnShown(e);
 
-            GlassMargins = new Padding(15, 65, 205, 380);
+            GlassMargins = new Padding(15, 68, 208, 382);
             if(DarkMode) GlassMargins = new Padding(-1, -1, -1, -1);
 
             signin.Hide();

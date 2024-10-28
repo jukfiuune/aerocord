@@ -139,6 +139,7 @@ namespace Aerocord
                     signinButton.Hide();
                     themeLabel1.Hide();
                     username.Text = "Login in progress...";
+                    GlassMargins = new Padding(-1, -1, -1, -1);
 
                     string userProfileJson = webClient.DownloadString("https://discord.com/api/v9/users/@me");
 
@@ -156,6 +157,7 @@ namespace Aerocord
                     signinButton.Show();
                     themeLabel1.Show();
                     username.Text = "Sign in";
+                    if(!DarkMode) GlassMargins = new Padding(11, 200, 11, 11);
                 }
             }
         }

@@ -123,7 +123,7 @@ namespace Aerocord
         {
             dynamic eventData = data;
             string status = eventData["user_settings"]["status"];
-            string customStatus = eventData["user_settings"]["custom_status"]["text"] ?? "";
+            string customStatus = eventData["user_settings"]["custom_status"]["text"] != null ? eventData["user_settings"]["custom_status"]["text"] : "";
             dynamic friendData = eventData["relationships"];
             dynamic serverData = eventData["guilds"];
             dynamic channelData = eventData["private_channels"];
@@ -134,7 +134,6 @@ namespace Aerocord
             parentForm.channels = channelData;
             parentForm.userProfile = userProfileData;
             parentForm.ChangeStatus(status, customStatus);
-            //parentForm.statusLabel.Text = customStatus;
             parentForm.userStatus = status;
             foreach (var presence in eventData["presences"]) {
                 if (!parentForm.friendStatuses.ContainsKey(long.Parse((string)presence["user"]["id"]))) parentForm.friendStatuses.Add(long.Parse((string)presence["user"]["id"]), (string)presence["status"]);
@@ -151,8 +150,9 @@ namespace Aerocord
             dynamic attachmentData = eventData["attachments"];
             dynamic embedData = eventData["embeds"];
             string channelId = eventData["channel_id"];
-            string author = eventData["author"]["global_name"];
-            if (eventData["author"]["global_name"] == null) author = eventData["author"]["username"];
+            string guildId = eventData["guild_id"] != null ? eventData["guild_id"] : "-1";
+            //if (guildId != "-1") Console.WriteLine("Is Guild " + guildId);
+            string author = eventData["author"]["global_name"] != null ? eventData["author"]["global_name"] : eventData["author"]["username"];
             string content = eventData["content"];
             List<Attachment> attachmentsFormed = new List<Attachment>();
             List<Embed> embedsFormed = new List<Embed>();
@@ -205,8 +205,10 @@ namespace Aerocord
                             break;
                     }
             }
-            else if (parentForm.listServers.ContainsKey(long.Parse(channelId)))
+            else if (parentForm.listServers.ContainsKey(long.Parse(guildId)))
             {
+                Server parentServerForm = parentForm.listServers[long.Parse(guildId)];
+                if (parentServerForm.ChatID != long.Parse(channelId)) return;
                 if (attachmentData != null)
                 {
                     foreach (var attachment in attachmentData)
@@ -222,7 +224,6 @@ namespace Aerocord
                         embedsFormed.Add(new Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
                     }
                 }
-                Server parentServerForm = parentForm.listServers[long.Parse(channelId)];
                     switch ((int)eventData["type"].Value)
                     {
                         case 7:

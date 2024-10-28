@@ -76,7 +76,7 @@ namespace Aerocord
             {
                 webClient.Headers[HttpRequestHeader.Authorization] = AccessToken;
                 string jsonResponse = webClient.DownloadString(DiscordApiBaseUrl + endpoint);
-                Console.WriteLine(jsonResponse.ToString());
+                //Console.WriteLine(jsonResponse.ToString());
                 return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
             }
         }
