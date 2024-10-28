@@ -61,8 +61,8 @@ namespace Aerocord
         {
             string LCUVer = GetRegistryValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "LCUVer", "None");
             if (LCUVer != "None") return LCUVer;
-            string MajorMinorVersion = GetRegistryValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "6.1");
-            if (MajorMinorVersion.Contains("Windows 10") || MajorMinorVersion.Contains("Windows 11")) MajorMinorVersion = "10.0";
+            string MajorMinorVersion = GetRegistryValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", "Windows 7");
+            if (MajorMinorVersion.Contains("Windows 10") || MajorMinorVersion.Contains("Windows 11")) MajorMinorVersion = "10.0"; else MajorMinorVersion = "6.1";
             string CurrentBuild = GetRegistryValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", "7601");
             return MajorMinorVersion + "." + CurrentBuild;
         }
