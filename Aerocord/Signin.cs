@@ -216,7 +216,7 @@ namespace Aerocord
         {
             try
             {
-                string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
@@ -264,7 +264,7 @@ namespace Aerocord
             {
                 this.Hide();
 
-                string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
                 string filePath = Path.Combine(homeDirectory, TokenFileName);
 
