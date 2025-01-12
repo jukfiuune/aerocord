@@ -44,11 +44,12 @@
             // 
             // label
             // 
+            this.label.AutoEllipsis = true;
             this.label.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label.Location = new System.Drawing.Point(26, 6);
             this.label.MaximumSize = new System.Drawing.Size(171, 13);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(171, 13);
+            this.label.Size = new System.Drawing.Size(141, 13);
             this.label.TabIndex = 1;
             this.label.Text = "channel";
             // 
@@ -60,7 +61,7 @@
             this.Controls.Add(this.type);
             this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Name = "ChannelEntry";
-            this.Size = new System.Drawing.Size(200, 24);
+            this.Size = new System.Drawing.Size(170, 24);
             ((System.ComponentModel.ISupportInitialize)(this.type)).EndInit();
             this.ResumeLayout(false);
 

@@ -91,7 +91,7 @@ namespace Aerocord
                             if(!init) HandleReadyEvent(json["d"]);
                             break;
                         case "MESSAGE_CREATE":
-                            //HandleMessageCreateEvent(json["d"]);
+                            HandleMessageCreateEvent(json["d"]);
                             break;
                         case "PRESENCE_UPDATE":
                             //HandlePresenceUpdateEvent(json["d"]);
@@ -148,7 +148,7 @@ namespace Aerocord
 
         private void HandleMessageCreateEvent(JToken data)
         {
-            /*dynamic eventData = data;
+            dynamic eventData = data;
             dynamic attachmentData = eventData["attachments"];
             dynamic embedData = eventData["embeds"];
             string channelId = eventData["channel_id"];
@@ -159,59 +159,9 @@ namespace Aerocord
             List<Attachment> attachmentsFormed = new List<Attachment>();
             List<Embed> embedsFormed = new List<Embed>();
 
-            if (parentForm.listDMs.ContainsKey(long.Parse(channelId)))
+            if(channelId == parentForm.currentChatId)
             {
-                DM parentDMForm = parentForm.listDMs[long.Parse(channelId)];
-                    if (attachmentData != null)
-                    {
-                        foreach (var attachment in attachmentData)
-                        {
-                            attachmentsFormed.Add(new Attachment { URL = attachment.url, Type = attachment.content_type });
-                        }
-                    }
-
-                    if (embedData != null)
-                    {
-                        foreach (var embed in embedData)
-                        {
-                            embedsFormed.Add(new Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
-                        }
-                    }
-                    switch ((int)eventData["type"].Value)
-                    {
-                        case 7:
-                            // Join message
-                            parentDMForm.AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
-                            break;
-
-                        case 19:
-                            // Reply
-                            bool found = false;
-                            foreach (var message in parentDMForm.GetApiResponse($"channels/{parentDMForm.ChatID.ToString()}/messages"))
-                            {
-                                if (message.id == eventData["message_reference"]["message_id"])
-                                {
-                                    string replyAuthor = message.author.global_name;
-                                    if (replyAuthor == null) replyAuthor = message.author.username;
-                                    parentDMForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, replyAuthor, message.content.Value);
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (!found) parentDMForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, " ", "Unable to load message");
-                            break;
-
-                        default:
-                            //Normal text or unimplemented
-                            parentDMForm.AddMessage(author, content, "said", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
-                            break;
-                    }
-            }
-            else if (parentForm.listServers.ContainsKey(long.Parse(guildId)))
-            {
-                Server parentServerForm = parentForm.listServers[long.Parse(guildId)];
-                if (parentServerForm.ChatID != long.Parse(channelId)) return;
-                if (attachmentData != null)
+                /*if (attachmentData != null)
                 {
                     foreach (var attachment in attachmentData)
                     {
@@ -225,37 +175,11 @@ namespace Aerocord
                     {
                         embedsFormed.Add(new Embed { Type = embed?.type ?? "", Author = embed?.author?.name ?? "", AuthorURL = embed?.author?.url ?? "", Title = embed?.title ?? "", TitleURL = embed?.url ?? "", Description = embed?.description ?? "" });
                     }
-                }
-                    switch ((int)eventData["type"].Value)
-                    {
-                        case 7:
-                            // Join message
-                            parentServerForm.AddMessage(author, "*Say hi!*", "slid in the server", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
-                            break;
+                }*/
 
-                        case 19:
-                            // Reply
-                            bool found = false;
-                            foreach (var message in parentServerForm.GetApiResponse($"channels/{parentServerForm.ChatID.ToString()}/messages"))
-                            {
-                                if (message.id == eventData["message_reference"]["message_id"])
-                                {
-                                    string replyAuthor = message.author.global_name;
-                                    if (replyAuthor == null) replyAuthor = message.author.username;
-                                    parentServerForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, replyAuthor, message.content.Value);
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (!found) parentServerForm.AddMessage(author, content, "replied", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true, " ", "Unable to load message");
-                            break;
-
-                        default:
-                            //Normal text or unimplemented
-                            parentServerForm.AddMessage(author, content, "said", attachmentsFormed.ToArray(), embedsFormed.ToArray(), true, true);
-                            break;
-                    }
-            }*/
+                parentForm.ChooseMessageBox(author, content, (int)eventData["type"].Value);
+                parentForm.ScrollToBottom();
+            }
         }
 
         private void HandlePresenceUpdateEvent(JToken data)

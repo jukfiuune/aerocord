@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -28,12 +29,14 @@ namespace Aerocord
         public Dictionary<string, string> friendStatuses = new Dictionary<string, string>();
         public Dictionary<string, string> friendCustomStatuses = new Dictionary<string, string>();
 
+        public string currentChatId = "";
+
         public Main()
         {
             InitializeComponent();
             AccessToken = "";
             websocketClient = new WebSocketClient(AccessToken, this);
-            dmsButton.Click += (sender, e) => { if(websocketClient.init) PopulateDMs(); };
+            dmsButton.Click += (sender, e) => { if (websocketClient.init) PopulateDMs(); };
         }
 
         protected override void OnShown(EventArgs e)
@@ -47,6 +50,7 @@ namespace Aerocord
             }
         }
 
+        #region Populate Fields
         delegate void PopulateDMsCallback();
         public void PopulateDMs()
         {
@@ -112,34 +116,22 @@ namespace Aerocord
 
                             //if (friend.user.avatar != null) friendEntry.ProfilePictureUrl = avatarUrl;
 
-                            /*friendEntry.Click += (sender, e) =>
+                            friendEntry.Click += (sender, e) =>
                             {
+                                Console.WriteLine("Friend clicked");
                                 var clickedFriendEntry = (ChannelEntry)sender;
                                 string selectedFriend = clickedFriendEntry.Name;
                                 string chatID = clickedFriendEntry.ChatId;
                                 string friendID = clickedFriendEntry.FriendId;
                                 if (chatID.Length > 1)
                                 {
-                                    listDMs.Add(chatID, new DM(this, chatID, friendID, AccessToken, userPFP, username, DarkMode, RenderMode));
-                                    if (friendCustomStatuses.ContainsKey(friendID) && friendStatuses.ContainsKey(friendID))
-                                    {
-                                        listDMs[chatID].ChangeStatus(friendStatuses[friendID], friendCustomStatuses[friendID]);
-                                    }
-                                    else if (friendStatuses.ContainsKey(friendID))
-                                    {
-                                        listDMs[chatID].ChangeStatus(friendStatuses[friendID], "");
-                                    }
-                                    else
-                                    {
-                                        listDMs[chatID].ChangeStatus("offline", "");
-                                    }
-                                    listDMs[chatID].Show();
+                                    PopulateMessageContainer(chatID);
                                 }
                                 else
                                 {
-                                    MessageBox.Show($"Unable to open this DM ({chatID.ToString()}, {friendId.ToString()})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    System.Windows.Forms.MessageBox.Show($"Unable to open this DM ({chatID.ToString()}, {friendId.ToString()})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-                            };*/
+                            };
 
                             channelList.Controls.Add(friendEntry);
                         }
@@ -179,6 +171,22 @@ namespace Aerocord
                                         ChatId = (string)channel.id,
                                         ChannelType = Properties.Resources.Chat
                                     };
+
+                                    channelEntry.Click += (sender, e) =>
+                                    {
+                                        var clickedChannelEntry = (ChannelEntry)sender;
+                                        string selectedChannel = clickedChannelEntry.Name;
+                                        string chatID = clickedChannelEntry.ChatId;
+                                        if (chatID.Length > 1)
+                                        {
+                                            PopulateMessageContainer(chatID);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show($"Unable to open this Channel ({chatID.ToString()})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                    };
+
                                     channelList.Controls.Add(channelEntry);
                                 }
                                 break;
@@ -190,6 +198,22 @@ namespace Aerocord
                                         ChatId = (string)channel.id,
                                         ChannelType = Properties.Resources.Call
                                     };
+
+                                    channelEntry.Click += (sender, e) =>
+                                    {
+                                        var clickedChannelEntry = (ChannelEntry)sender;
+                                        string selectedChannel = clickedChannelEntry.Name;
+                                        string chatID = clickedChannelEntry.ChatId;
+                                        if (chatID.Length > 1)
+                                        {
+                                            PopulateMessageContainer(chatID);
+                                        }
+                                        else
+                                        {
+                                            System.Windows.Forms.MessageBox.Show($"Unable to open this Channel ({chatID.ToString()})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                    };
+
                                     channelList.Controls.Add(channelEntry);
                                 }
                                 break;
@@ -249,7 +273,7 @@ namespace Aerocord
                             }
                             else
                             {
-                                MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                System.Windows.Forms.MessageBox.Show("Unable to open this Server", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         };
                         sideBarFlow.Controls.Add(serverItem);
@@ -264,6 +288,111 @@ namespace Aerocord
             }
         }
 
+        delegate void PopulateMessageContainerCallback(string ChatId);
+        public void PopulateMessageContainer(string chatId)
+        {
+            if (InvokeRequired)
+            {
+                PopulateMessageContainerCallback d = new PopulateMessageContainerCallback(PopulateMessageContainer);
+                Invoke(d, new object[] { chatId });
+            }
+            else
+            {
+                try
+                {
+                    messageContainer.Controls.Clear();
+
+                    dynamic messages = GetApiResponse($"channels/{chatId}/messages?limit=50");
+
+                    for (int i = messages.Count - 1; i >= 0; i--)
+                    {
+                        string username = messages[i].author.global_name != null ? messages[i].author.global_name : messages[i].author.username;
+                        string content = messages[i].content;
+
+                        ChooseMessageBox(username, content, (int)messages[i].type.Value);
+                    }
+
+                    if(messageContainer.Controls.Count > 0) ScrollToBottom();
+
+                    currentChatId = chatId;
+                }
+                catch (WebException ex)
+                {
+                    ShowErrorMessage("Failed to retrieve user profile", ex);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Message Box
+
+        delegate void ChooseMessageBoxCallback(string username, string content, int type);
+        public void ChooseMessageBox(string username, string content, int type)
+        {
+            if(InvokeRequired)
+            {
+                ChooseMessageBoxCallback d = new ChooseMessageBoxCallback(ChooseMessageBox);
+                Invoke(d, new object[] { username, content, type });
+            }
+            else
+            {
+                switch (type)
+                {
+                    case 3:
+                        AddMessageBox(username, "Started a call.");
+                        break;
+                    case 7:
+                        AddMessageBox(username, "I just slid in. Say hi!");
+                        break;
+                    default:
+                        AddMessageBox(username, content);
+                        break;
+                }
+            }
+        }
+
+        delegate void AddMessageBoxCallback(string username, string content);
+        public void AddMessageBox(string username, string content)
+        {
+            if(InvokeRequired)
+            {
+                AddMessageBoxCallback d = new AddMessageBoxCallback(AddMessageBox);
+                Invoke(d, new object[] { username, content });
+            }
+            else
+            {
+                MessageBox messageEntry = new MessageBox
+                {
+                    Username = username,
+                    Content = content,
+                    LabelMaximumSize = new Size(messageContainer.Width - 100, 0)
+                };
+
+                messageContainer.SizeChanged += (sender, e) => { messageEntry.LabelMaximumSize = new Size(messageContainer.Width - 100, 0); };
+
+                messageContainer.Controls.Add(messageEntry);
+            }
+        }
+
+        delegate void ScrollToBottomCallback();
+        public void ScrollToBottom()
+        {
+            if (InvokeRequired)
+            {
+                ScrollToBottomCallback d = new ScrollToBottomCallback(ScrollToBottom);
+                Invoke(d);
+            }
+            else
+            {
+                if (messageContainer.Controls.Count > 0) messageContainer.ScrollControlIntoView(messageContainer.Controls[messageContainer.Controls.Count - 1]);
+            }
+        }
+
+        #endregion
+
+        #region Networking
+
         private dynamic GetApiResponse(string endpoint)
         {
             using (var webClient = new WebClient())
@@ -273,6 +402,8 @@ namespace Aerocord
                 return Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
             }
         }
+
+        #endregion
 
         private string GetChatID(string friendId)
         {
@@ -288,7 +419,7 @@ namespace Aerocord
 
         private void ShowErrorMessage(string message, Exception ex)
         {
-            MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            System.Windows.Forms.MessageBox.Show($"{message}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
