@@ -9,7 +9,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Aerocord
 {
@@ -37,6 +39,7 @@ namespace Aerocord
             AccessToken = "";
             websocketClient = new WebSocketClient(AccessToken, this);
             dmsButton.Click += (sender, e) => { if (websocketClient.init) PopulateDMs(); };
+            messageSend.KeyDown += messageSend_KeyDown;
         }
 
         protected override void OnShown(EventArgs e)
@@ -118,14 +121,13 @@ namespace Aerocord
 
                             friendEntry.Click += (sender, e) =>
                             {
-                                Console.WriteLine("Friend clicked");
                                 var clickedFriendEntry = (ChannelEntry)sender;
                                 string selectedFriend = clickedFriendEntry.Name;
                                 string chatID = clickedFriendEntry.ChatId;
                                 string friendID = clickedFriendEntry.FriendId;
                                 if (chatID.Length > 1)
                                 {
-                                    PopulateMessageContainer(chatID);
+                                    PopulateMessageContainer(clickedFriendEntry);
                                 }
                                 else
                                 {
@@ -134,6 +136,65 @@ namespace Aerocord
                             };
 
                             channelList.Controls.Add(friendEntry);
+                        }
+                    }
+                    foreach (var channel in channels)
+                    {
+                        if (channel.type == 3)
+                        {
+                            string name = channel.name != null ? channel.name : channel.recipients.Count >= 2 ? channel.recipients[0].username + ", " + channel.recipients[1].username + "..." : channel.recipients.Count >= 1 ? channel.recipients[0].username : "Empty group";
+                            string chatId = (string)channel.id;
+                            Image type = Properties.Resources.OfflineG;
+
+                            ChannelEntry groupEntry = new ChannelEntry
+                            {
+                                Channel = name,
+                                ChatId = chatId
+                            };
+
+                            foreach (var recipient in channel.recipients) 
+                            {
+                                string recId = (string)recipient.id;
+                                if (friendStatuses.ContainsKey(recId))
+                                {
+                                    if (friendStatuses[recId] == "online")
+                                    {
+                                        type = Properties.Resources.ActiveG;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        switch (friendStatuses[recId])
+                                        {
+                                            case "dnd":
+                                                type = Properties.Resources.DndG;
+                                                break;
+                                            case "idle":
+                                                if (type != Properties.Resources.DndG) type = Properties.Resources.IdleG;
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            groupEntry.ChannelType = type;
+
+                            groupEntry.Click += (sender, e) =>
+                            {
+                                var clickedGroupEntry = (ChannelEntry)sender;
+                                string selectedFriend = clickedGroupEntry.Name;
+                                string chatID = clickedGroupEntry.ChatId;
+                                if (chatID.Length > 1)
+                                {
+                                    PopulateMessageContainer(clickedGroupEntry);
+                                }
+                                else
+                                {
+                                    System.Windows.Forms.MessageBox.Show($"Unable to open this DM ({chatID.ToString()})", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            };
+
+                            channelList.Controls.Add(groupEntry);
                         }
                     }
                 }
@@ -164,7 +225,6 @@ namespace Aerocord
                         {
                             case 0:
                                 {
-                                    Console.WriteLine(channel.name);
                                     ChannelEntry channelEntry = new ChannelEntry
                                     {
                                         Channel = ((string)channel.name).ToLower(),
@@ -179,7 +239,7 @@ namespace Aerocord
                                         string chatID = clickedChannelEntry.ChatId;
                                         if (chatID.Length > 1)
                                         {
-                                            PopulateMessageContainer(chatID);
+                                            PopulateMessageContainer(clickedChannelEntry);
                                         }
                                         else
                                         {
@@ -206,7 +266,7 @@ namespace Aerocord
                                         string chatID = clickedChannelEntry.ChatId;
                                         if (chatID.Length > 1)
                                         {
-                                            PopulateMessageContainer(chatID);
+                                            PopulateMessageContainer(clickedChannelEntry);
                                         }
                                         else
                                         {
@@ -288,13 +348,13 @@ namespace Aerocord
             }
         }
 
-        delegate void PopulateMessageContainerCallback(string ChatId);
-        public void PopulateMessageContainer(string chatId)
+        delegate void PopulateMessageContainerCallback(ChannelEntry channel);
+        public void PopulateMessageContainer(ChannelEntry channel)
         {
             if (InvokeRequired)
             {
                 PopulateMessageContainerCallback d = new PopulateMessageContainerCallback(PopulateMessageContainer);
-                Invoke(d, new object[] { chatId });
+                Invoke(d, new object[] { channel });
             }
             else
             {
@@ -302,7 +362,7 @@ namespace Aerocord
                 {
                     messageContainer.Controls.Clear();
 
-                    dynamic messages = GetApiResponse($"channels/{chatId}/messages?limit=50");
+                    dynamic messages = GetApiResponse($"channels/{channel.ChatId}/messages?limit=50");
 
                     for (int i = messages.Count - 1; i >= 0; i--)
                     {
@@ -314,7 +374,17 @@ namespace Aerocord
 
                     if(messageContainer.Controls.Count > 0) ScrollToBottom();
 
-                    currentChatId = chatId;
+                    currentChatId = channel.ChatId;
+                    currentChannel.Text = channel.Channel;
+                    currentChannelType.Image = channel.ChannelType;
+
+                    if (!messageContainer.Visible)
+                    {
+                        currentChannel.Visible = true;
+                        currentChannelType.Visible = true;
+                        messageSend.Visible = true;
+                        messageContainer.Visible = true;
+                    }
                 }
                 catch (WebException ex)
                 {
@@ -327,6 +397,7 @@ namespace Aerocord
 
         #region Message Box
 
+        #region Adding Message to Box
         delegate void ChooseMessageBoxCallback(string username, string content, int type);
         public void ChooseMessageBox(string username, string content, int type)
         {
@@ -388,6 +459,52 @@ namespace Aerocord
                 if (messageContainer.Controls.Count > 0) messageContainer.ScrollControlIntoView(messageContainer.Controls[messageContainer.Controls.Count - 1]);
             }
         }
+        #endregion
+
+        #region Sending Messages to Server
+
+        private void messageSend_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && !e.Shift && !e.Control && !e.Alt)
+            {
+                e.SuppressKeyPress = true;
+                if (currentChatId != "") SendMessage();
+            }
+        }
+
+        private void SendMessage()
+        {
+            string message = messageSend.Text.Trim();
+            if (!string.IsNullOrEmpty(message))
+            {
+                try
+                {
+                    var postData = new
+                    {
+                        content = message
+                    };
+                    string jsonPostData = JsonConvert.SerializeObject(postData);
+
+                    using (var client = new WebClient())
+                    {
+                        byte[] byteArray = Encoding.UTF8.GetBytes(jsonPostData);
+                        client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                        client.Headers[HttpRequestHeader.Authorization] = AccessToken;
+                        byte[] responseArray = client.UploadData($"{DiscordApiBaseUrl}channels/{currentChatId}/messages", "POST", byteArray);
+
+                        string response = Encoding.UTF8.GetString(responseArray);
+                    }
+
+                    messageSend.Clear();
+                }
+                catch (WebException ex)
+                {
+                    ShowErrorMessage("Failed to send message", ex);
+                }
+            }
+        }
+
+        #endregion
 
         #endregion
 

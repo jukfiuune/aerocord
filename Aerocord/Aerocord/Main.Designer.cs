@@ -32,8 +32,12 @@
             this.sideBarFlow = new Aerocord.FlowLayoutPanelNoScrollbars();
             this.channelList = new System.Windows.Forms.FlowLayoutPanel();
             this.messageContainer = new System.Windows.Forms.FlowLayoutPanel();
+            this.messageSend = new System.Windows.Forms.TextBox();
+            this.currentChannel = new System.Windows.Forms.Label();
+            this.currentChannelType = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dmsButton)).BeginInit();
             this.sideBarFlow.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.currentChannelType)).BeginInit();
             this.SuspendLayout();
             // 
             // dmsButton
@@ -88,17 +92,56 @@
             this.messageContainer.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.messageContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.messageContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.messageContainer.Location = new System.Drawing.Point(311, 12);
+            this.messageContainer.Location = new System.Drawing.Point(311, 37);
             this.messageContainer.Name = "messageContainer";
-            this.messageContainer.Size = new System.Drawing.Size(461, 538);
+            this.messageContainer.Size = new System.Drawing.Size(461, 467);
             this.messageContainer.TabIndex = 2;
+            this.messageContainer.Visible = false;
             this.messageContainer.WrapContents = false;
+            // 
+            // messageSend
+            // 
+            this.messageSend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.messageSend.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.messageSend.Location = new System.Drawing.Point(311, 510);
+            this.messageSend.Multiline = true;
+            this.messageSend.Name = "messageSend";
+            this.messageSend.Size = new System.Drawing.Size(461, 40);
+            this.messageSend.TabIndex = 0;
+            this.messageSend.Visible = false;
+            // 
+            // currentChannel
+            // 
+            this.currentChannel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.currentChannel.AutoEllipsis = true;
+            this.currentChannel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.currentChannel.Location = new System.Drawing.Point(336, 10);
+            this.currentChannel.Name = "currentChannel";
+            this.currentChannel.Size = new System.Drawing.Size(436, 22);
+            this.currentChannel.TabIndex = 0;
+            this.currentChannel.Text = "None";
+            this.currentChannel.Visible = false;
+            // 
+            // currentChannelType
+            // 
+            this.currentChannelType.Image = global::Aerocord.Properties.Resources.Chat;
+            this.currentChannelType.Location = new System.Drawing.Point(317, 15);
+            this.currentChannelType.Name = "currentChannelType";
+            this.currentChannelType.Size = new System.Drawing.Size(16, 16);
+            this.currentChannelType.TabIndex = 3;
+            this.currentChannelType.TabStop = false;
+            this.currentChannelType.Visible = false;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.currentChannelType);
+            this.Controls.Add(this.currentChannel);
+            this.Controls.Add(this.messageSend);
             this.Controls.Add(this.messageContainer);
             this.Controls.Add(this.channelList);
             this.Controls.Add(this.sideBarFlow);
@@ -107,7 +150,9 @@
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.dmsButton)).EndInit();
             this.sideBarFlow.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.currentChannelType)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -117,6 +162,9 @@
         private FlowLayoutPanelNoScrollbars sideBarFlow;
         private System.Windows.Forms.FlowLayoutPanel channelList;
         private System.Windows.Forms.FlowLayoutPanel messageContainer;
+        private System.Windows.Forms.TextBox messageSend;
+        private System.Windows.Forms.Label currentChannel;
+        private System.Windows.Forms.PictureBox currentChannelType;
     }
 }
 
